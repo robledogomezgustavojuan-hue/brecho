@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Brechó Inteligente • Lives</title>
+  <title>Brechó Inteligente</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Inter', sans-serif;
-      background: radial-gradient(circle at top, #fce4ec, #f8bbd0);
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -19,16 +19,16 @@
     #app {
       width: 100%;
       max-width: 500px;
-      background: rgba(255, 255, 255, 0.75);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-radius: 3rem;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 2.5rem;
       padding: 2rem 1.8rem;
-      box-shadow: 0 25px 50px -12px rgba(194, 24, 91, 0.25);
-      border: 1px solid rgba(255,255,255,0.5);
+      box-shadow: 0 25px 50px -12px rgba(0,32,64,0.25);
+      border: 1px solid rgba(0,163,204,0.2);
     }
     .screen { display: none; }
-    .screen.active { display: block; animation: slideUp 0.35s ease; }
+    .screen.active { display: block; animation: slideUp 0.3s ease; }
     @keyframes slideUp {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
@@ -36,7 +36,7 @@
     h1 {
       font-size: 2rem;
       font-weight: 700;
-      background: linear-gradient(135deg, #ad1457, #d81b60);
+      background: linear-gradient(135deg, #00a3cc, #006b8f);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin-bottom: 1.5rem;
@@ -47,31 +47,28 @@
       display: block;
       margin-bottom: 0.3rem;
       font-weight: 600;
-      color: #880e4f;
+      color: #1a3b4e;
       font-size: 0.85rem;
       letter-spacing: 0.3px;
     }
     input, select, button {
       width: 100%;
       padding: 0.9rem 1rem;
-      border: none;
-      border-radius: 1.2rem;
+      border: 2px solid #d0e0ef;
+      border-radius: 1.5rem;
       font-size: 0.95rem;
       font-family: inherit;
-      background: rgba(255,255,255,0.7);
-      backdrop-filter: blur(5px);
-      border: 1px solid rgba(236,64,122,0.15);
+      background: white;
       transition: all 0.2s;
-      color: #4a0024;
+      color: #1a3b4e;
+      outline: none;
     }
     input:focus, select:focus {
-      outline: none;
-      border-color: #ec407a;
-      box-shadow: 0 0 0 4px rgba(236,64,122,0.15);
-      background: white;
+      border-color: #00a3cc;
+      box-shadow: 0 0 0 4px rgba(0,163,204,0.15);
     }
     button {
-      background: #d81b60;
+      background: linear-gradient(135deg, #00a3cc, #007799);
       color: white;
       font-weight: 600;
       cursor: pointer;
@@ -79,14 +76,19 @@
       margin-top: 0.5rem;
       letter-spacing: 0.5px;
       transition: 0.25s;
+      box-shadow: 0 8px 20px rgba(0,163,204,0.3);
     }
-    button:hover { background: #c2185b; transform: translateY(-1px); }
+    button:hover {
+      background: linear-gradient(135deg, #0090b3, #006080);
+      transform: translateY(-1px);
+    }
     button.secondary {
-      background: rgba(236,64,122,0.1);
-      color: #ad1457;
-      border: 1px solid #f48fb1;
+      background: rgba(0,163,204,0.08);
+      color: #006b8f;
+      border: 1px solid #b0d9e8;
+      box-shadow: none;
     }
-    button.secondary:hover { background: #fce4ec; }
+    button.secondary:hover { background: rgba(0,163,204,0.15); }
     button.small {
       padding: 0.5rem 1rem;
       font-size: 0.8rem;
@@ -96,7 +98,7 @@
     .link {
       text-align: center;
       margin-top: 1rem;
-      color: #c2185b;
+      color: #00a3cc;
       font-weight: 500;
       cursor: pointer;
       transition: 0.2s;
@@ -104,7 +106,7 @@
     .link:hover { text-decoration: underline; }
     .error, .success {
       padding: 0.8rem;
-      border-radius: 1rem;
+      border-radius: 1.2rem;
       margin-bottom: 1rem;
       font-size: 0.85rem;
       font-weight: 500;
@@ -121,19 +123,20 @@
     .store-name {
       font-weight: 700;
       font-size: 1.3rem;
-      color: #4a0024;
-      background: rgba(236,64,122,0.08);
+      color: #1a3b4e;
+      background: rgba(0,163,204,0.08);
       padding: 0.5rem 1.2rem;
       border-radius: 2rem;
+      border: 1px solid #b0d9e8;
     }
     .btn-logout {
-      background: rgba(236,64,122,0.1);
-      color: #ad1457;
-      padding: 0.3rem 0.8rem;
+      background: rgba(0,163,204,0.1);
+      color: #006b8f;
+      padding: 0.4rem 0.9rem;
       border-radius: 2rem;
       font-weight: 600;
       cursor: pointer;
-      border: none;
+      border: 1px solid #b0d9e8;
       font-size: 0.75rem;
       line-height: 1;
     }
@@ -142,28 +145,27 @@
       display: flex;
       gap: 0.3rem;
       margin-bottom: 1.5rem;
-      background: rgba(255,255,255,0.5);
-      backdrop-filter: blur(10px);
+      background: rgba(0,163,204,0.05);
       border-radius: 2rem;
       padding: 0.4rem;
     }
     .tab {
       flex: 1;
       text-align: center;
-      padding: 0.6rem 0.3rem;
+      padding: 0.7rem 0.3rem;
       border-radius: 2rem;
       font-weight: 600;
       cursor: pointer;
-      color: #880e4f;
+      color: #1a3b4e;
       transition: 0.2s;
       border: none;
       background: transparent;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
     }
     .tab.active {
       background: white;
-      box-shadow: 0 5px 15px rgba(236,64,122,0.2);
-      color: #d81b60;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      color: #00a3cc;
     }
     .summary-cards {
       display: flex;
@@ -172,29 +174,31 @@
     }
     .summary-card {
       flex: 1;
-      background: rgba(255,255,255,0.7);
-      backdrop-filter: blur(5px);
-      border-radius: 1.2rem;
-      padding: 1rem;
+      background: white;
+      border-radius: 1.5rem;
+      padding: 1.2rem 0.5rem;
       text-align: center;
-      border: 1px solid rgba(236,64,122,0.15);
+      border: 1px solid #d0e0ef;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
     }
     .summary-card .value {
-      font-size: 1.6rem;
+      font-size: 1.8rem;
       font-weight: 700;
-      color: #d81b60;
+      color: #00a3cc;
     }
     .summary-card .label {
       font-size: 0.75rem;
-      color: #ad1457;
+      color: #4a6275;
       margin-top: 0.2rem;
     }
     .btn-start-live {
-      background: linear-gradient(135deg, #ec407a, #d81b60);
-      box-shadow: 0 8px 20px rgba(236,64,122,0.3);
+      background: linear-gradient(135deg, #ff7e5f, #feb47b);
+      box-shadow: 0 10px 25px rgba(255,126,95,0.4);
+      color: white;
       font-size: 1.1rem;
       padding: 1rem;
       margin: 0.5rem 0;
+      border: none;
     }
     .live-header {
       display: flex;
@@ -202,40 +206,41 @@
       align-items: center;
       margin-bottom: 1.5rem;
     }
-    .live-header h2 { color: #ad1457; font-size: 1.3rem; }
+    .live-header h2 { color: #1a3b4e; font-size: 1.3rem; }
     .sales-list { list-style: none; margin-top: 1rem; }
     .sales-list li {
-      background: rgba(255,255,255,0.7);
-      backdrop-filter: blur(5px);
+      background: white;
       border-radius: 1.2rem;
       padding: 0.7rem 1rem;
       margin-bottom: 0.5rem;
-      border: 1px solid rgba(236,64,122,0.1);
+      border: 1px solid #d0e0ef;
       display: flex;
       justify-content: space-between;
       font-size: 0.9rem;
       align-items: center;
     }
-    .live-sales-list { max-height: 200px; overflow-y: auto; margin: 1rem 0; }
-    #reportsArea select { margin-bottom: 1rem; }
+    .live-sales-list { max-height: 250px; overflow-y: auto; margin: 1rem 0; }
     .client-card {
-      background: rgba(255,255,255,0.8);
-      border-radius: 1rem;
+      background: white;
+      border-radius: 1.2rem;
       padding: 1rem;
       margin-bottom: 0.8rem;
-      border: 1px solid rgba(236,64,122,0.2);
+      border: 1px solid #d0e0ef;
+      cursor: pointer;
+      transition: background 0.2s;
     }
-    .client-card h4 { color: #ad1457; }
-    .client-card p { font-size: 0.85rem; color: #4a0024; }
+    .client-card:hover { background: #f8fcff; }
+    .client-card h4 { color: #006b8f; }
+    .client-card p { font-size: 0.85rem; color: #4a6275; }
     .client-history {
-      background: rgba(255,255,255,0.9);
-      border-radius: 1rem;
+      background: white;
+      border-radius: 1.2rem;
       padding: 1rem;
       margin: 1rem 0;
-      border: 1px solid rgba(236,64,122,0.3);
+      border: 1px solid #d0e0ef;
     }
     .alert-box {
-      background: #fff3e0; color: #e65100; padding: 0.8rem; border-radius: 1rem;
+      background: #fff3e0; color: #e65100; padding: 0.8rem; border-radius: 1.2rem;
       margin: 1rem 0; font-size: 0.85rem; text-align: center;
     }
     .mode-buttons {
@@ -306,7 +311,7 @@
             <button id="modeGeneralBtn" class="small active">📋 Geral</button>
             <button id="modeByClientBtn" class="small secondary">👥 Por Cliente</button>
           </div>
-          <div id="reportSummary" class="summary" style="display: none;">
+          <div id="reportSummary" class="summary" style="display: none; margin-bottom: 1rem;">
             <div>Peças: <span id="totalItems">0</span></div>
             <div>Total: R$ <span id="totalValue">0.00</span></div>
           </div>
@@ -318,18 +323,18 @@
 
         <!-- Clientes -->
         <div id="clientsArea" style="display: none;">
-          <h3 style="color:#ad1457;">Cadastro de Cliente</h3>
+          <h3 style="color:#1a3b4e;">Cadastro de Cliente</h3>
           <div id="clientMessage" class="success"></div>
           <div class="form-group"><label>Nome</label><input type="text" id="clientName" placeholder="Nome completo"></div>
           <div class="form-group"><label>Telefone / WhatsApp</label><input type="tel" id="clientPhone" placeholder="(11) 91234-5678"></div>
           <div class="form-group"><label>Endereço</label><input type="text" id="clientAddress" placeholder="Rua, número, bairro"></div>
           <button id="saveClientBtn">💾 Salvar Cliente</button>
-          <hr style="margin: 1.5rem 0; border-color: rgba(236,64,122,0.2);">
-          <h3 style="color:#ad1457;">Clientes Cadastrados</h3>
+          <hr style="margin: 1.5rem 0; border-color: #d0e0ef;">
+          <h3 style="color:#1a3b4e;">Clientes Cadastrados</h3>
           <div id="clientsList"></div>
           <div id="clientHistory" class="client-history" style="display: none;">
-            <h4 id="historyClientName" style="color:#ad1457;"></h4>
-            <p id="historyClientInfo" style="font-size:0.9rem; color:#4a0024;"></p>
+            <h4 id="historyClientName" style="color:#006b8f;"></h4>
+            <p id="historyClientInfo" style="font-size:0.9rem; color:#4a6275;"></p>
             <h4 style="margin-top:1rem;">Histórico de Compras</h4>
             <ul class="sales-list" id="historySalesList"></ul>
             <button class="small secondary" onclick="document.getElementById('clientHistory').style.display='none'">Fechar</button>
@@ -352,7 +357,7 @@
         <div class="form-group"><label>👤 3ª Opção</label><input type="text" id="client3" list="clientNamesList" placeholder="Opcional"></div>
         <button id="registerSaleBtn">✨ Registrar Venda</button>
         <div class="live-sales-list">
-          <h4 style="color:#ad1457;">Vendas desta live</h4>
+          <h4 style="color:#1a3b4e;">Vendas desta live</h4>
           <ul class="sales-list" id="liveSalesList"></ul>
         </div>
       </div>
@@ -365,12 +370,12 @@
     import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, where, getDocs, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyAIiJRsfYGULAx1aUa-zEqhgKjJvt6KxuI",
-      authDomain: "brechointeligente-74120.firebaseapp.com",
-      projectId: "brechointeligente-74120",
-      storageBucket: "brechointeligente-74120.firebasestorage.app",
-      messagingSenderId: "1057607602897",
-      appId: "1:1057607602897:web:a6edbab4a6aa64f78f6bf0"
+      apiKey: "AIzaSyBLfJR31G2DKV38E4x6HFR-bY3tnH3Yrso",
+      authDomain: "brecho-45532.firebaseapp.com",
+      projectId: "brecho-45532",
+      storageBucket: "brecho-45532.firebasestorage.app",
+      messagingSenderId: "902600801735",
+      appId: "1:902600801735:web:03b9e91d86f1543fdbade2"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -386,7 +391,7 @@
     let currentReportMode = 'general';
     let currentReportSales = [];
 
-    // UI helpers
+    // UI Helpers
     function showScreen(id) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.getElementById(id).classList.add('active');
@@ -477,7 +482,7 @@
       if (!currentUser) return;
       const q = query(collection(db, 'lives'), where('storeId', '==', currentUser.uid), orderBy('createdAt', 'desc'));
       const snap = await getDocs(q).catch(() => null);
-      allLivesList = snap ? [] : allLivesList;
+      allLivesList = [];
       if (snap) snap.forEach(d => allLivesList.push({ id: d.id, ...d.data() }));
     }
 
@@ -543,10 +548,10 @@
       } catch (e) {
         loadingEl.style.display = 'none';
         if (e.code === 'failed-precondition') {
-          errorEl.innerHTML = '⚠️ Índice necessário no Firestore. Acesse o Console Firebase → Firestore → Índices e crie um índice composto para a coleção "sales" com os campos: liveId (ASC), storeId (ASC), createdAt (ASC). Depois recarregue a página.';
+          errorEl.innerHTML = '⚠️ Índice necessário no Firestore. Crie um índice composto para a coleção "sales" com os campos: liveId (ASC), storeId (ASC), createdAt (ASC). Após a criação, recarregue a página.';
           errorEl.style.display = 'block';
         } else {
-          errorEl.textContent = 'Erro ao carregar relatório: ' + e.message;
+          errorEl.textContent = 'Erro: ' + e.message;
           errorEl.style.display = 'block';
         }
       }
@@ -571,10 +576,9 @@
       clientContainer.style.display = 'block';
       clientContainer.innerHTML = '';
 
-      // Agrupa por cliente (primeiro da fila = comprador)
       const clientMap = new Map();
       currentReportSales.forEach(sale => {
-        const buyer = sale.clientQueue[0]; // primeiro cliente é o comprador
+        const buyer = sale.clientQueue[0];
         if (!clientMap.has(buyer)) {
           clientMap.set(buyer, { name: buyer, total: 0, items: [] });
         }
@@ -584,7 +588,7 @@
       });
 
       if (clientMap.size === 0) {
-        clientContainer.innerHTML = '<p style="color:#ad1457;">Nenhum cliente encontrado.</p>';
+        clientContainer.innerHTML = '<p style="color:#4a6275;">Nenhum cliente encontrado.</p>';
         return;
       }
 
@@ -600,7 +604,6 @@
       }
     }
 
-    // Eventos dos seletores e botões de modo
     document.getElementById('reportLiveSelect').addEventListener('change', (e) => {
       if (e.target.value) loadReportForLive(e.target.value);
     });
@@ -636,7 +639,7 @@
       await loadAllClients();
       const container = document.getElementById('clientsList');
       if (allClients.length === 0) {
-        container.innerHTML = '<p style="color:#ad1457;">Nenhum cliente cadastrado.</p>';
+        container.innerHTML = '<p style="color:#4a6275;">Nenhum cliente cadastrado.</p>';
         return;
       }
       container.innerHTML = allClients.map(c => `
@@ -753,22 +756,16 @@
     async function endLiveAndReport() {
       if (!activeLiveId) return;
       const liveIdToReport = activeLiveId;
-      // Encerra a live
       activeLiveId = null;
       activeLiveData = null;
       document.getElementById('mainPanel').style.display = 'block';
       document.getElementById('livePanel').style.display = 'none';
-      
-      // Recarrega lista de lives e resumo diário
       await loadAllLivesList();
       const selectedDate = document.getElementById('summaryDate').value;
       if (selectedDate) loadDailySummary(selectedDate);
-      
-      // Muda para aba Relatórios e seleciona a live encerrada
       switchDashboardTab('reports');
-      const select = document.getElementById('reportLiveSelect');
-      // Aguarda a renderização do seletor
       setTimeout(() => {
+        const select = document.getElementById('reportLiveSelect');
         if (select && select.querySelector(`option[value="${liveIdToReport}"]`)) {
           select.value = liveIdToReport;
           loadReportForLive(liveIdToReport);
@@ -802,7 +799,7 @@
           clientQueue: queue, currentClientIndex: 0,
           date: activeLiveData.date, createdAt: serverTimestamp()
         });
-        showMessage('liveMessage', 'Venda registrada! ✨');
+        showMessage('liveMessage', 'Venda registrada!');
         clearLiveForm();
         loadActiveLiveSales();
         await updateClientDatalist();
@@ -823,7 +820,7 @@
       });
     }
 
-    // Event Listeners
+    // Eventos
     document.getElementById('loginBtn').addEventListener('click', login);
     document.getElementById('registerBtn').addEventListener('click', register);
     document.getElementById('logoutBtn').addEventListener('click', logout);
@@ -840,7 +837,6 @@
       if (e.target.value) loadDailySummary(e.target.value);
     });
 
-    // Inicialização
     document.getElementById('summaryDate').value = getTodayString();
 
     onAuthStateChanged(auth, async (user) => {
@@ -864,10 +860,10 @@
       }
     });
 
-    console.log('✅ Sistema pronto. Índices do Firestore: lives(storeId ASC, createdAt DESC), sales(liveId ASC, storeId ASC, createdAt ASC).');
+    console.log('✅ Sistema pronto. Verifique as regras do Firestore e crie os índices necessários.');
   </script>
 
-  <!-- REGRAS DO FIRESTORE (ATUALIZADAS) -->
+  <!-- ═══════════════════════ REGRAS DO FIRESTORE (cole no console) ═══════════════════════ -->
   <!--
   rules_version = '2';
   service cloud.firestore {
