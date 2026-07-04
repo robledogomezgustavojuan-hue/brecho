@@ -3,361 +3,365 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Brechó Inteligente</title>
+  <title>Brechó Inteligente | Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --secondary: #f3f4f6;
+      --text-dark: #1f2937;
+      --text-light: #6b7280;
+      --danger: #ef4444;
+      --success: #10b981;
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --radius: 12px;
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+      background: var(--bg-color);
+      color: var(--text-dark);
       min-height: 100vh;
       display: flex;
-      align-items: center;
       justify-content: center;
-      padding: 1.5rem;
     }
+
+    /* Container Principal */
     #app {
       width: 100%;
-      max-width: 500px;
-      background: rgba(255,255,255,0.95);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border-radius: 2.5rem;
-      padding: 2rem 1.8rem;
-      box-shadow: 0 25px 50px -12px rgba(0,32,64,0.25);
-      border: 1px solid rgba(0,163,204,0.2);
+      max-width: 1000px;
+      padding: 2rem 1.5rem;
     }
-    .screen { display: none; }
-    .screen.active { display: block; animation: slideUp 0.3s ease; }
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(20px); }
+
+    /* Modos de Tela */
+    .screen { display: none; animation: fadeIn 0.3s ease; }
+    .screen.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    h1 {
-      font-size: 2rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, #00a3cc, #006b8f);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 1.5rem;
-      text-align: center;
+
+    /* Login & Register Layout */
+    .auth-container {
+      max-width: 400px;
+      margin: 4rem auto;
+      background: var(--card-bg);
+      padding: 2.5rem;
+      border-radius: var(--radius);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+      border: 1px solid var(--border);
     }
+
+    h1, h2, h3 { color: var(--text-dark); margin-bottom: 1rem; }
+    .auth-container h1 { text-align: center; color: var(--primary); font-size: 1.8rem; }
+
+    /* Formulários */
     .form-group { margin-bottom: 1.2rem; }
     label {
       display: block;
-      margin-bottom: 0.3rem;
-      font-weight: 600;
-      color: #1a3b4e;
-      font-size: 0.85rem;
-      letter-spacing: 0.3px;
+      margin-bottom: 0.4rem;
+      font-weight: 500;
+      font-size: 0.9rem;
+      color: var(--text-dark);
     }
-    input, select, button {
+    input, select {
       width: 100%;
-      padding: 0.9rem 1rem;
-      border: 2px solid #d0e0ef;
-      border-radius: 1.5rem;
+      padding: 0.8rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
       font-size: 0.95rem;
       font-family: inherit;
-      background: white;
       transition: all 0.2s;
-      color: #1a3b4e;
-      outline: none;
+      background: #fff;
     }
     input:focus, select:focus {
-      border-color: #00a3cc;
-      box-shadow: 0 0 0 4px rgba(0,163,204,0.15);
+      border-color: var(--primary);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
     }
+
+    /* Botões */
     button {
-      background: linear-gradient(135deg, #00a3cc, #007799);
-      color: white;
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border-radius: 8px;
+      font-size: 1rem;
       font-weight: 600;
-      cursor: pointer;
       border: none;
-      margin-top: 0.5rem;
-      letter-spacing: 0.5px;
-      transition: 0.25s;
-      box-shadow: 0 8px 20px rgba(0,163,204,0.3);
-    }
-    button:hover {
-      background: linear-gradient(135deg, #0090b3, #006080);
-      transform: translateY(-1px);
-    }
-    button.secondary {
-      background: rgba(0,163,204,0.08);
-      color: #006b8f;
-      border: 1px solid #b0d9e8;
-      box-shadow: none;
-    }
-    button.secondary:hover { background: rgba(0,163,204,0.15); }
-    button.small {
-      padding: 0.5rem 1rem;
-      font-size: 0.8rem;
-      width: auto;
-      white-space: nowrap;
-    }
-    .link {
-      text-align: center;
-      margin-top: 1rem;
-      color: #00a3cc;
-      font-weight: 500;
       cursor: pointer;
-      transition: 0.2s;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
     }
+    button.btn-primary { background: var(--primary); color: white; }
+    button.btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+    
+    button.btn-secondary { background: var(--secondary); color: var(--text-dark); border: 1px solid var(--border); }
+    button.btn-secondary:hover { background: #e5e7eb; }
+    
+    button.btn-danger { background: #fee2e2; color: var(--danger); border: 1px solid #fecaca; }
+    button.btn-danger:hover { background: #fecaca; }
+
+    button.btn-whatsapp { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; font-size: 0.85rem; padding: 0.5rem; margin-top: 0.5rem;}
+    button.btn-whatsapp:hover { background: #bbf7d0; }
+
+    /* Links e Alertas */
+    .link { text-align: center; margin-top: 1.5rem; color: var(--primary); font-weight: 500; cursor: pointer; font-size: 0.9rem; }
     .link:hover { text-decoration: underline; }
-    .error, .success {
-      padding: 0.8rem;
-      border-radius: 1.2rem;
-      margin-bottom: 1rem;
-      font-size: 0.85rem;
-      font-weight: 500;
-      display: none;
-    }
-    .error { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
-    .success { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+    
+    .alert { padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.9rem; font-weight: 500; display: none; }
+    .alert.error { background: #fef2f2; color: var(--danger); border: 1px solid #fecaca; }
+    .alert.success { background: #f0fdf4; color: var(--success); border: 1px solid #bbf7d0; }
+    .alert.warning { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; display: block; }
+
+    /* Dashboard Layout */
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.8rem;
+      margin-bottom: 2rem;
+      background: var(--card-bg);
+      padding: 1rem 1.5rem;
+      border-radius: var(--radius);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+      border: 1px solid var(--border);
     }
-    .store-name {
-      font-weight: 700;
-      font-size: 1.3rem;
-      color: #1a3b4e;
-      background: rgba(0,163,204,0.08);
-      padding: 0.5rem 1.2rem;
-      border-radius: 2rem;
-      border: 1px solid #b0d9e8;
-    }
-    .btn-logout {
-      background: rgba(0,163,204,0.1);
-      color: #006b8f;
-      padding: 0.4rem 0.9rem;
-      border-radius: 2rem;
-      font-weight: 600;
-      cursor: pointer;
-      border: 1px solid #b0d9e8;
-      font-size: 0.75rem;
-      line-height: 1;
-    }
-    .date-selector { margin-bottom: 1.5rem; }
+    .store-name { font-weight: 700; font-size: 1.2rem; color: var(--primary); }
+    .btn-logout { width: auto; padding: 0.5rem 1.5rem; font-size: 0.9rem; }
+
+    /* Tabs Nav */
     .tab-bar {
       display: flex;
-      gap: 0.3rem;
-      margin-bottom: 1.5rem;
-      background: rgba(0,163,204,0.05);
-      border-radius: 2rem;
-      padding: 0.4rem;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      background: var(--card-bg);
+      padding: 0.5rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
     }
     .tab {
       flex: 1;
       text-align: center;
-      padding: 0.7rem 0.3rem;
-      border-radius: 2rem;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
       font-weight: 600;
       cursor: pointer;
-      color: #1a3b4e;
-      transition: 0.2s;
-      border: none;
-      background: transparent;
-      font-size: 0.85rem;
+      color: var(--text-light);
+      transition: all 0.2s;
     }
-    .tab.active {
-      background: white;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-      color: #00a3cc;
-    }
-    .summary-cards {
-      display: flex;
-      gap: 0.8rem;
-      margin-bottom: 1.5rem;
-    }
+    .tab.active { background: var(--secondary); color: var(--text-dark); }
+    .tab:hover:not(.active) { background: #f9fafb; }
+
+    /* Cards de Resumo */
+    .summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
     .summary-card {
-      flex: 1;
-      background: white;
-      border-radius: 1.5rem;
-      padding: 1.2rem 0.5rem;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 1.5rem;
       text-align: center;
-      border: 1px solid #d0e0ef;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.02);
     }
-    .summary-card .value {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: #00a3cc;
-    }
-    .summary-card .label {
-      font-size: 0.75rem;
-      color: #4a6275;
-      margin-top: 0.2rem;
-    }
-    .btn-start-live {
-      background: linear-gradient(135deg, #ff7e5f, #feb47b);
-      box-shadow: 0 10px 25px rgba(255,126,95,0.4);
-      color: white;
-      font-size: 1.1rem;
-      padding: 1rem;
-      margin: 0.5rem 0;
-      border: none;
-    }
-    .live-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-    }
-    .live-header h2 { color: #1a3b4e; font-size: 1.3rem; }
-    .sales-list { list-style: none; margin-top: 1rem; }
+    .summary-card .value { font-size: 2rem; font-weight: 700; color: var(--primary); margin-bottom: 0.25rem; }
+    .summary-card .label { font-size: 0.85rem; color: var(--text-light); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;}
+
+    /* Listas e Relatórios */
+    .sales-list { list-style: none; }
     .sales-list li {
-      background: white;
-      border-radius: 1.2rem;
-      padding: 0.7rem 1rem;
+      background: var(--card-bg);
+      border-radius: 8px;
+      padding: 1rem;
       margin-bottom: 0.5rem;
-      border: 1px solid #d0e0ef;
+      border: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
-      font-size: 0.9rem;
       align-items: center;
+      font-size: 0.95rem;
     }
-    .live-sales-list { max-height: 250px; overflow-y: auto; margin: 1rem 0; }
+    
+    .client-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
     .client-card {
-      background: white;
-      border-radius: 1.2rem;
-      padding: 1rem;
-      margin-bottom: 0.8rem;
-      border: 1px solid #d0e0ef;
-      cursor: pointer;
-      transition: background 0.2s;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 1.2rem;
+      border: 1px solid var(--border);
+      transition: transform 0.2s;
     }
-    .client-card:hover { background: #f8fcff; }
-    .client-card h4 { color: #006b8f; }
-    .client-card p { font-size: 0.85rem; color: #4a6275; }
-    .client-history {
-      background: white;
-      border-radius: 1.2rem;
-      padding: 1rem;
-      margin: 1rem 0;
-      border: 1px solid #d0e0ef;
+    .client-card h4 { color: var(--primary); margin-bottom: 0.5rem; font-size: 1.1rem; }
+    .client-card p { font-size: 0.9rem; color: var(--text-light); margin-bottom: 0.3rem; }
+    
+    /* Live Ativa Area */
+    .live-panel-container {
+      background: #fdf2f8; /* Tom levemente diferente para foco */
+      border: 2px solid #fbcfe8;
+      border-radius: var(--radius);
+      padding: 2rem;
     }
-    .alert-box {
-      background: #fff3e0; color: #e65100; padding: 0.8rem; border-radius: 1.2rem;
-      margin: 1rem 0; font-size: 0.85rem; text-align: center;
-    }
-    .mode-buttons {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-    }
-    .mode-buttons button { flex: 1; }
+    .live-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 2px dashed #fbcfe8; padding-bottom: 1rem; }
+    .live-header h2 { color: #be185d; margin: 0; }
+    
+    hr { border: 0; border-top: 1px solid var(--border); margin: 2rem 0; }
+    .flex-row { display: flex; gap: 1rem; margin-bottom: 1rem; }
+    .flex-row > * { flex: 1; }
   </style>
 </head>
 <body>
   <div id="app">
-    <!-- Tela de Login -->
+    
     <div id="loginScreen" class="screen active">
-      <h1>✨ Brechó Inteligente</h1>
-      <div id="loginError" class="error"></div>
-      <div class="form-group"><label>Email</label><input type="email" id="loginEmail" placeholder="seu@email.com"></div>
-      <div class="form-group"><label>Senha</label><input type="password" id="loginPassword" placeholder="••••••"></div>
-      <button id="loginBtn">Entrar</button>
-      <div class="link" id="goToRegister">Criar conta gratuita →</div>
+      <div class="auth-container">
+        <h1>Brechó Inteligente</h1>
+        <p style="text-align: center; color: var(--text-light); margin-bottom: 2rem; font-size: 0.9rem;">Gerencie suas lives e vendas</p>
+        <div id="loginError" class="alert error"></div>
+        <div class="form-group"><label>Email</label><input type="email" id="loginEmail" placeholder="seu@email.com"></div>
+        <div class="form-group"><label>Senha</label><input type="password" id="loginPassword" placeholder="••••••"></div>
+        <button id="loginBtn" class="btn-primary">Entrar no Sistema</button>
+        <div class="link" id="goToRegister">Ainda não tem conta? Crie aqui →</div>
+      </div>
     </div>
 
-    <!-- Tela de Cadastro -->
     <div id="registerScreen" class="screen">
-      <h1>🌸 Nova Loja</h1>
-      <div id="registerError" class="error"></div>
-      <div class="form-group"><label>Email</label><input type="email" id="regEmail"></div>
-      <div class="form-group"><label>Nome da Loja</label><input type="text" id="regStoreName" placeholder="Brechó Encantado"></div>
-      <div class="form-group"><label>Telefone</label><input type="tel" id="regPhone" placeholder="(11) 91234-5678"></div>
-      <div class="form-group"><label>Senha</label><input type="password" id="regPassword" placeholder="Mín. 6 caracteres"></div>
-      <div class="form-group"><label>Confirmar Senha</label><input type="password" id="regConfirmPassword"></div>
-      <button id="registerBtn">Criar Loja</button>
-      <div class="link" id="goToLogin">← Já tenho conta</div>
+      <div class="auth-container">
+        <h1>Nova Loja</h1>
+        <div id="registerError" class="alert error"></div>
+        <div class="form-group"><label>Email</label><input type="email" id="regEmail"></div>
+        <div class="form-group"><label>Nome do Brechó</label><input type="text" id="regStoreName" placeholder="Ex: Brechó da Maria"></div>
+        <div class="form-group"><label>WhatsApp da Loja</label><input type="tel" id="regPhone" placeholder="(11) 99999-9999"></div>
+        <div class="form-group"><label>Senha</label><input type="password" id="regPassword" placeholder="Mínimo 6 caracteres"></div>
+        <div class="form-group"><label>Confirmar Senha</label><input type="password" id="regConfirmPassword"></div>
+        <button id="registerBtn" class="btn-primary">Criar Minha Loja</button>
+        <div class="link" id="goToLogin">← Voltar para Login</div>
+      </div>
     </div>
 
-    <!-- Dashboard -->
     <div id="dashboardScreen" class="screen">
       <div class="header">
         <div class="store-name" id="storeNameDisplay">Minha Loja</div>
-        <button class="btn-logout" id="logoutBtn">Sair</button>
+        <button class="btn-secondary btn-logout" id="logoutBtn">Sair da Conta</button>
       </div>
 
       <div id="mainPanel">
         <div class="tab-bar">
-          <div class="tab active" id="tabSummary">📋 Resumo</div>
-          <div class="tab" id="tabReports">📊 Relatórios</div>
-          <div class="tab" id="tabClients">👥 Clientes</div>
+          <div class="tab active" id="tabSummary">Painel Resumo</div>
+          <div class="tab" id="tabReports">Relatórios & Pedidos</div>
+          <div class="tab" id="tabClients">Meus Clientes</div>
         </div>
 
-        <!-- Resumo Diário -->
         <div id="summaryArea">
-          <div class="date-selector">
-            <label>Data do resumo</label>
+          <div class="form-group" style="max-width: 250px;">
+            <label>Data de Análise</label>
             <input type="date" id="summaryDate">
           </div>
+          
           <div class="summary-cards">
-            <div class="summary-card"><div class="value" id="dailySales">0.00</div><div class="label">Vendas (R$)</div></div>
-            <div class="summary-card"><div class="value" id="dailyItems">0</div><div class="label">Peças</div></div>
-            <div class="summary-card"><div class="value" id="dailyLives">0</div><div class="label">Lives</div></div>
+            <div class="summary-card"><div class="value" id="dailySales">R$ 0,00</div><div class="label">Total Faturado</div></div>
+            <div class="summary-card"><div class="value" id="dailyItems">0</div><div class="label">Peças Vendidas</div></div>
+            <div class="summary-card"><div class="value" id="dailyLives">0</div><div class="label">Lives Realizadas</div></div>
           </div>
-          <button class="btn-start-live" id="startLiveBtn">🎥 Iniciar Nova Live de Vendas</button>
+          
+          <button class="btn-primary" id="startLiveBtn" style="padding: 1.2rem; font-size: 1.1rem; background: #be185d; box-shadow: 0 4px 15px rgba(190, 24, 93, 0.3);">
+            🎥 Iniciar Nova Live de Vendas Agora
+          </button>
+          
+          <div id="indexWarningArea" style="display:none; margin-top: 1rem;"></div>
         </div>
 
-        <!-- Relatórios de Lives -->
         <div id="reportsArea" style="display: none;">
-          <select id="reportLiveSelect"></select>
-          <div class="mode-buttons">
-            <button id="modeGeneralBtn" class="small active">📋 Geral</button>
-            <button id="modeByClientBtn" class="small secondary">👥 Por Cliente</button>
+          <div class="form-group">
+            <label>Selecione a Live para Gerar o Relatório</label>
+            <select id="reportLiveSelect"></select>
           </div>
-          <div id="reportSummary" class="summary" style="display: none; margin-bottom: 1rem;">
-            <div>Peças: <span id="totalItems">0</span></div>
-            <div>Total: R$ <span id="totalValue">0.00</span></div>
+          
+          <div class="flex-row">
+            <button id="modeGeneralBtn" class="btn-primary">📋 Vendas Gerais</button>
+            <button id="modeByClientBtn" class="btn-secondary">📦 Separar por Cliente</button>
           </div>
-          <div id="reportLoading" class="loading" style="display: none;">Carregando...</div>
-          <div id="reportErrorMsg" class="alert-box" style="display: none;"></div>
+          
+          <div id="reportSummary" class="summary-cards" style="display: none; margin-bottom: 1.5rem;">
+            <div class="summary-card" style="padding: 1rem;"><div class="value" id="totalItems" style="font-size: 1.5rem;">0</div><div class="label">Peças</div></div>
+            <div class="summary-card" style="padding: 1rem;"><div class="value" id="totalValue" style="font-size: 1.5rem;">R$ 0,00</div><div class="label">Faturamento</div></div>
+          </div>
+          
+          <div id="reportLoading" style="display: none; text-align: center; padding: 2rem; color: var(--text-light);">Buscando dados no servidor...</div>
+          <div id="reportErrorMsg" class="alert error"></div>
+          
           <ul class="sales-list" id="reportSalesList"></ul>
-          <div id="clientReportList" style="display: none;"></div>
+          <div id="clientReportList" class="client-grid" style="display: none;"></div>
         </div>
 
-        <!-- Clientes -->
         <div id="clientsArea" style="display: none;">
-          <h3 style="color:#1a3b4e;">Cadastro de Cliente</h3>
-          <div id="clientMessage" class="success"></div>
-          <div class="form-group"><label>Nome</label><input type="text" id="clientName" placeholder="Nome completo"></div>
-          <div class="form-group"><label>Telefone / WhatsApp</label><input type="tel" id="clientPhone" placeholder="(11) 91234-5678"></div>
-          <div class="form-group"><label>Endereço</label><input type="text" id="clientAddress" placeholder="Rua, número, bairro"></div>
-          <button id="saveClientBtn">💾 Salvar Cliente</button>
-          <hr style="margin: 1.5rem 0; border-color: #d0e0ef;">
-          <h3 style="color:#1a3b4e;">Clientes Cadastrados</h3>
-          <div id="clientsList"></div>
-          <div id="clientHistory" class="client-history" style="display: none;">
-            <h4 id="historyClientName" style="color:#006b8f;"></h4>
-            <p id="historyClientInfo" style="font-size:0.9rem; color:#4a6275;"></p>
-            <h4 style="margin-top:1rem;">Histórico de Compras</h4>
+          <div style="background: var(--card-bg); padding: 1.5rem; border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 2rem;">
+            <h3>Cadastrar Novo Cliente</h3>
+            <div id="clientMessage" class="alert success"></div>
+            <div class="form-group"><label>Nome Completo</label><input type="text" id="clientName" placeholder="Ex: Ana Silva"></div>
+            <div class="flex-row">
+              <div class="form-group" style="margin-bottom:0;"><label>WhatsApp</label><input type="tel" id="clientPhone" placeholder="(11) 99999-9999"></div>
+              <div class="form-group" style="margin-bottom:0;"><label>CEP / Endereço</label><input type="text" id="clientAddress" placeholder="Rua, Número, Bairro"></div>
+            </div>
+            <button id="saveClientBtn" class="btn-primary" style="width: auto; margin-top: 1rem;">💾 Salvar Cadastro</button>
+          </div>
+
+          <h3>Lista de Clientes</h3>
+          <div id="clientsList" class="client-grid"></div>
+
+          <div id="clientHistory" style="display: none; margin-top: 2rem; background: var(--card-bg); padding: 1.5rem; border-radius: var(--radius); border: 1px solid var(--border);">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 1rem;">
+              <div>
+                <h3 id="historyClientName" style="color: var(--primary); margin:0;">Nome</h3>
+                <p id="historyClientInfo" style="color: var(--text-light); font-size: 0.9rem; margin-top:0.3rem;"></p>
+              </div>
+              <button class="btn-secondary" style="width: auto; padding: 0.5rem 1rem;" onclick="document.getElementById('clientHistory').style.display='none'">Fechar X</button>
+            </div>
+            <h4>Histórico de Compras</h4>
             <ul class="sales-list" id="historySalesList"></ul>
-            <button class="small secondary" onclick="document.getElementById('clientHistory').style.display='none'">Fechar</button>
           </div>
         </div>
       </div>
 
-      <!-- Live Ativa -->
-      <div id="livePanel" style="display: none;">
+      <div id="livePanel" class="live-panel-container" style="display: none;">
         <div class="live-header">
-          <h2 id="activeLiveName">Live Ativa</h2>
-          <button class="small secondary" id="endLiveReportBtn">✕ Encerrar e Gerar Relatório</button>
+          <div>
+            <span style="background: #fce7f3; color: #be185d; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.5rem; display: inline-block;">🔴 AO VIVO</span>
+            <h2 id="activeLiveName">Nome da Live</h2>
+          </div>
+          <button class="btn-danger" id="endLiveReportBtn" style="width: auto;">⏹ Finalizar Live</button>
         </div>
-        <div id="liveMessage" class="success"></div>
+        
+        <div id="liveMessage" class="alert success"></div>
         <datalist id="clientNamesList"></datalist>
-        <div class="form-group"><label>Código da Peça</label><input type="text" id="saleCode" placeholder="Ex: VST001"></div>
-        <div class="form-group"><label>Valor (R$)</label><input type="number" id="saleValue" step="0.01" placeholder="79.90"></div>
-        <div class="form-group"><label>👤 Cliente Principal</label><input type="text" id="client1" list="clientNamesList" placeholder="Nome completo"></div>
-        <div class="form-group"><label>👤 2ª Opção</label><input type="text" id="client2" list="clientNamesList" placeholder="Opcional"></div>
-        <div class="form-group"><label>👤 3ª Opção</label><input type="text" id="client3" list="clientNamesList" placeholder="Opcional"></div>
-        <button id="registerSaleBtn">✨ Registrar Venda</button>
+        
+        <div style="background: white; padding: 1.5rem; border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 2rem;">
+          <h3 style="font-size: 1.1rem; margin-bottom: 1rem;">Registrar Peça Vendida</h3>
+          <div class="flex-row">
+            <div class="form-group"><label>Código da Peça</label><input type="text" id="saleCode" placeholder="Ex: BL01"></div>
+            <div class="form-group"><label>Valor (R$)</label><input type="number" id="saleValue" step="0.01" placeholder="Ex: 49.90"></div>
+          </div>
+          <div class="form-group"><label>👤 Cliente Principal (Comprador)</label><input type="text" id="client1" list="clientNamesList" placeholder="Digite o nome para buscar..."></div>
+          
+          <details style="margin-bottom: 1rem;">
+            <summary style="cursor: pointer; color: var(--text-light); font-size: 0.9rem; font-weight: 500;">Mostrar Fila de Espera (Opcional)</summary>
+            <div style="padding-top: 1rem; border-top: 1px dashed var(--border); margin-top: 0.5rem;">
+              <div class="form-group"><label>👤 2ª Opção (Fila)</label><input type="text" id="client2" list="clientNamesList"></div>
+              <div class="form-group"><label>👤 3ª Opção (Fila)</label><input type="text" id="client3" list="clientNamesList"></div>
+            </div>
+          </details>
+          
+          <button id="registerSaleBtn" class="btn-primary" style="background: #10b981;">➕ Adicionar Venda</button>
+        </div>
+
         <div class="live-sales-list">
-          <h4 style="color:#1a3b4e;">Vendas desta live</h4>
+          <h4 style="margin-bottom: 1rem; color: var(--text-dark);">Últimas Vendas Desta Live</h4>
           <ul class="sales-list" id="liveSalesList"></ul>
         </div>
       </div>
@@ -369,6 +373,7 @@
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, where, getDocs, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+    // MANTIVE SUAS CREDENCIAIS EXATAMENTE IGUAIS
     const firebaseConfig = {
       apiKey: "AIzaSyBLfJR31G2DKV38E4x6HFR-bY3tnH3Yrso",
       authDomain: "brecho-45532.firebaseapp.com",
@@ -391,7 +396,9 @@
     let currentReportMode = 'general';
     let currentReportSales = [];
 
-    // UI Helpers
+    // --- Helpers Utilitários ---
+    const formatMoney = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+    
     function showScreen(id) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.getElementById(id).classList.add('active');
@@ -401,9 +408,11 @@
       document.getElementById('summaryArea').style.display = tab === 'summary' ? 'block' : 'none';
       document.getElementById('reportsArea').style.display = tab === 'reports' ? 'block' : 'none';
       document.getElementById('clientsArea').style.display = tab === 'clients' ? 'block' : 'none';
+      
       document.getElementById('tabSummary').classList.toggle('active', tab === 'summary');
       document.getElementById('tabReports').classList.toggle('active', tab === 'reports');
       document.getElementById('tabClients').classList.toggle('active', tab === 'clients');
+      
       if (tab === 'reports') loadReportsLiveSelector();
       if (tab === 'clients') loadClientsList();
     }
@@ -412,21 +421,10 @@
       const el = document.getElementById(id);
       if (!el) return;
       el.textContent = msg;
-      el.className = type;
+      el.className = `alert ${type}`;
       el.style.display = 'block';
       clearTimeout(el._timeout);
-      el._timeout = setTimeout(() => { el.style.display = 'none'; }, 4000);
-    }
-
-    function getErrorMessage(code) {
-      switch (code) {
-        case 'auth/email-already-in-use': return 'Este email já está cadastrado.';
-        case 'auth/invalid-email': return 'Email inválido.';
-        case 'auth/weak-password': return 'Senha muito fraca (mín. 6).';
-        case 'auth/user-not-found': return 'Usuário não encontrado.';
-        case 'auth/wrong-password': return 'Senha incorreta.';
-        default: return 'Erro: ' + code;
-      }
+      el._timeout = setTimeout(() => { el.style.display = 'none'; }, 5000);
     }
 
     function getTodayString() {
@@ -434,13 +432,13 @@
       return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     }
 
-    // Auth
+    // --- Autenticação ---
     async function login() {
       const email = document.getElementById('loginEmail').value.trim();
       const pass = document.getElementById('loginPassword').value;
       if (!email || !pass) return showMessage('loginError', 'Preencha todos os campos.', 'error');
       try { await signInWithEmailAndPassword(auth, email, pass); }
-      catch (e) { showMessage('loginError', getErrorMessage(e.code), 'error'); }
+      catch (e) { showMessage('loginError', 'Erro ao logar. Verifique email e senha.', 'error'); }
     }
 
     async function register() {
@@ -449,55 +447,79 @@
       const confirm = document.getElementById('regConfirmPassword').value;
       const storeName = document.getElementById('regStoreName').value.trim();
       const phone = document.getElementById('regPhone').value.trim();
-      if (!email || !pass || !confirm || !storeName) return showMessage('registerError', 'Preencha todos os campos.', 'error');
-      if (pass !== confirm) return showMessage('registerError', 'Senhas não conferem.', 'error');
-      if (pass.length < 6) return showMessage('registerError', 'Senha muito curta.', 'error');
+      if (!email || !pass || !confirm || !storeName) return showMessage('registerError', 'Preencha todos os campos obrigatórios.', 'error');
+      if (pass !== confirm) return showMessage('registerError', 'As senhas não conferem.', 'error');
+      if (pass.length < 6) return showMessage('registerError', 'A senha precisa ter pelo menos 6 caracteres.', 'error');
+      
       try {
         const cred = await createUserWithEmailAndPassword(auth, email, pass);
         await setDoc(doc(db, 'stores', cred.user.uid), { email, storeName, phone, createdAt: new Date().toISOString() });
-      } catch (e) { showMessage('registerError', getErrorMessage(e.code), 'error'); }
+      } catch (e) { showMessage('registerError', 'Erro ao criar conta: ' + e.message, 'error'); }
     }
 
     async function logout() { await signOut(auth); }
 
-    // Resumo diário
+    // --- Dashboard & Buscas (COM CORREÇÃO DE ÍNDICES) ---
     async function loadDailySummary(dateStr) {
       if (!currentUser) return;
-      const salesQ = query(collection(db, 'sales'), where('storeId', '==', currentUser.uid), where('date', '==', dateStr));
-      const salesSnap = await getDocs(salesQ).catch(() => null);
-      let totalSales = 0, totalItems = 0;
-      if (salesSnap) {
-        totalItems = salesSnap.size;
+      try {
+        const salesQ = query(collection(db, 'sales'), where('storeId', '==', currentUser.uid), where('date', '==', dateStr));
+        const salesSnap = await getDocs(salesQ);
+        let totalSales = 0, totalItems = salesSnap.size;
         salesSnap.forEach(d => totalSales += d.data().value);
-      }
-      document.getElementById('dailySales').textContent = totalSales.toFixed(2);
-      document.getElementById('dailyItems').textContent = totalItems;
+        
+        document.getElementById('dailySales').textContent = formatMoney(totalSales);
+        document.getElementById('dailyItems').textContent = totalItems;
 
-      const livesQ = query(collection(db, 'lives'), where('storeId', '==', currentUser.uid), where('date', '==', dateStr));
-      const livesSnap = await getDocs(livesQ).catch(() => null);
-      document.getElementById('dailyLives').textContent = livesSnap ? livesSnap.size : 0;
+        const livesQ = query(collection(db, 'lives'), where('storeId', '==', currentUser.uid), where('date', '==', dateStr));
+        const livesSnap = await getDocs(livesQ);
+        document.getElementById('dailyLives').textContent = livesSnap.size;
+        document.getElementById('indexWarningArea').style.display = 'none';
+      } catch (e) {
+        console.error("Erro no resumo:", e);
+      }
     }
 
+    // AQUI ESTAVA O SEU PRINCIPAL BUG! 
     async function loadAllLivesList() {
       if (!currentUser) return;
-      const q = query(collection(db, 'lives'), where('storeId', '==', currentUser.uid), orderBy('createdAt', 'desc'));
-      const snap = await getDocs(q).catch(() => null);
       allLivesList = [];
-      if (snap) snap.forEach(d => allLivesList.push({ id: d.id, ...d.data() }));
+      try {
+        const q = query(collection(db, 'lives'), where('storeId', '==', currentUser.uid), orderBy('createdAt', 'desc'));
+        const snap = await getDocs(q);
+        snap.forEach(d => allLivesList.push({ id: d.id, ...d.data() }));
+        document.getElementById('indexWarningArea').style.display = 'none';
+      } catch (e) {
+        console.error("Erro crítico ao carregar as lives:", e);
+        if(e.message.includes('index')) {
+          const warningBox = document.getElementById('indexWarningArea');
+          warningBox.innerHTML = `
+            <div class="alert warning">
+              <strong>Atenção! O Banco de Dados precisa ser configurado.</strong><br>
+              O Firebase exige a criação de um "Índice" para listar suas lives. <br><br>
+              1. Pressione <b>F12</b> no seu teclado para abrir o console do navegador.<br>
+              2. Procure pela mensagem de erro vermelha.<br>
+              3. Clique no link azul que o Firebase fornece lá. Ele vai criar a configuração automaticamente para você.<br>
+              4. Após criar, espere uns 2 minutos e recarregue a página.
+            </div>`;
+          warningBox.style.display = 'block';
+        }
+      }
     }
 
     function loadReportsLiveSelector() {
       const select = document.getElementById('reportLiveSelect');
-      select.innerHTML = allLivesList.map(l => `<option value="${l.id}">${l.name} (${l.date})</option>`).join('');
-      if (allLivesList.length > 0) {
-        select.value = allLivesList[0].id;
-        loadReportForLive(allLivesList[0].id);
-      } else {
-        select.innerHTML = '<option value="">Nenhuma live</option>';
-        document.getElementById('reportSalesList').innerHTML = '<li style="justify-content:center;">Nenhuma live encontrada.</li>';
+      if (allLivesList.length === 0) {
+        select.innerHTML = '<option value="">Nenhuma live encontrada (ou erro de índice, leia o aviso inicial)</option>';
+        document.getElementById('reportSalesList').innerHTML = '<li>Nenhuma live disponível para relatório.</li>';
         document.getElementById('clientReportList').innerHTML = '';
         document.getElementById('reportSummary').style.display = 'none';
+        return;
       }
+      
+      select.innerHTML = allLivesList.map(l => `<option value="${l.id}">${l.name} (${l.date})</option>`).join('');
+      select.value = allLivesList[0].id;
+      loadReportForLive(allLivesList[0].id);
     }
 
     async function loadReportForLive(liveId) {
@@ -506,54 +528,45 @@
       const summaryEl = document.getElementById('reportSummary');
       const loadingEl = document.getElementById('reportLoading');
       const errorEl = document.getElementById('reportErrorMsg');
+      
       errorEl.style.display = 'none';
       loadingEl.style.display = 'block';
       summaryEl.style.display = 'none';
       listEl.innerHTML = '';
       clientReportEl.innerHTML = '';
-      clientReportEl.style.display = 'none';
-      listEl.style.display = 'block';
 
-      if (!currentUser) { loadingEl.style.display = 'none'; return; }
-
-      const q = query(
-        collection(db, 'sales'),
-        where('liveId', '==', liveId),
-        where('storeId', '==', currentUser.uid),
-        orderBy('createdAt', 'asc')
-      );
+      if (!currentUser) return;
 
       try {
+        const q = query(collection(db, 'sales'), where('liveId', '==', liveId), where('storeId', '==', currentUser.uid), orderBy('createdAt', 'asc'));
         const snap = await getDocs(q);
+        
         currentReportSales = [];
         snap.forEach(d => currentReportSales.push({ id: d.id, ...d.data() }));
         loadingEl.style.display = 'none';
 
         if (currentReportSales.length === 0) {
-          listEl.innerHTML = '<li style="justify-content:center;">Nenhuma venda nesta live.</li>';
+          listEl.innerHTML = '<li>Nenhuma venda registrada nesta live.</li>';
+          listEl.style.display = 'block';
+          clientReportEl.style.display = 'none';
           return;
         }
 
-        let totalVal = 0;
-        currentReportSales.forEach(s => totalVal += s.value);
+        let totalVal = currentReportSales.reduce((sum, sale) => sum + sale.value, 0);
         document.getElementById('totalItems').textContent = currentReportSales.length;
-        document.getElementById('totalValue').textContent = totalVal.toFixed(2);
+        document.getElementById('totalValue').textContent = formatMoney(totalVal);
         summaryEl.style.display = 'flex';
 
-        if (currentReportMode === 'general') {
-          renderGeneralReport();
-        } else {
-          renderClientReport();
-        }
+        currentReportMode === 'general' ? renderGeneralReport() : renderClientReport();
       } catch (e) {
         loadingEl.style.display = 'none';
-        if (e.code === 'failed-precondition') {
-          errorEl.innerHTML = '⚠️ Índice necessário no Firestore. Crie um índice composto para a coleção "sales" com os campos: liveId (ASC), storeId (ASC), createdAt (ASC). Após a criação, recarregue a página.';
-          errorEl.style.display = 'block';
+        console.error("Erro no relatório:", e);
+        if (e.message.includes('index')) {
+          errorEl.innerHTML = `<strong>Falta Índice de Vendas!</strong> Abra o painel F12, ache o erro e clique no link para gerar o índice composto para "sales".`;
         } else {
-          errorEl.textContent = 'Erro: ' + e.message;
-          errorEl.style.display = 'block';
+          errorEl.textContent = 'Erro ao carregar: ' + e.message;
         }
+        errorEl.style.display = 'block';
       }
     }
 
@@ -561,133 +574,132 @@
       const listEl = document.getElementById('reportSalesList');
       listEl.style.display = 'block';
       document.getElementById('clientReportList').style.display = 'none';
-      listEl.innerHTML = '';
-      currentReportSales.forEach(sale => {
-        const li = document.createElement('li');
-        li.innerHTML = `<span>${sale.code} - ${sale.clientQueue[0]}</span> <span>R$ ${sale.value.toFixed(2)}</span>`;
-        listEl.appendChild(li);
-      });
+      listEl.innerHTML = currentReportSales.map(sale => `
+        <li>
+          <div><strong>${sale.code}</strong> - Cliente: ${sale.clientQueue[0]}</div>
+          <div style="font-weight: 600; color: var(--success);">${formatMoney(sale.value)}</div>
+        </li>
+      `).join('');
     }
 
+    // --- NOVA FUNÇÃO PARA EXPORTAR PARA O WHATSAPP ---
     function renderClientReport() {
-      const listEl = document.getElementById('reportSalesList');
-      listEl.style.display = 'none';
+      document.getElementById('reportSalesList').style.display = 'none';
       const clientContainer = document.getElementById('clientReportList');
-      clientContainer.style.display = 'block';
+      clientContainer.style.display = 'grid';
       clientContainer.innerHTML = '';
 
       const clientMap = new Map();
       currentReportSales.forEach(sale => {
         const buyer = sale.clientQueue[0];
-        if (!clientMap.has(buyer)) {
-          clientMap.set(buyer, { name: buyer, total: 0, items: [] });
-        }
+        if (!clientMap.has(buyer)) clientMap.set(buyer, { name: buyer, total: 0, items: [] });
         const entry = clientMap.get(buyer);
         entry.total += sale.value;
         entry.items.push(sale.code);
       });
 
-      if (clientMap.size === 0) {
-        clientContainer.innerHTML = '<p style="color:#4a6275;">Nenhum cliente encontrado.</p>';
-        return;
-      }
-
       for (const [name, data] of clientMap) {
+        // Tenta achar o cliente no banco para pegar o telefone
+        const clientDbData = allClients.find(c => c.name.toLowerCase() === name.toLowerCase());
+        const phone = clientDbData ? clientDbData.phone : null;
+        
+        let zapButton = '';
+        if (phone) {
+          const msg = encodeURIComponent(`Olá ${name}! Passando para enviar o resumo das suas peças garantidas na nossa live:\n\nPeças: ${data.items.join(', ')}\n*Total: ${formatMoney(data.total)}*\n\nComo você prefere fazer o acerto?`);
+          const num = phone.replace(/\D/g, '');
+          zapButton = `<a href="https://wa.me/55${num}?text=${msg}" target="_blank" style="text-decoration:none;"><button class="btn-whatsapp">📲 Enviar Cobrança no Whats</button></a>`;
+        }
+
         const card = document.createElement('div');
         card.className = 'client-card';
         card.innerHTML = `
-          <h4>${name}</h4>
-          <p>Peças: ${data.items.join(', ')}</p>
-          <p>Total: R$ ${data.total.toFixed(2)}</p>
+          <h4>👤 ${name}</h4>
+          <p><strong>Total de Peças:</strong> ${data.items.length}</p>
+          <p><strong>Códigos:</strong> ${data.items.join(', ')}</p>
+          <p style="font-size: 1.2rem; color: var(--success); font-weight: bold; margin-top: 0.5rem;">${formatMoney(data.total)}</p>
+          ${zapButton}
         `;
         clientContainer.appendChild(card);
       }
     }
 
-    document.getElementById('reportLiveSelect').addEventListener('change', (e) => {
-      if (e.target.value) loadReportForLive(e.target.value);
-    });
-
+    // Troca de modo de Relatório
     document.getElementById('modeGeneralBtn').addEventListener('click', () => {
       currentReportMode = 'general';
-      document.getElementById('modeGeneralBtn').classList.add('active');
-      document.getElementById('modeGeneralBtn').classList.remove('secondary');
-      document.getElementById('modeByClientBtn').classList.remove('active');
-      document.getElementById('modeByClientBtn').classList.add('secondary');
+      document.getElementById('modeGeneralBtn').className = 'btn-primary';
+      document.getElementById('modeByClientBtn').className = 'btn-secondary';
       if (currentReportSales.length > 0) renderGeneralReport();
     });
 
     document.getElementById('modeByClientBtn').addEventListener('click', () => {
       currentReportMode = 'byClient';
-      document.getElementById('modeByClientBtn').classList.add('active');
-      document.getElementById('modeByClientBtn').classList.remove('secondary');
-      document.getElementById('modeGeneralBtn').classList.remove('active');
-      document.getElementById('modeGeneralBtn').classList.add('secondary');
+      document.getElementById('modeByClientBtn').className = 'btn-primary';
+      document.getElementById('modeGeneralBtn').className = 'btn-secondary';
       if (currentReportSales.length > 0) renderClientReport();
     });
 
-    // Clientes
+    // --- Gestão de Clientes ---
     async function loadAllClients() {
       if (!currentUser) return;
-      const q = query(collection(db, 'clients'), where('storeId', '==', currentUser.uid), orderBy('name'));
-      const snap = await getDocs(q).catch(() => null);
-      allClients = [];
-      if (snap) snap.forEach(d => allClients.push({ id: d.id, ...d.data() }));
+      try {
+        const q = query(collection(db, 'clients'), where('storeId', '==', currentUser.uid), orderBy('name'));
+        const snap = await getDocs(q);
+        allClients = [];
+        snap.forEach(d => allClients.push({ id: d.id, ...d.data() }));
+      } catch (e) { console.error("Erro ao carregar clientes", e); }
     }
 
     async function loadClientsList() {
       await loadAllClients();
       const container = document.getElementById('clientsList');
       if (allClients.length === 0) {
-        container.innerHTML = '<p style="color:#4a6275;">Nenhum cliente cadastrado.</p>';
+        container.innerHTML = '<p style="color: var(--text-light); grid-column: 1/-1;">Nenhum cliente cadastrado no banco ainda.</p>';
         return;
       }
       container.innerHTML = allClients.map(c => `
-        <div class="client-card" data-id="${c.id}">
+        <div class="client-card" style="cursor: pointer;" data-id="${c.id}">
           <h4>${c.name}</h4>
-          <p>📞 ${c.phone || '—'} | 🏠 ${c.address || '—'}</p>
+          <p>📞 ${c.phone || 'Sem número'}</p>
+          <p>🏠 ${c.address || 'Sem endereço'}</p>
+          <div style="font-size: 0.8rem; color: var(--primary); margin-top: 0.5rem;">Clique para ver histórico →</div>
         </div>
       `).join('');
 
       document.querySelectorAll('.client-card').forEach(card => {
-        card.addEventListener('click', async () => {
-          const clientId = card.dataset.id;
-          const client = allClients.find(c => c.id === clientId);
-          if (!client) return;
-          await showClientHistory(client);
+        card.addEventListener('click', () => {
+          const client = allClients.find(c => c.id === card.dataset.id);
+          if (client) showClientHistory(client);
         });
       });
     }
 
     async function showClientHistory(client) {
       document.getElementById('historyClientName').textContent = client.name;
-      document.getElementById('historyClientInfo').textContent = `📞 ${client.phone || '—'} | 🏠 ${client.address || '—'}`;
+      document.getElementById('historyClientInfo').textContent = `WhatsApp: ${client.phone || '—'} | Endereço: ${client.address || '—'}`;
       const historyList = document.getElementById('historySalesList');
-      historyList.innerHTML = '<li>Carregando...</li>';
+      historyList.innerHTML = '<li>Carregando histórico...</li>';
       document.getElementById('clientHistory').style.display = 'block';
 
-      const q = query(
-        collection(db, 'sales'),
-        where('storeId', '==', currentUser.uid),
-        where('clientQueue', 'array-contains', client.name)
-      );
       try {
+        // Nota: array-contains não costuma precisar de índice complexo, mas se falhar é por isso
+        const q = query(collection(db, 'sales'), where('storeId', '==', currentUser.uid), where('clientQueue', 'array-contains', client.name));
         const snap = await getDocs(q);
         historyList.innerHTML = '';
         if (snap.empty) {
-          historyList.innerHTML = '<li style="justify-content:center;">Nenhuma compra encontrada.</li>';
+          historyList.innerHTML = '<li>Nenhuma compra vinculada a este nome exato.</li>';
           return;
         }
         snap.forEach(doc => {
           const sale = doc.data();
           const isBuyer = sale.clientQueue[0] === client.name;
-          const li = document.createElement('li');
-          li.innerHTML = `<span>${sale.code} (${isBuyer ? '✅ Comprador' : '⏳ Fila'})</span> <span>R$ ${sale.value.toFixed(2)}</span>`;
-          historyList.appendChild(li);
+          historyList.innerHTML += `
+            <li>
+              <span>Data: ${sale.date.split('-').reverse().join('/')} | Ref: ${sale.code} ${isBuyer ? '<strong style="color:var(--success)">(Ganhou)</strong>' : '<strong style="color:#b45309">(Fila)</strong>'}</span> 
+              <span>${formatMoney(sale.value)}</span>
+            </li>`;
         });
       } catch (e) {
-        historyList.innerHTML = '<li>Erro ao carregar histórico.</li>';
-        console.error(e);
+        historyList.innerHTML = `<li>Erro ao carregar (Pode faltar índice): ${e.message}</li>`;
       }
     }
 
@@ -695,36 +707,24 @@
       const name = document.getElementById('clientName').value.trim();
       const phone = document.getElementById('clientPhone').value.trim();
       const address = document.getElementById('clientAddress').value.trim();
-      if (!name) return showMessage('clientMessage', 'Informe o nome.', 'error');
+      if (!name) return showMessage('clientMessage', 'O Nome é obrigatório.', 'error');
+      
       try {
-        await addDoc(collection(db, 'clients'), {
-          storeId: currentUser.uid,
-          name, phone, address,
-          createdAt: serverTimestamp()
-        });
-        showMessage('clientMessage', 'Cliente salvo!');
+        await addDoc(collection(db, 'clients'), { storeId: currentUser.uid, name, phone, address, createdAt: serverTimestamp() });
+        showMessage('clientMessage', 'Cliente salvo com sucesso!');
         document.getElementById('clientName').value = '';
         document.getElementById('clientPhone').value = '';
         document.getElementById('clientAddress').value = '';
         await loadAllClients();
         loadClientsList();
         updateClientDatalist();
-      } catch (e) {
-        showMessage('clientMessage', 'Erro: ' + e.message, 'error');
-      }
+      } catch (e) { showMessage('clientMessage', 'Erro: ' + e.message, 'error'); }
     }
 
     async function updateClientDatalist() {
       const datalist = document.getElementById('clientNamesList');
       const namesSet = new Set();
       allClients.forEach(c => namesSet.add(c.name));
-      if (currentUser) {
-        const salesSnap = await getDocs(query(collection(db, 'sales'), where('storeId', '==', currentUser.uid)));
-        salesSnap.forEach(doc => {
-          const queue = doc.data().clientQueue;
-          if (queue) queue.forEach(n => namesSet.add(n));
-        });
-      }
       datalist.innerHTML = '';
       namesSet.forEach(name => {
         const option = document.createElement('option');
@@ -733,52 +733,54 @@
       });
     }
 
-    // Live ativa
+    // --- Operação da Live ---
     async function startNewLive() {
-      const name = prompt('Nome da live (ex: Live de Verão):');
+      const name = prompt('Qual o nome desta Live? (ex: Saldão de Inverno)');
       if (!name) return;
       const dateStr = getTodayString();
       try {
-        const docRef = await addDoc(collection(db, 'lives'), {
-          storeId: currentUser.uid, name, date: dateStr, createdAt: serverTimestamp()
-        });
+        const docRef = await addDoc(collection(db, 'lives'), { storeId: currentUser.uid, name, date: dateStr, createdAt: serverTimestamp() });
         activeLiveId = docRef.id;
         activeLiveData = { name, date: dateStr };
+        
         document.getElementById('activeLiveName').textContent = name;
         document.getElementById('mainPanel').style.display = 'none';
         document.getElementById('livePanel').style.display = 'block';
-        clearLiveForm();
+        
+        document.getElementById('saleCode').value = '';
+        document.getElementById('saleValue').value = '';
+        document.getElementById('client1').value = '';
+        document.getElementById('client2').value = '';
+        document.getElementById('client3').value = '';
+        
         loadActiveLiveSales();
         await updateClientDatalist();
-      } catch (e) { alert('Erro: ' + e.message); }
+      } catch (e) { alert('Erro ao iniciar: ' + e.message); }
     }
 
     async function endLiveAndReport() {
       if (!activeLiveId) return;
+      const confirmEnd = confirm("Tem certeza que deseja encerrar esta live?");
+      if (!confirmEnd) return;
+
       const liveIdToReport = activeLiveId;
       activeLiveId = null;
       activeLiveData = null;
+      
       document.getElementById('mainPanel').style.display = 'block';
       document.getElementById('livePanel').style.display = 'none';
+      
       await loadAllLivesList();
-      const selectedDate = document.getElementById('summaryDate').value;
-      if (selectedDate) loadDailySummary(selectedDate);
+      loadDailySummary(document.getElementById('summaryDate').value);
       switchDashboardTab('reports');
+      
       setTimeout(() => {
         const select = document.getElementById('reportLiveSelect');
-        if (select && select.querySelector(`option[value="${liveIdToReport}"]`)) {
+        if (select) {
           select.value = liveIdToReport;
           loadReportForLive(liveIdToReport);
         }
-      }, 100);
-    }
-
-    function clearLiveForm() {
-      document.getElementById('saleCode').value = '';
-      document.getElementById('saleValue').value = '';
-      document.getElementById('client1').value = '';
-      document.getElementById('client2').value = '';
-      document.getElementById('client3').value = '';
+      }, 300);
     }
 
     async function registerSaleInActiveLive() {
@@ -789,20 +791,26 @@
       const c2 = document.getElementById('client2').value.trim();
       const c3 = document.getElementById('client3').value.trim();
 
-      if (!code || isNaN(value) || !c1) return showMessage('liveMessage', 'Preencha código, valor e cliente principal.', 'error');
+      if (!code || isNaN(value) || !c1) return showMessage('liveMessage', 'Preencha código, valor e cliente.', 'error');
+      
       const queue = [c1];
       if (c2) queue.push(c2);
       if (c3) queue.push(c3);
+      
       try {
         await addDoc(collection(db, 'sales'), {
           liveId: activeLiveId, storeId: currentUser.uid, code, value,
-          clientQueue: queue, currentClientIndex: 0,
-          date: activeLiveData.date, createdAt: serverTimestamp()
+          clientQueue: queue, currentClientIndex: 0, date: activeLiveData.date, createdAt: serverTimestamp()
         });
-        showMessage('liveMessage', 'Venda registrada!');
-        clearLiveForm();
+        
+        showMessage('liveMessage', `Peça ${code} vendida para ${c1}!`);
+        document.getElementById('saleCode').value = '';
+        document.getElementById('client1').value = '';
+        document.getElementById('client2').value = '';
+        document.getElementById('client3').value = '';
+        document.getElementById('saleCode').focus();
+        
         loadActiveLiveSales();
-        await updateClientDatalist();
       } catch (e) { showMessage('liveMessage', 'Erro: ' + e.message, 'error'); }
     }
 
@@ -810,17 +818,19 @@
       const listEl = document.getElementById('liveSalesList');
       listEl.innerHTML = '';
       if (!activeLiveId) return;
-      const q = query(collection(db, 'sales'), where('liveId', '==', activeLiveId), where('storeId', '==', currentUser.uid), orderBy('createdAt', 'asc'));
-      const snap = await getDocs(q).catch(() => null);
-      if (snap) snap.forEach(doc => {
-        const s = doc.data();
-        const li = document.createElement('li');
-        li.innerHTML = `<span>${s.code} (${s.clientQueue[0]})</span> <span>R$ ${s.value.toFixed(2)}</span>`;
-        listEl.appendChild(li);
-      });
+      try {
+        const q = query(collection(db, 'sales'), where('liveId', '==', activeLiveId), where('storeId', '==', currentUser.uid), orderBy('createdAt', 'desc'));
+        const snap = await getDocs(q);
+        snap.forEach(doc => {
+          const s = doc.data();
+          listEl.innerHTML += `<li><span><strong>${s.code}</strong> (Vendido para: ${s.clientQueue[0]})</span> <span style="color: var(--success); font-weight:bold;">${formatMoney(s.value)}</span></li>`;
+        });
+      } catch(e) {
+        console.error(e);
+      }
     }
 
-    // Eventos
+    // --- Listeners de Eventos ---
     document.getElementById('loginBtn').addEventListener('click', login);
     document.getElementById('registerBtn').addEventListener('click', register);
     document.getElementById('logoutBtn').addEventListener('click', logout);
@@ -833,21 +843,28 @@
     document.getElementById('endLiveReportBtn').addEventListener('click', endLiveAndReport);
     document.getElementById('registerSaleBtn').addEventListener('click', registerSaleInActiveLive);
     document.getElementById('saveClientBtn').addEventListener('click', saveClient);
+    
     document.getElementById('summaryDate').addEventListener('change', (e) => {
       if (e.target.value) loadDailySummary(e.target.value);
+    });
+    document.getElementById('reportLiveSelect').addEventListener('change', (e) => {
+      if (e.target.value) loadReportForLive(e.target.value);
     });
 
     document.getElementById('summaryDate').value = getTodayString();
 
+    // Início de Sessão
     onAuthStateChanged(auth, async (user) => {
       currentUser = user;
       if (user) {
         const snap = await getDoc(doc(db, 'stores', user.uid));
-        storeData = snap.exists() ? snap.data() : { storeName: 'Loja' };
-        document.getElementById('storeNameDisplay').textContent = storeData.storeName || 'Loja';
+        storeData = snap.exists() ? snap.data() : { storeName: 'Minha Loja' };
+        document.getElementById('storeNameDisplay').textContent = storeData.storeName || 'Minha Loja';
+        
         await Promise.all([loadAllLivesList(), loadAllClients()]);
         await loadDailySummary(getTodayString());
         await updateClientDatalist();
+        
         showScreen('dashboardScreen');
         document.getElementById('mainPanel').style.display = 'block';
         document.getElementById('livePanel').style.display = 'none';
@@ -860,31 +877,6 @@
       }
     });
 
-    console.log('✅ Sistema pronto. Verifique as regras do Firestore e crie os índices necessários.');
   </script>
-
-  <!-- ═══════════════════════ REGRAS DO FIRESTORE (cole no console) ═══════════════════════ -->
-  <!--
-  rules_version = '2';
-  service cloud.firestore {
-    match /databases/{database}/documents {
-      match /stores/{uid} {
-        allow read, write: if request.auth != null && request.auth.uid == uid;
-      }
-      match /lives/{liveId} {
-        allow read, update, delete: if request.auth != null && request.auth.uid == resource.data.storeId;
-        allow create: if request.auth != null && request.auth.uid == request.resource.data.storeId;
-      }
-      match /sales/{saleId} {
-        allow read, update, delete: if request.auth != null && request.auth.uid == resource.data.storeId;
-        allow create: if request.auth != null && request.auth.uid == request.resource.data.storeId;
-      }
-      match /clients/{clientId} {
-        allow read, update, delete: if request.auth != null && request.auth.uid == resource.data.storeId;
-        allow create: if request.auth != null && request.auth.uid == request.resource.data.storeId;
-      }
-    }
-  }
-  -->
 </body>
 </html>
