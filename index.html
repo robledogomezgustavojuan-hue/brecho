@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brechó Inteligente • Lives</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at top, #fce4ec, #f8bbd0);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    #app {
+      width: 100%;
+      max-width: 500px;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 3rem;
+      padding: 2rem 1.8rem;
+      box-shadow: 0 25px 50px -12px rgba(194, 24, 91, 0.25);
+      border: 1px solid rgba(255,255,255,0.5);
+    }
+    .screen { display: none; }
+    .screen.active { display: block; animation: slideUp 0.35s ease; }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ad1457, #d81b60);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    .form-group { margin-bottom: 1.2rem; }
+    label {
+      display: block;
+      margin-bottom: 0.3rem;
+      font-weight: 600;
+      color: #880e4f;
+      font-size: 0.85rem;
+      letter-spacing: 0.3px;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      border: none;
+      border-radius: 1.2rem;
+      font-size: 0.95rem;
+      font-family: inherit;
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(236,64,122,0.15);
+      transition: all 0.2s;
+      color: #4a0024;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #ec407a;
+      box-shadow: 0 0 0 4px rgba(236,64,122,0.15);
+      background: white;
+    }
+    button {
+      background: #d81b60;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      margin-top: 0.5rem;
+      letter-spacing: 0.5px;
+      transition: 0.25s;
+    }
+    button:hover { background: #c2185b; transform: translateY(-1px); }
+    button.secondary {
+      background: rgba(236,64,122,0.1);
+      color: #ad1457;
+      border: 1px solid #f48fb1;
+    }
+    button.secondary:hover { background: #fce4ec; }
+    button.small {
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+      width: auto;
+      white-space: nowrap;
+    }
+    .link {
+      text-align: center;
+      margin-top: 1rem;
+      color: #c2185b;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .link:hover { text-decoration: underline; }
+    .error, .success {
+      padding: 0.8rem;
+      border-radius: 1rem;
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      display: none;
+    }
+    .error { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
+    .success { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.8rem;
+    }
+    .store-name {
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: #4a0024;
+      background: rgba(236,64,122,0.08);
+      padding: 0.5rem 1.2rem;
+      border-radius: 2rem;
+    }
+    .btn-logout {
+      background: rgba(236,64,122,0.1);
+      color: #ad1457;
+      padding: 0.3rem 0.8rem;
+      border-radius: 2rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      font-size: 0.75rem;
+      line-height: 1;
+    }
+    .date-selector { margin-bottom: 1.5rem; }
+    .tab-bar {
+      display: flex;
+      gap: 0.3rem;
+      margin-bottom: 1.5rem;
+      background: rgba(255,255,255,0.5);
+      backdrop-filter: blur(10px);
+      border-radius: 2rem;
+      padding: 0.4rem;
+    }
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 0.6rem 0.3rem;
+      border-radius: 2rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: #880e4f;
+      transition: 0.2s;
+      border: none;
+      background: transparent;
+      font-size: 0.8rem;
+    }
+    .tab.active {
+      background: white;
+      box-shadow: 0 5px 15px rgba(236,64,122,0.2);
+      color: #d81b60;
+    }
+    .summary-cards {
+      display: flex;
+      gap: 0.8rem;
+      margin-bottom: 1.5rem;
+    }
+    .summary-card {
+      flex: 1;
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(5px);
+      border-radius: 1.2rem;
+      padding: 1rem;
+      text-align: center;
+      border: 1px solid rgba(236,64,122,0.15);
+    }
+    .summary-card .value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #d81b60;
+    }
+    .summary-card .label {
+      font-size: 0.75rem;
+      color: #ad1457;
+      margin-top: 0.2rem;
+    }
+    .btn-start-live {
+      background: linear-gradient(135deg, #ec407a, #d81b60);
+      box-shadow: 0 8px 20px rgba(236,64,122,0.3);
+      font-size: 1.1rem;
+      padding: 1rem;
+      margin: 0.5rem 0;
+    }
+    .live-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .live-header h2 { color: #ad1457; font-size: 1.3rem; }
+    .sales-list { list-style: none; margin-top: 1rem; }
+    .sales-list li {
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(5px);
+      border-radius: 1.2rem;
+      padding: 0.7rem 1rem;
+      margin-bottom: 0.5rem;
+      border: 1px solid rgba(236,64,122,0.1);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      align-items: center;
+    }
+    .live-sales-list { max-height: 200px; overflow-y: auto; margin: 1rem 0; }
+    #reportsArea select { margin-bottom: 1rem; }
+    .client-card {
+      background: rgba(255,255,255,0.8);
+      border-radius: 1rem;
+      padding: 1rem;
+      margin-bottom: 0.8rem;
+      border: 1px solid rgba(236,64,122,0.2);
+    }
+    .client-card h4 { color: #ad1457; }
+    .client-card p { font-size: 0.85rem; color: #4a0024; }
+    .client-history {
+      background: rgba(255,255,255,0.9);
+      border-radius: 1rem;
+      padding: 1rem;
+      margin: 1rem 0;
+      border: 1px solid rgba(236,64,122,0.3);
+    }
+    .alert-box {
+      background: #fff3e0; color: #e65100; padding: 0.8rem; border-radius: 1rem;
+      margin: 1rem 0; font-size: 0.85rem; text-align: center;
+    }
+    .mode-buttons {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .mode-buttons button { flex: 1; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <!-- Tela de Login -->
+    <div id="loginScreen" class="screen active">
+      <h1>✨ Brechó Inteligente</h1>
+      <div id="loginError" class="error"></div>
+      <div class="form-group"><label>Email</label><input type="email" id="loginEmail" placeholder="seu@email.com"></div>
+      <div class="form-group"><label>Senha</label><input type="password" id="loginPassword" placeholder="••••••"></div>
+      <button id="loginBtn">Entrar</button>
+      <div class="link" id="goToRegister">Criar conta gratuita →</div>
+    </div>
+
+    <!-- Tela de Cadastro -->
+    <div id="registerScreen" class="screen">
+      <h1>🌸 Nova Loja</h1>
+      <div id="registerError" class="error"></div>
+      <div class="form-group"><label>Email</label><input type="email" id="regEmail"></div>
+      <div class="form-group"><label>Nome da Loja</label><input type="text" id="regStoreName" placeholder="Brechó Encantado"></div>
+      <div class="form-group"><label>Telefone</label><input type="tel" id="regPhone" placeholder="(11) 91234-5678"></div>
+      <div class="form-group"><label>Senha</label><input type="password" id="regPassword" placeholder="Mín. 6 caracteres"></div>
+      <div class="form-group"><label>Confirmar Senha</label><input type="password" id="regConfirmPassword"></div>
+      <button id="registerBtn">Criar Loja</button>
+      <div class="link" id="goToLogin">← Já tenho conta</div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboardScreen" class="screen">
+      <div class="header">
+        <div class="store-name" id="storeNameDisplay">Minha Loja</div>
+        <button class="btn-logout" id="logoutBtn">Sair</button>
+      </div>
+
+      <div id="mainPanel">
+        <div class="tab-bar">
+          <div class="tab active" id="tabSummary">📋 Resumo</div>
+          <div class="tab" id="tabReports">📊 Relatórios</div>
+          <div class="tab" id="tabClients">👥 Clientes</div>
+        </div>
+
+        <!-- Resumo Diário -->
+        <div id="summaryArea">
+          <div class="date-selector">
+            <label>Data do resumo</label>
+            <input type="date" id="summaryDate">
+          </div>
+          <div class="summary-cards">
+            <div class="summary-card"><div class="value" id="dailySales">0.00</div><div class="label">Vendas (R$)</div></div>
+            <div class="summary-card"><div class="value" id="dailyItems">0</div><div class="label">Peças</div></div>
+            <div class="summary-card"><div class="value" id="dailyLives">0</div><div class="label">Lives</div></div>
+          </div>
+          <button class="btn-start-live" id="startLiveBtn">🎥 Iniciar Nova Live de Vendas</button>
+        </div>
+
+        <!-- Relatórios de Lives -->
+        <div id="reportsArea" style="display: none;">
+          <select id="reportLiveSelect"></select>
+          <div class="mode-buttons">
+            <button id="modeGeneralBtn" class="small active">📋 Geral</button>
+            <button id="modeByClientBtn" class="small secondary">👥 Por Cliente</button>
+          </div>
+          <div id="reportSummary" class="summary" style="display: none;">
+            <div>Peças: <span id="totalItems">0</span></div>
+            <div>Total: R$ <span id="totalValue">0.00</span></div>
+          </div>
+          <div id="reportLoading" class="loading" style="display: none;">Carregando...</div>
+          <div id="reportErrorMsg" class="alert-box" style="display: none;"></div>
+          <ul class="sales-list" id="reportSalesList"></ul>
+          <div id="clientReportList" style="display: none;"></div>
+        </div>
+
+        <!-- Clientes -->
+        <div id="clientsArea" style="display: none;">
+          <h3 style="color:#ad1457;">Cadastro de Cliente</h3>
+          <div id="clientMessage" class="success"></div>
+          <div class="form-group"><label>Nome</label><input type="text" id="clientName" placeholder="Nome completo"></div>
+          <div class="form-group"><label>Telefone / WhatsApp</label><input type="tel" id="clientPhone" placeholder="(11) 91234-5678"></div>
+          <div class="form-group"><label>Endereço</label><input type="text" id="clientAddress" placeholder="Rua, número, bairro"></div>
+          <button id="saveClientBtn">💾 Salvar Cliente</button>
+          <hr style="margin: 1.5rem 0; border-color: rgba(236,64,122,0.2);">
+          <h3 style="color:#ad1457;">Clientes Cadastrados</h3>
+          <div id="clientsList"></div>
+          <div id="clientHistory" class="client-history" style="display: none;">
+            <h4 id="historyClientName" style="color:#ad1457;"></h4>
+            <p id="historyClientInfo" style="font-size:0.9rem; color:#4a0024;"></p>
+            <h4 style="margin-top:1rem;">Histórico de Compras</h4>
+            <ul class="sales-list" id="historySalesList"></ul>
+            <button class="small secondary" onclick="document.getElementById('clientHistory').style.display='none'">Fechar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Ativa -->
+      <div id="livePanel" style="display: none;">
+        <div class="live-header">
+          <h2 id="activeLiveName">Live Ativa</h2>
+          <button class="small secondary" id="endLiveReportBtn">✕ Encerrar e Gerar Relatório</button>
+        </div>
+        <div id="liveMessage" class="success"></div>
+        <datalist id="clientNamesList"></datalist>
+        <div class="form-group"><label>Código da Peça</label><input type="text" id="saleCode" placeholder="Ex: VST001"></div>
+        <div class="form-group"><label>Valor (R$)</label><input type="number" id="saleValue" step="0.01" placeholder="79.90"></div>
+        <div class="form-group"><label>👤 Cliente Principal</label><input type="text" id="client1" list="clientNamesList" placeholder="Nome completo"></div>
+        <div class="form-group"><label>👤 2ª Opção</label><input type="text" id="client2" list="clientNamesList" placeholder="Opcional"></div>
+        <div class="form-group"><label>👤 3ª Opção</label><input type="text" id="client3" list="clientNamesList" placeholder="Opcional"></div>
+        <button id="registerSaleBtn">✨ Registrar Venda</button>
+        <div class="live-sales-list">
+          <h4 style="color:#ad1457;">Vendas desta live</h4>
+          <ul class="sales-list" id="liveSalesList"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, where, getDocs, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAIiJRsfYGULAx1aUa-zEqhgKjJvt6KxuI",
+      authDomain: "brechointeligente-74120.firebaseapp.com",
+      projectId: "brechointeligente-74120",
+      storageBucket: "brechointeligente-74120.firebasestorage.app",
+      messagingSenderId: "1057607602897",
+      appId: "1:1057607602897:web:a6edbab4a6aa64f78f6bf0"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentUser = null;
+    let storeData = null;
+    let activeLiveId = null;
+    let activeLiveData = null;
+    let allLivesList = [];
+    let allClients = [];
+    let currentReportMode = 'general';
+    let currentReportSales = [];
+
+    // UI helpers
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function switchDashboardTab(tab) {
+      document.getElementById('summaryArea').style.display = tab === 'summary' ? 'block' : 'none';
+      document.getElementById('reportsArea').style.display = tab === 'reports' ? 'block' : 'none';
+      document.getElementById('clientsArea').style.display = tab === 'clients' ? 'block' : 'none';
+      document.getElementById('tabSummary').classList.toggle('active', tab === 'summary');
+      document.getElementById('tabReports').classList.toggle('active', tab === 'reports');
+      document.getElementById('tabClients').classList.toggle('active', tab === 'clients');
+      if (tab === 'reports') loadReportsLiveSelector();
+      if (tab === 'clients') loadClientsList();
+    }
+
+    function showMessage(id, msg, type = 'success') {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg;
+      el.className = type;
+      el.style.display = 'block';
+      clearTimeout(el._timeout);
+      el._timeout = setTimeout(() => { el.style.display = 'none'; }, 4000);
+    }
+
+    function getErrorMessage(code) {
+      switch (code) {
+        case 'auth/email-already-in-use': return 'Este email já está cadastrado.';
+        case 'auth/invalid-email': return 'Email inválido.';
+        case 'auth/weak-password': return 'Senha muito fraca (mín. 6).';
+        case 'auth/user-not-found': return 'Usuário não encontrado.';
+        case 'auth/wrong-password': return 'Senha incorreta.';
+        default: return 'Erro: ' + code;
+      }
+    }
+
+    function getTodayString() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+
+    // Auth
+    async function login() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const pass = document.getElementById('loginPassword').value;
+      if (!email || !pass) return showMessage('loginError', 'Preencha todos os campos.', 'error');
+      try { await signInWithEmailAndPassword(auth, email, pass); }
+      catch (e) { showMessage('loginError', getErrorMessage(e.code), 'error'); }
+    }
+
+    async function register() {
+      const email = document.getElementById('regEmail').value.trim();
+      const pass = document.getElementById('regPassword').value;
+      const confirm = document.getElementById('regConfirmPassword').value;
+      const storeName = document.getElementById('regStoreName').value.trim();
+      const phone = document.getElementById('regPhone').value.trim();
+      if (!email || !pass || !confirm || !storeName) return showMessage('registerError', 'Preencha todos os campos.', 'error');
+      if (pass !== confirm) return showMessage('registerError', 'Senhas não conferem.', 'error');
+      if (pass.length < 6) return showMessage('registerError', 'Senha muito curta.', 'error');
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, email, pass);
+        await setDoc(doc(db, 'stores', cred.user.uid), { email, storeName, phone, createdAt: new Date().toISOString() });
+      } catch (e) { showMessage('registerError', getErrorMessage(e.code), 'error'); }
+    }
+
+    async function logout() { await signOut(auth); }
+
+    // Resumo diário
+    async function loadDailySummary(dateStr) {
+      if (!currentUser) return;
+      const salesQ = query(collection(db, 'sales'), where('storeId', '==', currentUser.uid), where('date', '==', dateStr));
+      const salesSnap = await getDocs(salesQ).catch(() => null);
+      let totalSales = 0, totalItems = 0;
+      if (salesSnap) {
+        totalItems = salesSnap.size;
+        salesSnap.forEach(d => totalSales += d.data().value);
+      }
+      document.getElementById('dailySales').textContent = totalSales.toFixed(2);
+      document.getElementById('dailyItems').textContent = totalItems;
+
+      const livesQ = query(collection(db, 'lives'), where('storeId', '==', currentUser.uid), where('date', '==', dateStr));
+      const livesSnap = await getDocs(livesQ).catch(() => null);
+      document.getElementById('dailyLives').textContent = livesSnap ? livesSnap.size : 0;
+    }
+
+    async function loadAllLivesList() {
+      if (!currentUser) return;
+      const q = query(collection(db, 'lives'), where('storeId', '==', currentUser.uid), orderBy('createdAt', 'desc'));
+      const snap = await getDocs(q).catch(() => null);
+      allLivesList = snap ? [] : allLivesList;
+      if (snap) snap.forEach(d => allLivesList.push({ id: d.id, ...d.data() }));
+    }
+
+    function loadReportsLiveSelector() {
+      const select = document.getElementById('reportLiveSelect');
+      select.innerHTML = allLivesList.map(l => `<option value="${l.id}">${l.name} (${l.date})</option>`).join('');
+      if (allLivesList.length > 0) {
+        select.value = allLivesList[0].id;
+        loadReportForLive(allLivesList[0].id);
+      } else {
+        select.innerHTML = '<option value="">Nenhuma live</option>';
+        document.getElementById('reportSalesList').innerHTML = '<li style="justify-content:center;">Nenhuma live encontrada.</li>';
+        document.getElementById('clientReportList').innerHTML = '';
+        document.getElementById('reportSummary').style.display = 'none';
+      }
+    }
+
+    async function loadReportForLive(liveId) {
+      const listEl = document.getElementById('reportSalesList');
+      const clientReportEl = document.getElementById('clientReportList');
+      const summaryEl = document.getElementById('reportSummary');
+      const loadingEl = document.getElementById('reportLoading');
+      const errorEl = document.getElementById('reportErrorMsg');
+      errorEl.style.display = 'none';
+      loadingEl.style.display = 'block';
+      summaryEl.style.display = 'none';
+      listEl.innerHTML = '';
+      clientReportEl.innerHTML = '';
+      clientReportEl.style.display = 'none';
+      listEl.style.display = 'block';
+
+      if (!currentUser) { loadingEl.style.display = 'none'; return; }
+
+      const q = query(
+        collection(db, 'sales'),
+        where('liveId', '==', liveId),
+        where('storeId', '==', currentUser.uid),
+        orderBy('createdAt', 'asc')
+      );
+
+      try {
+        const snap = await getDocs(q);
+        currentReportSales = [];
+        snap.forEach(d => currentReportSales.push({ id: d.id, ...d.data() }));
+        loadingEl.style.display = 'none';
+
+        if (currentReportSales.length === 0) {
+          listEl.innerHTML = '<li style="justify-content:center;">Nenhuma venda nesta live.</li>';
+          return;
+        }
+
+        let totalVal = 0;
+        currentReportSales.forEach(s => totalVal += s.value);
+        document.getElementById('totalItems').textContent = currentReportSales.length;
+        document.getElementById('totalValue').textContent = totalVal.toFixed(2);
+        summaryEl.style.display = 'flex';
+
+        if (currentReportMode === 'general') {
+          renderGeneralReport();
+        } else {
+          renderClientReport();
+        }
+      } catch (e) {
+        loadingEl.style.display = 'none';
+        if (e.code === 'failed-precondition') {
+          errorEl.innerHTML = '⚠️ Índice necessário no Firestore. Acesse o Console Firebase → Firestore → Índices e crie um índice composto para a coleção "sales" com os campos: liveId (ASC), storeId (ASC), createdAt (ASC). Depois recarregue a página.';
+          errorEl.style.display = 'block';
+        } else {
+          errorEl.textContent = 'Erro ao carregar relatório: ' + e.message;
+          errorEl.style.display = 'block';
+        }
+      }
+    }
+
+    function renderGeneralReport() {
+      const listEl = document.getElementById('reportSalesList');
+      listEl.style.display = 'block';
+      document.getElementById('clientReportList').style.display = 'none';
+      listEl.innerHTML = '';
+      currentReportSales.forEach(sale => {
+        const li = document.createElement('li');
+        li.innerHTML = `<span>${sale.code} - ${sale.clientQueue[0]}</span> <span>R$ ${sale.value.toFixed(2)}</span>`;
+        listEl.appendChild(li);
+      });
+    }
+
+    function renderClientReport() {
+      const listEl = document.getElementById('reportSalesList');
+      listEl.style.display = 'none';
+      const clientContainer = document.getElementById('clientReportList');
+      clientContainer.style.display = 'block';
+      clientContainer.innerHTML = '';
+
+      // Agrupa por cliente (primeiro da fila = comprador)
+      const clientMap = new Map();
+      currentReportSales.forEach(sale => {
+        const buyer = sale.clientQueue[0]; // primeiro cliente é o comprador
+        if (!clientMap.has(buyer)) {
+          clientMap.set(buyer, { name: buyer, total: 0, items: [] });
+        }
+        const entry = clientMap.get(buyer);
+        entry.total += sale.value;
+        entry.items.push(sale.code);
+      });
+
+      if (clientMap.size === 0) {
+        clientContainer.innerHTML = '<p style="color:#ad1457;">Nenhum cliente encontrado.</p>';
+        return;
+      }
+
+      for (const [name, data] of clientMap) {
+        const card = document.createElement('div');
+        card.className = 'client-card';
+        card.innerHTML = `
+          <h4>${name}</h4>
+          <p>Peças: ${data.items.join(', ')}</p>
+          <p>Total: R$ ${data.total.toFixed(2)}</p>
+        `;
+        clientContainer.appendChild(card);
+      }
+    }
+
+    // Eventos dos seletores e botões de modo
+    document.getElementById('reportLiveSelect').addEventListener('change', (e) => {
+      if (e.target.value) loadReportForLive(e.target.value);
+    });
+
+    document.getElementById('modeGeneralBtn').addEventListener('click', () => {
+      currentReportMode = 'general';
+      document.getElementById('modeGeneralBtn').classList.add('active');
+      document.getElementById('modeGeneralBtn').classList.remove('secondary');
+      document.getElementById('modeByClientBtn').classList.remove('active');
+      document.getElementById('modeByClientBtn').classList.add('secondary');
+      if (currentReportSales.length > 0) renderGeneralReport();
+    });
+
+    document.getElementById('modeByClientBtn').addEventListener('click', () => {
+      currentReportMode = 'byClient';
+      document.getElementById('modeByClientBtn').classList.add('active');
+      document.getElementById('modeByClientBtn').classList.remove('secondary');
+      document.getElementById('modeGeneralBtn').classList.remove('active');
+      document.getElementById('modeGeneralBtn').classList.add('secondary');
+      if (currentReportSales.length > 0) renderClientReport();
+    });
+
+    // Clientes
+    async function loadAllClients() {
+      if (!currentUser) return;
+      const q = query(collection(db, 'clients'), where('storeId', '==', currentUser.uid), orderBy('name'));
+      const snap = await getDocs(q).catch(() => null);
+      allClients = [];
+      if (snap) snap.forEach(d => allClients.push({ id: d.id, ...d.data() }));
+    }
+
+    async function loadClientsList() {
+      await loadAllClients();
+      const container = document.getElementById('clientsList');
+      if (allClients.length === 0) {
+        container.innerHTML = '<p style="color:#ad1457;">Nenhum cliente cadastrado.</p>';
+        return;
+      }
+      container.innerHTML = allClients.map(c => `
+        <div class="client-card" data-id="${c.id}">
+          <h4>${c.name}</h4>
+          <p>📞 ${c.phone || '—'} | 🏠 ${c.address || '—'}</p>
+        </div>
+      `).join('');
+
+      document.querySelectorAll('.client-card').forEach(card => {
+        card.addEventListener('click', async () => {
+          const clientId = card.dataset.id;
+          const client = allClients.find(c => c.id === clientId);
+          if (!client) return;
+          await showClientHistory(client);
+        });
+      });
+    }
+
+    async function showClientHistory(client) {
+      document.getElementById('historyClientName').textContent = client.name;
+      document.getElementById('historyClientInfo').textContent = `📞 ${client.phone || '—'} | 🏠 ${client.address || '—'}`;
+      const historyList = document.getElementById('historySalesList');
+      historyList.innerHTML = '<li>Carregando...</li>';
+      document.getElementById('clientHistory').style.display = 'block';
+
+      const q = query(
+        collection(db, 'sales'),
+        where('storeId', '==', currentUser.uid),
+        where('clientQueue', 'array-contains', client.name)
+      );
+      try {
+        const snap = await getDocs(q);
+        historyList.innerHTML = '';
+        if (snap.empty) {
+          historyList.innerHTML = '<li style="justify-content:center;">Nenhuma compra encontrada.</li>';
+          return;
+        }
+        snap.forEach(doc => {
+          const sale = doc.data();
+          const isBuyer = sale.clientQueue[0] === client.name;
+          const li = document.createElement('li');
+          li.innerHTML = `<span>${sale.code} (${isBuyer ? '✅ Comprador' : '⏳ Fila'})</span> <span>R$ ${sale.value.toFixed(2)}</span>`;
+          historyList.appendChild(li);
+        });
+      } catch (e) {
+        historyList.innerHTML = '<li>Erro ao carregar histórico.</li>';
+        console.error(e);
+      }
+    }
+
+    async function saveClient() {
+      const name = document.getElementById('clientName').value.trim();
+      const phone = document.getElementById('clientPhone').value.trim();
+      const address = document.getElementById('clientAddress').value.trim();
+      if (!name) return showMessage('clientMessage', 'Informe o nome.', 'error');
+      try {
+        await addDoc(collection(db, 'clients'), {
+          storeId: currentUser.uid,
+          name, phone, address,
+          createdAt: serverTimestamp()
+        });
+        showMessage('clientMessage', 'Cliente salvo!');
+        document.getElementById('clientName').value = '';
+        document.getElementById('clientPhone').value = '';
+        document.getElementById('clientAddress').value = '';
+        await loadAllClients();
+        loadClientsList();
+        updateClientDatalist();
+      } catch (e) {
+        showMessage('clientMessage', 'Erro: ' + e.message, 'error');
+      }
+    }
+
+    async function updateClientDatalist() {
+      const datalist = document.getElementById('clientNamesList');
+      const namesSet = new Set();
+      allClients.forEach(c => namesSet.add(c.name));
+      if (currentUser) {
+        const salesSnap = await getDocs(query(collection(db, 'sales'), where('storeId', '==', currentUser.uid)));
+        salesSnap.forEach(doc => {
+          const queue = doc.data().clientQueue;
+          if (queue) queue.forEach(n => namesSet.add(n));
+        });
+      }
+      datalist.innerHTML = '';
+      namesSet.forEach(name => {
+        const option = document.createElement('option');
+        option.value = name;
+        datalist.appendChild(option);
+      });
+    }
+
+    // Live ativa
+    async function startNewLive() {
+      const name = prompt('Nome da live (ex: Live de Verão):');
+      if (!name) return;
+      const dateStr = getTodayString();
+      try {
+        const docRef = await addDoc(collection(db, 'lives'), {
+          storeId: currentUser.uid, name, date: dateStr, createdAt: serverTimestamp()
+        });
+        activeLiveId = docRef.id;
+        activeLiveData = { name, date: dateStr };
+        document.getElementById('activeLiveName').textContent = name;
+        document.getElementById('mainPanel').style.display = 'none';
+        document.getElementById('livePanel').style.display = 'block';
+        clearLiveForm();
+        loadActiveLiveSales();
+        await updateClientDatalist();
+      } catch (e) { alert('Erro: ' + e.message); }
+    }
+
+    async function endLiveAndReport() {
+      if (!activeLiveId) return;
+      const liveIdToReport = activeLiveId;
+      // Encerra a live
+      activeLiveId = null;
+      activeLiveData = null;
+      document.getElementById('mainPanel').style.display = 'block';
+      document.getElementById('livePanel').style.display = 'none';
+      
+      // Recarrega lista de lives e resumo diário
+      await loadAllLivesList();
+      const selectedDate = document.getElementById('summaryDate').value;
+      if (selectedDate) loadDailySummary(selectedDate);
+      
+      // Muda para aba Relatórios e seleciona a live encerrada
+      switchDashboardTab('reports');
+      const select = document.getElementById('reportLiveSelect');
+      // Aguarda a renderização do seletor
+      setTimeout(() => {
+        if (select && select.querySelector(`option[value="${liveIdToReport}"]`)) {
+          select.value = liveIdToReport;
+          loadReportForLive(liveIdToReport);
+        }
+      }, 100);
+    }
+
+    function clearLiveForm() {
+      document.getElementById('saleCode').value = '';
+      document.getElementById('saleValue').value = '';
+      document.getElementById('client1').value = '';
+      document.getElementById('client2').value = '';
+      document.getElementById('client3').value = '';
+    }
+
+    async function registerSaleInActiveLive() {
+      if (!activeLiveId) return alert('Nenhuma live ativa.');
+      const code = document.getElementById('saleCode').value.trim();
+      const value = parseFloat(document.getElementById('saleValue').value);
+      const c1 = document.getElementById('client1').value.trim();
+      const c2 = document.getElementById('client2').value.trim();
+      const c3 = document.getElementById('client3').value.trim();
+
+      if (!code || isNaN(value) || !c1) return showMessage('liveMessage', 'Preencha código, valor e cliente principal.', 'error');
+      const queue = [c1];
+      if (c2) queue.push(c2);
+      if (c3) queue.push(c3);
+      try {
+        await addDoc(collection(db, 'sales'), {
+          liveId: activeLiveId, storeId: currentUser.uid, code, value,
+          clientQueue: queue, currentClientIndex: 0,
+          date: activeLiveData.date, createdAt: serverTimestamp()
+        });
+        showMessage('liveMessage', 'Venda registrada! ✨');
+        clearLiveForm();
+        loadActiveLiveSales();
+        await updateClientDatalist();
+      } catch (e) { showMessage('liveMessage', 'Erro: ' + e.message, 'error'); }
+    }
+
+    async function loadActiveLiveSales() {
+      const listEl = document.getElementById('liveSalesList');
+      listEl.innerHTML = '';
+      if (!activeLiveId) return;
+      const q = query(collection(db, 'sales'), where('liveId', '==', activeLiveId), where('storeId', '==', currentUser.uid), orderBy('createdAt', 'asc'));
+      const snap = await getDocs(q).catch(() => null);
+      if (snap) snap.forEach(doc => {
+        const s = doc.data();
+        const li = document.createElement('li');
+        li.innerHTML = `<span>${s.code} (${s.clientQueue[0]})</span> <span>R$ ${s.value.toFixed(2)}</span>`;
+        listEl.appendChild(li);
+      });
+    }
+
+    // Event Listeners
+    document.getElementById('loginBtn').addEventListener('click', login);
+    document.getElementById('registerBtn').addEventListener('click', register);
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+    document.getElementById('goToRegister').addEventListener('click', () => showScreen('registerScreen'));
+    document.getElementById('goToLogin').addEventListener('click', () => showScreen('loginScreen'));
+    document.getElementById('tabSummary').addEventListener('click', () => switchDashboardTab('summary'));
+    document.getElementById('tabReports').addEventListener('click', () => switchDashboardTab('reports'));
+    document.getElementById('tabClients').addEventListener('click', () => switchDashboardTab('clients'));
+    document.getElementById('startLiveBtn').addEventListener('click', startNewLive);
+    document.getElementById('endLiveReportBtn').addEventListener('click', endLiveAndReport);
+    document.getElementById('registerSaleBtn').addEventListener('click', registerSaleInActiveLive);
+    document.getElementById('saveClientBtn').addEventListener('click', saveClient);
+    document.getElementById('summaryDate').addEventListener('change', (e) => {
+      if (e.target.value) loadDailySummary(e.target.value);
+    });
+
+    // Inicialização
+    document.getElementById('summaryDate').value = getTodayString();
+
+    onAuthStateChanged(auth, async (user) => {
+      currentUser = user;
+      if (user) {
+        const snap = await getDoc(doc(db, 'stores', user.uid));
+        storeData = snap.exists() ? snap.data() : { storeName: 'Loja' };
+        document.getElementById('storeNameDisplay').textContent = storeData.storeName || 'Loja';
+        await Promise.all([loadAllLivesList(), loadAllClients()]);
+        await loadDailySummary(getTodayString());
+        await updateClientDatalist();
+        showScreen('dashboardScreen');
+        document.getElementById('mainPanel').style.display = 'block';
+        document.getElementById('livePanel').style.display = 'none';
+        switchDashboardTab('summary');
+      } else {
+        storeData = null;
+        showScreen('loginScreen');
+        document.getElementById('loginEmail').value = '';
+        document.getElementById('loginPassword').value = '';
+      }
+    });
+
+    console.log('✅ Sistema pronto. Índices do Firestore: lives(storeId ASC, createdAt DESC), sales(liveId ASC, storeId ASC, createdAt ASC).');
+  </script>
+
+  <!-- REGRAS DO FIRESTORE (ATUALIZADAS) -->
+  <!--
+  rules_version = '2';
+  service cloud.firestore {
+    match /databases/{database}/documents {
+      match /stores/{uid} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+      }
+      match /lives/{liveId} {
+        allow read, update, delete: if request.auth != null && request.auth.uid == resource.data.storeId;
+        allow create: if request.auth != null && request.auth.uid == request.resource.data.storeId;
+      }
+      match /sales/{saleId} {
+        allow read, update, delete: if request.auth != null && request.auth.uid == resource.data.storeId;
+        allow create: if request.auth != null && request.auth.uid == request.resource.data.storeId;
+      }
+      match /clients/{clientId} {
+        allow read, update, delete: if request.auth != null && request.auth.uid == resource.data.storeId;
+        allow create: if request.auth != null && request.auth.uid == request.resource.data.storeId;
+      }
+    }
+  }
+  -->
+</body>
+</html>
