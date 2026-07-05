@@ -191,6 +191,8 @@
       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
       gap: 0.8rem;
       margin-bottom: 1.5rem;
+      /* Centralizar os cards dentro do grid */
+      justify-items: center;
     }
     .summary-card {
       background: var(--card-bg);
@@ -198,6 +200,8 @@
       padding: 1rem;
       text-align: center;
       border: 1px solid var(--border);
+      width: 100%;
+      max-width: 200px; /* Limita a largura para não ficar muito largo em telas grandes */
     }
     .summary-card .value { font-size: 1.6rem; font-weight: 700; color: var(--primary); }
     .summary-card .label { font-size: 0.75rem; color: var(--text-light); font-weight: 500; text-transform: uppercase; }
@@ -261,7 +265,14 @@
     .live-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 2px dashed #fbcfe8; padding-bottom: 0.8rem; flex-wrap: wrap; gap: 0.5rem; }
     .live-header h2 { color: #be185d; margin: 0; font-size: 1.2rem; }
     
-    .flex-row { display: flex; gap: 0.8rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
+    .flex-row {
+      display: flex;
+      gap: 0.8rem;
+      margin-bottom: 0.8rem;
+      flex-wrap: wrap;
+      justify-content: center; /* Centraliza o conteúdo */
+      align-items: center;
+    }
     .flex-row > * { flex: 1 1 150px; }
 
     .search-box { margin-bottom: 1rem; }
@@ -535,34 +546,33 @@
 
         <!-- Relatórios (com filtro para avulsas) -->
         <div id="reportsArea" style="display:none;">
-          <div class="form-group flex-row" style="align-items:flex-end;">
-            <div style="flex:1;">
-              <label>Selecione a Live ou Vendas Avulsas</label>
-              <select id="reportLiveSelect">
-                <option value="">Selecione...</option>
-              </select>
+          <div class="flex-row" style="align-items:center; justify-content:center;">
+            <div style="flex:1 1 200px; max-width:300px;">
+              <label style="display:block; font-weight:500; font-size:0.85rem; margin-bottom:0.3rem;">Selecione a Live ou Vendas Avulsas</label>
+              <select id="reportLiveSelect" style="width:100%;"></select>
             </div>
             <button id="deleteLiveBtn" class="btn-danger" style="width:auto; padding:0.5rem 0.8rem; display:none;">🗑️ Apagar Live</button>
           </div>
 
           <!-- Filtros para avulsas (aparecem quando selecionado) -->
           <div id="avulsasFilter" style="display:none; background:var(--card-bg); padding:0.8rem; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:1rem;">
-            <div class="flex-row">
-              <div class="form-group" style="margin-bottom:0;">
+            <div class="flex-row" style="justify-content:center;">
+              <div class="form-group" style="margin-bottom:0; flex:0 0 auto;">
                 <label>Data (opcional)</label>
-                <input type="date" id="avulsasDateFilter">
+                <input type="date" id="avulsasDateFilter" style="width:auto;">
               </div>
-              <div style="display:flex; gap:0.5rem; align-items:flex-end; flex-wrap:wrap;">
+              <div style="display:flex; gap:0.5rem; align-items:flex-end; flex-wrap:wrap; justify-content:center;">
                 <button class="btn-secondary btn-sm" id="applyAvulsasFilter" style="width:auto; padding:0.4rem 0.8rem;">🔍 Filtrar</button>
                 <button class="btn-secondary btn-sm" id="last100AvulsasBtn" style="width:auto; padding:0.4rem 0.8rem;">📋 Últimas 100</button>
               </div>
             </div>
           </div>
 
-          <div class="flex-row">
-            <button id="modeGeneralBtn" class="btn-primary">📋 Geral</button>
-            <button id="modeByClientBtn" class="btn-secondary">📦 Por Cliente</button>
+          <div class="flex-row" style="justify-content:center;">
+            <button id="modeGeneralBtn" class="btn-primary" style="flex:0 1 auto; width:auto; padding:0.5rem 1.2rem;">📋 Geral</button>
+            <button id="modeByClientBtn" class="btn-secondary" style="flex:0 1 auto; width:auto; padding:0.5rem 1.2rem;">📦 Por Cliente</button>
           </div>
+          
           <div id="reportSummary" class="summary-cards" style="display:none; margin-bottom:1rem;">
             <div class="summary-card"><div class="value" id="totalItems" style="font-size:1.3rem;">0</div><div class="label">Peças Vendidas</div></div>
             <div class="summary-card"><div class="value" id="totalValue" style="font-size:1.3rem;">R$ 0,00</div><div class="label">Faturamento</div></div>
@@ -705,12 +715,10 @@
     // --- Funções de utilidade ---
     const formatMoney = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
     
-    // Função auxiliar: verifica se a venda está ativa (possui cliente definido)
     function isActiveSale(sale) {
       return sale.clientQueue && sale.clientQueue.length > 0 && sale.clientQueue[0] && sale.clientQueue[0].length > 0;
     }
 
-    // Filtra apenas vendas ativas para cálculo de totais
     function getActiveSales(sales) {
       return sales.filter(s => isActiveSale(s));
     }
@@ -795,7 +803,7 @@
 
     async function logout() { await signOut(auth); }
 
-    // --- Atualizar resumo do estoque (usado na aba Resumo) ---
+    // --- Atualizar resumo do estoque ---
     function updateStockSummary() {
       let totalValue = 0;
       stockItems.forEach(item => totalValue += item.value);
@@ -1112,17 +1120,13 @@
       let sales = [];
       if(snap) snap.forEach(d => sales.push({ id: d.id, ...d.data() }));
 
-      // Ordenação: se for "Últimas 100", ordem decrescente (mais recentes primeiro); senão, crescente
       if (last100) {
         sales.sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
       } else {
         sales.sort((a,b) => (a.createdAt?.seconds||0) - (b.createdAt?.seconds||0));
       }
 
-      // Guarda todas as vendas (inclusive devolvidas) para exibição na lista
       currentReportSales = sales;
-
-      // Para totais, considera apenas vendas ativas
       const activeSales = getActiveSales(sales);
       const totalVal = activeSales.reduce((sum, sale) => sum + sale.value, 0);
 
