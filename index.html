@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
   <title>Brechó Inteligente | Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -30,12 +30,13 @@
       min-height: 100vh;
       display: flex;
       justify-content: center;
+      font-size: 15px;
     }
 
     #app {
       width: 100%;
       max-width: 1000px;
-      padding: 2rem 1.5rem;
+      padding: 1rem 0.8rem;
     }
 
     .screen { display: none; animation: fadeIn 0.3s ease; }
@@ -48,34 +49,36 @@
 
     .auth-container {
       max-width: 400px;
-      margin: 4rem auto;
+      margin: 2rem auto;
       background: var(--card-bg);
-      padding: 2.5rem;
+      padding: 1.8rem 1.2rem;
       border-radius: var(--radius);
       box-shadow: 0 10px 25px rgba(0,0,0,0.05);
       border: 1px solid var(--border);
     }
 
-    h1, h2, h3, h4 { color: var(--text-dark); margin-bottom: 1rem; }
-    .auth-container h1 { text-align: center; color: var(--primary); font-size: 1.8rem; }
+    h1, h2, h3, h4 { color: var(--text-dark); margin-bottom: 0.8rem; }
+    .auth-container h1 { text-align: center; color: var(--primary); font-size: 1.6rem; }
 
-    .form-group { margin-bottom: 1.2rem; }
+    .form-group { margin-bottom: 1rem; }
     label {
       display: block;
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.3rem;
       font-weight: 500;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: var(--text-dark);
     }
     input, select, textarea {
       width: 100%;
-      padding: 0.8rem 1rem;
+      padding: 0.7rem 0.9rem;
       border: 1px solid var(--border);
       border-radius: 8px;
       font-size: 0.95rem;
       font-family: inherit;
       transition: all 0.2s;
       background: #fff;
+      -webkit-appearance: none;
+      appearance: none;
     }
     input:focus, select:focus, textarea:focus {
       border-color: var(--primary);
@@ -86,9 +89,9 @@
 
     button {
       width: 100%;
-      padding: 0.8rem 1rem;
+      padding: 0.7rem 0.8rem;
       border-radius: 8px;
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 600;
       border: none;
       cursor: pointer;
@@ -96,7 +99,7 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 0.5rem;
+      gap: 0.4rem;
     }
     button.btn-primary { background: var(--primary); color: white; }
     button.btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
@@ -108,12 +111,36 @@
     button.btn-whatsapp:hover { background: #bbf7d0; }
     button.btn-edit { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
     button.btn-edit:hover { background: #bae6fd; }
-    button.btn-sm { width: auto; padding: 0.3rem 0.6rem; font-size: 0.8rem; }
+    button.btn-sm { width: auto; padding: 0.2rem 0.6rem; font-size: 0.75rem; }
+    button.btn-success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+    button.btn-success:hover { background: #bbf7d0; }
+    button.btn-stock-sell { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+    button.btn-stock-sell:hover { background: #fcd34d; }
+    button.btn-return { background: #fce7f3; color: #9d174d; border: 1px solid #f9a8d4; }
+    button.btn-return:hover { background: #f9a8d4; }
 
-    .link { text-align: center; margin-top: 1.5rem; color: var(--primary); font-weight: 500; cursor: pointer; font-size: 0.9rem; }
+    .btn-live-small, .btn-avulsa-small {
+      width: auto;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.9rem;
+      border-radius: 8px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .btn-live-small { background: #be185d; color: white; }
+    .btn-live-small:hover { background: #9d174d; transform: translateY(-1px); }
+    .btn-avulsa-small { background: #8b5cf6; color: white; }
+    .btn-avulsa-small:hover { background: #7c3aed; transform: translateY(-1px); }
+
+    .link { text-align: center; margin-top: 1.2rem; color: var(--primary); font-weight: 500; cursor: pointer; font-size: 0.9rem; }
     .link:hover { text-decoration: underline; }
     
-    .alert { padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.9rem; font-weight: 500; display: none; }
+    .alert { padding: 0.8rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.9rem; font-weight: 500; display: none; }
     .alert.error { background: #fef2f2; color: var(--danger); border: 1px solid #fecaca; }
     .alert.success { background: #f0fdf4; color: var(--success); border: 1px solid #bbf7d0; }
 
@@ -121,121 +148,126 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 2rem;
+      margin-bottom: 1.2rem;
       background: var(--card-bg);
-      padding: 1rem 1.5rem;
-      border-radius: var(--radius);
-      box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-      border: 1px solid var(--border);
-    }
-    .store-name { font-weight: 700; font-size: 1.2rem; color: var(--primary); }
-    .btn-logout { width: auto; padding: 0.5rem 1.5rem; font-size: 0.9rem; }
-
-    .tab-bar {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 2rem;
-      background: var(--card-bg);
-      padding: 0.5rem;
+      padding: 0.8rem 1rem;
       border-radius: var(--radius);
       border: 1px solid var(--border);
       flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .store-name { font-weight: 700; font-size: 1.1rem; color: var(--primary); }
+    .btn-logout { width: auto; padding: 0.4rem 1.2rem; font-size: 0.85rem; }
+
+    .tab-bar {
+      display: flex;
+      gap: 0.3rem;
+      margin-bottom: 1.2rem;
+      background: var(--card-bg);
+      padding: 0.4rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      flex-wrap: wrap;
+      justify-content: center;
     }
     .tab {
-      flex: 1;
+      flex: 1 1 auto;
       text-align: center;
-      padding: 0.75rem 1rem;
-      border-radius: 8px;
+      padding: 0.5rem 0.7rem;
+      border-radius: 6px;
       font-weight: 600;
+      font-size: 0.85rem;
       cursor: pointer;
       color: var(--text-light);
       transition: all 0.2s;
-      min-width: 80px;
+      min-width: 60px;
+      white-space: nowrap;
     }
     .tab.active { background: var(--secondary); color: var(--text-dark); }
     .tab:hover:not(.active) { background: #f9fafb; }
 
-    .summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.8rem;
+      margin-bottom: 1.5rem;
+    }
     .summary-card {
       background: var(--card-bg);
       border-radius: var(--radius);
-      padding: 1.5rem;
+      padding: 1rem;
       text-align: center;
       border: 1px solid var(--border);
     }
-    .summary-card .value { font-size: 2rem; font-weight: 700; color: var(--primary); margin-bottom: 0.25rem; }
-    .summary-card .label { font-size: 0.85rem; color: var(--text-light); font-weight: 500; text-transform: uppercase;}
+    .summary-card .value { font-size: 1.6rem; font-weight: 700; color: var(--primary); }
+    .summary-card .label { font-size: 0.75rem; color: var(--text-light); font-weight: 500; text-transform: uppercase; }
 
-    .sales-list { list-style: none; display: grid; gap: 0.8rem; }
+    .sales-list { list-style: none; display: grid; gap: 0.7rem; }
     .sale-item-card {
       background: var(--card-bg);
       border-radius: 8px;
-      padding: 1.2rem;
+      padding: 0.8rem;
       border: 1px solid var(--border);
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+      gap: 0.4rem;
     }
     .sale-item-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
       border-bottom: 1px dashed var(--border);
-      padding-bottom: 0.5rem;
+      padding-bottom: 0.4rem;
     }
-    .sale-code { font-weight: 700; color: var(--text-dark); font-size: 1.1rem;}
-    .sale-price { font-weight: 700; color: var(--success); font-size: 1.1rem;}
-    .sale-buyer { font-size: 0.95rem; color: var(--primary); font-weight: 600; margin-top: 0.3rem;}
-    .sale-queue { font-size: 0.85rem; color: var(--text-light); background: var(--secondary); padding: 0.4rem; border-radius: 6px; margin-top: 0.2rem;}
-    .sale-type { font-size: 0.9rem; color: var(--text-dark); background: #fef3c7; padding: 0.2rem 0.6rem; border-radius: 12px; display: inline-block; }
+    .sale-code { font-weight: 700; font-size: 1rem; }
+    .sale-price { font-weight: 700; color: var(--success); font-size: 1rem; }
+    .sale-buyer { font-size: 0.9rem; color: var(--primary); font-weight: 600; margin-top: 0.2rem; }
+    .sale-queue { font-size: 0.8rem; color: var(--text-light); background: var(--secondary); padding: 0.3rem; border-radius: 6px; margin-top: 0.2rem; }
+    .sale-type { font-size: 0.85rem; color: var(--text-dark); background: #fef3c7; padding: 0.1rem 0.5rem; border-radius: 12px; display: inline-block; }
 
-    .client-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+    .client-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
     
     .client-report-card {
       background: var(--card-bg);
       border-radius: var(--radius);
-      padding: 1.5rem;
+      padding: 1rem;
       border: 1px solid var(--border);
-      box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-      display: flex;
-      flex-direction: column;
     }
-    .client-report-card h4 { color: var(--primary); margin-bottom: 1rem; font-size: 1.2rem; border-bottom: 2px solid var(--secondary); padding-bottom: 0.5rem; text-transform: uppercase;}
-    .client-report-items { list-style: none; margin-bottom: 1rem; flex-grow: 1; }
+    .client-report-card h4 { font-size: 1.1rem; margin-bottom: 0.6rem; border-bottom: 2px solid var(--secondary); padding-bottom: 0.4rem; }
+    .client-report-items { list-style: none; margin-bottom: 0.6rem; }
     .client-report-items li {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.95rem;
-      margin-bottom: 0.4rem;
-      color: var(--text-dark);
+      font-size: 0.9rem;
+      margin-bottom: 0.3rem;
       padding: 0.2rem 0;
     }
     .client-report-items li .item-actions {
       display: flex;
       gap: 0.3rem;
+      flex-wrap: wrap;
     }
     .client-report-items li .item-actions button {
-      width: auto;
       padding: 0.1rem 0.4rem;
       font-size: 0.7rem;
       border-radius: 4px;
+      width: auto;
     }
-    .client-report-total { display: flex; justify-content: space-between; font-weight: 700; font-size: 1.2rem; color: var(--success); border-top: 2px solid var(--secondary); padding-top: 0.8rem; margin-bottom: 1.5rem; }
+    .client-report-total { display: flex; justify-content: space-between; font-weight: 700; font-size: 1.1rem; color: var(--success); border-top: 2px solid var(--secondary); padding-top: 0.6rem; margin-bottom: 1rem; }
     
-    .live-panel-container { background: #fdf2f8; border: 2px solid #fbcfe8; border-radius: var(--radius); padding: 2rem; }
-    .live-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 2px dashed #fbcfe8; padding-bottom: 1rem; }
-    .live-header h2 { color: #be185d; margin: 0; }
+    .live-panel-container { background: #fdf2f8; border: 2px solid #fbcfe8; border-radius: var(--radius); padding: 1.2rem; }
+    .live-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 2px dashed #fbcfe8; padding-bottom: 0.8rem; flex-wrap: wrap; gap: 0.5rem; }
+    .live-header h2 { color: #be185d; margin: 0; font-size: 1.2rem; }
     
-    .flex-row { display: flex; gap: 1rem; margin-bottom: 1rem; }
-    .flex-row > * { flex: 1; }
-    .flex-row .btn { width: auto; }
+    .flex-row { display: flex; gap: 0.8rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
+    .flex-row > * { flex: 1 1 150px; }
 
-    .search-box { margin-bottom: 1.5rem; }
-    .client-card-actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
-    .client-card-actions button { width: auto; padding: 0.4rem 0.8rem; font-size: 0.8rem; }
-    .client-info { font-size: 0.9rem; color: var(--text-light); }
+    .search-box { margin-bottom: 1rem; }
+    .client-card-actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap; }
+    .client-card-actions button { width: auto; padding: 0.3rem 0.7rem; font-size: 0.8rem; }
+    .client-info { font-size: 0.85rem; color: var(--text-light); }
     .client-info strong { color: var(--text-dark); }
 
     /* ===== MODAIS ===== */
@@ -253,35 +285,34 @@
 
     #previewModal { z-index: 9999; }
     #manageOptionsModal { z-index: 10000; }
+    #avulsaModal { z-index: 9999; }
 
     .modal-box {
       background: white;
       max-width: 550px;
       width: 100%;
-      padding: 2rem;
+      padding: 1.5rem;
       border-radius: var(--radius);
       box-shadow: 0 20px 60px rgba(0,0,0,0.3);
       max-height: 90vh;
       overflow-y: auto;
     }
-    .modal-box h3 { margin-bottom: 1rem; }
-    .modal-actions { display: flex; gap: 1rem; margin-top: 1.5rem; }
+    .modal-box h3 { margin-bottom: 0.8rem; font-size: 1.2rem; }
+    .modal-actions { display: flex; gap: 0.8rem; margin-top: 1rem; flex-wrap: wrap; }
     .modal-actions button { flex: 1; }
 
-    /* Template fields */
     .template-fields {
       background: #f8fafc;
-      padding: 1rem;
+      padding: 0.8rem;
       border-radius: 8px;
-      margin-bottom: 1rem;
+      margin-bottom: 0.8rem;
       border: 1px solid var(--border);
     }
-    .template-fields .form-group { margin-bottom: 0.8rem; }
-    .template-fields .form-group:last-child { margin-bottom: 0; }
-    .template-fields label { font-weight: 500; font-size: 0.85rem; color: var(--text-light); }
-    .template-fields input, .template-fields select { font-size: 0.9rem; padding: 0.5rem 0.8rem; }
-    .inline-actions { display: flex; gap: 0.5rem; align-items: center; }
-    .inline-actions .btn { width: auto; padding: 0.3rem 0.8rem; font-size: 0.8rem; }
+    .template-fields .form-group { margin-bottom: 0.6rem; }
+    .template-fields label { font-size: 0.8rem; }
+    .template-fields input, .template-fields select { font-size: 0.85rem; padding: 0.4rem 0.6rem; }
+    .inline-actions { display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap; }
+    .inline-actions .btn { width: auto; padding: 0.2rem 0.6rem; font-size: 0.75rem; }
     .option-list { margin-top: 0.5rem; }
     .option-item {
       display: flex;
@@ -292,17 +323,31 @@
       border-radius: 4px;
       border: 1px solid var(--border);
       margin-bottom: 0.3rem;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
     }
     .option-item .actions { display: flex; gap: 0.3rem; }
-    .option-item .actions button { width: auto; padding: 0.1rem 0.4rem; font-size: 0.7rem; }
+    .option-item .actions button { padding: 0.1rem 0.4rem; font-size: 0.7rem; width: auto; }
+
+    /* Ajustes mobile */
+    @media (max-width: 600px) {
+      body { font-size: 14px; }
+      #app { padding: 0.6rem; }
+      .header { flex-direction: column; align-items: stretch; text-align: center; }
+      .btn-logout { width: 100%; }
+      .tab { font-size: 0.75rem; padding: 0.4rem 0.5rem; }
+      .summary-cards { grid-template-columns: 1fr 1fr; }
+      .client-grid { grid-template-columns: 1fr; }
+      .flex-row { flex-direction: column; gap: 0.5rem; }
+      .flex-row > * { flex: 1 1 auto; }
+      .modal-box { padding: 1rem; max-width: 100%; margin: 0.5rem; }
+    }
   </style>
 </head>
 <body>
   <div id="app">
     
     <!-- Toast -->
-    <div id="toastMessage" style="position: fixed; top: 20px; right: 20px; background: #10b981; color: white; padding: 1rem 1.5rem; border-radius: 8px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: none; z-index: 9999; transform: translateY(-20px); transition: all 0.3s ease;">
+    <div id="toastMessage" style="position: fixed; top: 10px; right: 10px; background: #10b981; color: white; padding: 0.8rem 1.2rem; border-radius: 8px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: none; z-index: 9999; transform: translateY(-20px); transition: all 0.3s ease; font-size: 0.9rem;">
       ✅ Ação realizada com sucesso!
     </div>
 
@@ -313,15 +358,15 @@
         <input type="hidden" id="editSaleId">
         <div class="form-group"><label>Código da Peça</label><input type="text" id="editCode"></div>
         <div class="form-group"><label>Valor (R$)</label><input type="number" id="editValue" step="0.01" min="0"></div>
-        <div class="form-group"><label>Tipo de Peça</label><input type="text" id="editItemType" placeholder="Ex: Vestido, Calça, Bolsa..."></div>
+        <div class="form-group"><label>Tipo de Peça</label><input type="text" id="editItemType"></div>
         <div class="modal-actions">
           <button class="btn-secondary" id="cancelEditBtn">Cancelar</button>
-          <button class="btn-primary" id="saveEditBtn">💾 Salvar Alterações</button>
+          <button class="btn-primary" id="saveEditBtn">💾 Salvar</button>
         </div>
       </div>
     </div>
 
-    <!-- Modal de Gerenciar Opções (Pix, Banco, Nome) -->
+    <!-- Modal de Gerenciar Opções -->
     <div id="manageOptionsModal" class="modal-overlay">
       <div class="modal-box">
         <h3 id="manageOptionsTitle">Gerenciar Opções</h3>
@@ -340,106 +385,108 @@
       </div>
     </div>
 
-    <!-- Modal de Pré-visualização com Template Personalizável -->
+    <!-- Modal de Pré-visualização -->
     <div id="previewModal" class="modal-overlay">
       <div class="modal-box">
-        <h3>📋 Pré-visualizar Mensagem para o Cliente</h3>
-        
-        <!-- Campos editáveis do template -->
+        <h3>📋 Pré-visualizar Mensagem</h3>
         <div class="template-fields">
-          <!-- Método de pagamento com botões -->
           <div class="form-group">
             <label>Método de pagamento</label>
-            <div class="inline-actions" style="margin-bottom: 0.3rem;">
+            <div class="inline-actions" style="margin-bottom:0.3rem;">
               <button class="btn-secondary btn" id="addPixBtn">Pix</button>
-              <button class="btn-secondary btn" id="addLinkBtn">Link de pagamento</button>
+              <button class="btn-secondary btn" id="addLinkBtn">Link</button>
               <button class="btn-secondary btn" id="clearPaymentBtn">Limpar</button>
             </div>
-            <input type="text" id="templatePaymentMethod" placeholder="Ex: Pix ou Link de pagamento" value="Pix">
+            <input type="text" id="templatePaymentMethod" placeholder="Ex: Pix ou Link" value="Pix">
           </div>
-
-          <!-- Prazo -->
           <div class="flex-row">
-            <div class="form-group">
-              <label>Hora limite</label>
-              <input type="text" id="templateDeadlineTime" placeholder="18:00" value="18:00">
-            </div>
-            <div class="form-group">
-              <label>Dia limite</label>
-              <input type="text" id="templateDeadlineDate" placeholder="05/07/2026" value="">
-            </div>
+            <div class="form-group"><label>Hora limite</label><input type="text" id="templateDeadlineTime" value="18:00"></div>
+            <div class="form-group"><label>Dia limite</label><input type="text" id="templateDeadlineDate"></div>
           </div>
-
-          <!-- Chave Pix com tipo + valor + opções salvas -->
           <div class="form-group">
             <label>Chave Pix</label>
-            <div class="inline-actions" style="margin-bottom:0.3rem;">
+            <div class="inline-actions">
               <select id="templatePixType" style="flex:1;">
-                <option value="">Tipo da chave</option>
+                <option value="">Tipo</option>
                 <option value="CPF">CPF</option>
                 <option value="CNPJ">CNPJ</option>
                 <option value="Telefone">Telefone</option>
                 <option value="Email">E-mail</option>
                 <option value="Chave aleatória">Chave aleatória</option>
               </select>
-              <select id="templatePixKeySelect" style="flex:1;">
-                <option value="">Selecione uma chave</option>
-              </select>
+              <select id="templatePixKeySelect" style="flex:1;"><option value="">Selecione</option></select>
               <button class="btn-secondary btn" id="managePixBtn">⚙️</button>
             </div>
-            <div style="display:flex; gap:0.5rem;">
-              <input type="text" id="templatePixKey" placeholder="Digite a chave" style="flex:1;">
-            </div>
+            <input type="text" id="templatePixKey" placeholder="Digite a chave" style="margin-top:0.3rem;">
           </div>
-
-          <!-- Banco com opções salvas -->
           <div class="form-group">
             <label>Banco</label>
             <div class="inline-actions">
-              <select id="templateBankSelect" style="flex:1;">
-                <option value="">Selecione um banco</option>
-              </select>
+              <select id="templateBankSelect" style="flex:1;"><option value="">Selecione</option></select>
               <button class="btn-secondary btn" id="manageBankBtn">⚙️</button>
             </div>
-            <input type="text" id="templateBank" placeholder="Digite ou selecione um banco" style="margin-top:0.3rem;">
+            <input type="text" id="templateBank" placeholder="Digite o banco" style="margin-top:0.3rem;">
           </div>
-
-          <!-- Nome do titular com opções salvas -->
           <div class="form-group">
             <label>Nome do titular</label>
             <div class="inline-actions">
-              <select id="templateAccountNameSelect" style="flex:1;">
-                <option value="">Selecione um nome</option>
-              </select>
+              <select id="templateAccountNameSelect" style="flex:1;"><option value="">Selecione</option></select>
               <button class="btn-secondary btn" id="manageNameBtn">⚙️</button>
             </div>
-            <input type="text" id="templateAccountName" placeholder="Digite ou selecione um nome" style="margin-top:0.3rem;">
+            <input type="text" id="templateAccountName" placeholder="Digite o nome" style="margin-top:0.3rem;">
           </div>
         </div>
-
         <div class="form-group">
-          <label>Mensagem final (editável)</label>
-          <textarea id="previewMessage" rows="12" style="width:100%; padding:0.8rem; border:1px solid var(--border); border-radius:8px; font-family:inherit; font-size:0.95rem;"></textarea>
+          <label>Mensagem final</label>
+          <textarea id="previewMessage" rows="12" style="font-size:0.9rem;"></textarea>
         </div>
         <div class="modal-actions">
           <button class="btn-secondary" id="cancelPreviewBtn">Fechar</button>
-          <button class="btn-primary" id="copyPreviewBtn">📋 Copiar Mensagem</button>
+          <button class="btn-primary" id="copyPreviewBtn">📋 Copiar</button>
         </div>
       </div>
     </div>
 
-    <!-- Telas de Login/Cadastro -->
+    <!-- Modal de Venda Avulsa Rápida -->
+    <div id="avulsaModal" class="modal-overlay">
+      <div class="modal-box">
+        <h3>📦 Registrar Venda Avulsa</h3>
+        <div id="avulsaModalMessage" class="alert success"></div>
+        <div class="form-group"><label>Tipo de Peça (opcional)</label><input type="text" id="modalAvulsaItemType" placeholder="Ex: Vestido"></div>
+        <div class="form-group"><label>Valor (R$)</label><input type="number" id="modalAvulsaValue" step="0.01" min="0"></div>
+        <div class="form-group"><label>Código da Peça</label>
+          <input type="text" id="modalAvulsaCode" list="stockCodes" placeholder="Ex: BL01" autocomplete="off">
+          <datalist id="stockCodes"></datalist>
+        </div>
+        <div class="form-group"><label>👤 Cliente Principal</label><input type="text" id="modalAvulsaClient1" list="clientNamesList" autocomplete="off"></div>
+        <details style="margin-bottom:0.5rem;">
+          <summary style="cursor:pointer; color:var(--text-light); font-size:0.85rem;">Fila de Espera (até 3)</summary>
+          <div style="padding-top:0.5rem; border-top:1px dashed var(--border); margin-top:0.3rem;">
+            <div class="form-group"><label>👤 2ª Opção</label><input type="text" id="modalAvulsaClient2" list="clientNamesList" autocomplete="off"></div>
+            <div class="form-group"><label>👤 3ª Opção</label><input type="text" id="modalAvulsaClient3" list="clientNamesList" autocomplete="off"></div>
+            <div class="form-group"><label>👤 4ª Opção</label><input type="text" id="modalAvulsaClient4" list="clientNamesList" autocomplete="off"></div>
+          </div>
+        </details>
+        <div class="modal-actions">
+          <button class="btn-secondary" id="cancelAvulsaModalBtn">Cancelar</button>
+          <button class="btn-primary" id="confirmAvulsaModalBtn" style="background:#8b5cf6;">➕ Registrar Venda</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Login -->
     <div id="loginScreen" class="screen active">
       <div class="auth-container">
         <h1>Brechó Inteligente</h1>
         <div id="loginError" class="alert error"></div>
         <div class="form-group"><label>Email</label><input type="email" id="loginEmail"></div>
         <div class="form-group"><label>Senha</label><input type="password" id="loginPassword"></div>
-        <button id="loginBtn" class="btn-primary">Entrar no Sistema</button>
+        <button id="loginBtn" class="btn-primary">Entrar</button>
         <div class="link" id="goToRegister">Ainda não tem conta? Crie aqui →</div>
       </div>
     </div>
 
+    <!-- Registro -->
     <div id="registerScreen" class="screen">
       <div class="auth-container">
         <h1>Nova Loja</h1>
@@ -449,7 +496,7 @@
         <div class="form-group"><label>Senha</label><input type="password" id="regPassword"></div>
         <div class="form-group"><label>Confirmar Senha</label><input type="password" id="regConfirmPassword"></div>
         <button id="registerBtn" class="btn-primary">Criar Minha Loja</button>
-        <div class="link" id="goToLogin">← Voltar para Login</div>
+        <div class="link" id="goToLogin">← Voltar</div>
       </div>
     </div>
 
@@ -457,143 +504,155 @@
     <div id="dashboardScreen" class="screen">
       <div class="header">
         <div class="store-name" id="storeNameDisplay">Minha Loja</div>
-        <button class="btn-secondary btn-logout" id="logoutBtn">Sair da Conta</button>
+        <button class="btn-secondary btn-logout" id="logoutBtn">Sair</button>
       </div>
 
       <div id="mainPanel">
         <div class="tab-bar">
-          <div class="tab active" id="tabSummary">Painel Resumo</div>
-          <div class="tab" id="tabAvulsas">📦 Avulsas</div>
-          <div class="tab" id="tabReports">Relatórios</div>
-          <div class="tab" id="tabClients">Meus Clientes</div>
+          <div class="tab active" id="tabSummary">📊 Resumo</div>
+          <div class="tab" id="tabReports">📈 Relatórios</div>
+          <div class="tab" id="tabClients">👤 Clientes</div>
+          <div class="tab" id="tabStock">📦 Estoque</div>
         </div>
 
-        <!-- Resumo Diário e Botão Live -->
+        <!-- Resumo (simplificado) com botões de ação rápida -->
         <div id="summaryArea">
-          <div class="form-group" style="max-width: 250px;"><label>Data de Análise</label><input type="date" id="summaryDate"></div>
           <div class="summary-cards">
-            <div class="summary-card"><div class="value" id="dailySales">R$ 0,00</div><div class="label">Total Faturado</div></div>
-            <div class="summary-card"><div class="value" id="dailyItems">0</div><div class="label">Peças Vendidas</div></div>
+            <div class="summary-card" style="background:#f0fdf4; border-color:#bbf7d0;">
+              <div class="value" id="stockTotalValue">R$ 0,00</div>
+              <div class="label">Valor em Estoque</div>
+            </div>
+            <div class="summary-card" style="background:#f0fdf4; border-color:#bbf7d0;">
+              <div class="value" id="stockTotalItems">0</div>
+              <div class="label">Peças em Estoque</div>
+            </div>
           </div>
-          <div style="display:flex; gap:1rem; flex-wrap:wrap;">
-            <button class="btn-primary" id="startLiveBtn" style="padding: 1.2rem; font-size: 1.1rem; background: #be185d; flex:1;">
-              🎥 Iniciar Nova Live
-            </button>
+          <div style="display:flex; gap:0.8rem; justify-content:center; flex-wrap:wrap; margin-top:0.5rem;">
+            <button class="btn-live-small" id="startLiveBtn">🎥 Iniciar Nova Live</button>
+            <button class="btn-avulsa-small" id="openAvulsaModalBtn">➕ Venda Avulsa Rápida</button>
           </div>
         </div>
 
-        <!-- Vendas Avulsas -->
-        <div id="avulsasArea" style="display: none;">
-          <div style="background: var(--card-bg); padding: 1.5rem; border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 2rem;">
-            <h3>Registrar Venda Avulsa</h3>
-            <div id="avulsaMessage" class="alert success"></div>
-            <div class="flex-row">
-              <div class="form-group"><label>Código da Peça</label><input type="text" id="avulsaCode" placeholder="Ex: BL01"></div>
-              <div class="form-group"><label>Valor (R$)</label><input type="number" id="avulsaValue" step="0.01" min="0" placeholder="Ex: 49.90"></div>
-            </div>
-            <div class="flex-row">
-              <div class="form-group"><label>Tipo de Peça</label><input type="text" id="avulsaItemType" placeholder="Ex: Vestido, Calça, Bolsa..."></div>
-              <div class="form-group"><label>👤 Cliente Principal</label><input type="text" id="avulsaClient1" list="clientNamesList" autocomplete="off"></div>
-            </div>
-            <details style="margin-bottom: 1rem;">
-              <summary style="cursor: pointer; color: var(--text-light); font-size: 0.9rem; font-weight: 500;">Fila de Espera (Opcional)</summary>
-              <div style="padding-top: 1rem; border-top: 1px dashed var(--border); margin-top: 0.5rem;">
-                <div class="form-group"><label>👤 2ª Opção</label><input type="text" id="avulsaClient2" list="clientNamesList" autocomplete="off"></div>
-                <div class="form-group"><label>👤 3ª Opção</label><input type="text" id="avulsaClient3" list="clientNamesList" autocomplete="off"></div>
-              </div>
-            </details>
-            <button id="registerAvulsaBtn" class="btn-primary" style="background: #8b5cf6;">➕ Registrar Venda Avulsa</button>
-          </div>
-
-          <h3>Lista de Vendas Avulsas</h3>
-          <ul class="sales-list" id="avulsaSalesList"></ul>
-        </div>
-
-        <!-- Relatórios -->
-        <div id="reportsArea" style="display: none;">
-          <div class="form-group flex-row" style="align-items: flex-end;">
-            <div style="flex-grow: 1;">
+        <!-- Relatórios (com filtro para avulsas) -->
+        <div id="reportsArea" style="display:none;">
+          <div class="form-group flex-row" style="align-items:flex-end;">
+            <div style="flex:1;">
               <label>Selecione a Live ou Vendas Avulsas</label>
-              <select id="reportLiveSelect"></select>
+              <select id="reportLiveSelect">
+                <option value="">Selecione...</option>
+              </select>
             </div>
-            <button id="deleteLiveBtn" class="btn-danger" style="width: auto; padding: 0.8rem 1rem;" title="Apagar esta Live e todas as suas vendas">🗑️ Apagar Live</button>
+            <button id="deleteLiveBtn" class="btn-danger" style="width:auto; padding:0.5rem 0.8rem; display:none;">🗑️ Apagar Live</button>
           </div>
-          
+
+          <!-- Filtros para avulsas (aparecem quando selecionado) -->
+          <div id="avulsasFilter" style="display:none; background:var(--card-bg); padding:0.8rem; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:1rem;">
+            <div class="flex-row">
+              <div class="form-group" style="margin-bottom:0;">
+                <label>Data (opcional)</label>
+                <input type="date" id="avulsasDateFilter">
+              </div>
+              <div style="display:flex; gap:0.5rem; align-items:flex-end; flex-wrap:wrap;">
+                <button class="btn-secondary btn-sm" id="applyAvulsasFilter" style="width:auto; padding:0.4rem 0.8rem;">🔍 Filtrar</button>
+                <button class="btn-secondary btn-sm" id="last100AvulsasBtn" style="width:auto; padding:0.4rem 0.8rem;">📋 Últimas 100</button>
+              </div>
+            </div>
+          </div>
+
           <div class="flex-row">
-            <button id="modeGeneralBtn" class="btn-primary">📋 Ordem de Vendas (Geral)</button>
-            <button id="modeByClientBtn" class="btn-secondary">📦 Relatório por Cliente (Fechamento)</button>
+            <button id="modeGeneralBtn" class="btn-primary">📋 Geral</button>
+            <button id="modeByClientBtn" class="btn-secondary">📦 Por Cliente</button>
           </div>
-          
-          <div id="reportSummary" class="summary-cards" style="display: none; margin-bottom: 1.5rem;">
-            <div class="summary-card" style="padding: 1rem;"><div class="value" id="totalItems" style="font-size: 1.5rem;">0</div><div class="label">Total de Peças</div></div>
-            <div class="summary-card" style="padding: 1rem;"><div class="value" id="totalValue" style="font-size: 1.5rem;">R$ 0,00</div><div class="label">Faturamento</div></div>
+          <div id="reportSummary" class="summary-cards" style="display:none; margin-bottom:1rem;">
+            <div class="summary-card"><div class="value" id="totalItems" style="font-size:1.3rem;">0</div><div class="label">Peças Vendidas</div></div>
+            <div class="summary-card"><div class="value" id="totalValue" style="font-size:1.3rem;">R$ 0,00</div><div class="label">Faturamento</div></div>
           </div>
-          
-          <div id="reportLoading" style="display: none; text-align: center; padding: 2rem;">Buscando dados...</div>
+          <div id="reportLoading" style="display:none; text-align:center; padding:1rem;">Carregando...</div>
           <ul class="sales-list" id="reportSalesList"></ul>
-          <div id="clientReportList" class="client-grid" style="display: none;"></div>
+          <div id="clientReportList" class="client-grid" style="display:none;"></div>
         </div>
 
         <!-- Clientes -->
-        <div id="clientsArea" style="display: none;">
-          <div style="background: var(--card-bg); padding: 1.5rem; border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 2rem;">
-            <h3>Cadastrar Novo Cliente</h3>
+        <div id="clientsArea" style="display:none;">
+          <div style="background:var(--card-bg); padding:1rem; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:1.2rem;">
+            <h3>Cadastrar Cliente</h3>
             <div id="clientMessage" class="alert success"></div>
-            <div class="form-group"><label>Nome Completo</label><input type="text" id="clientName"></div>
+            <div class="form-group"><label>Nome</label><input type="text" id="clientName"></div>
             <div class="flex-row">
-              <div class="form-group" style="margin-bottom:0;"><label>WhatsApp</label><input type="tel" id="clientPhone"></div>
-              <div class="form-group" style="margin-bottom:0;"><label>Endereço</label><input type="text" id="clientAddress"></div>
+              <div class="form-group"><label>WhatsApp</label><input type="tel" id="clientPhone"></div>
+              <div class="form-group"><label>Endereço</label><input type="text" id="clientAddress"></div>
             </div>
-            <button id="saveClientBtn" class="btn-primary" style="width: auto; margin-top: 1rem;">💾 Salvar Cadastro</button>
+            <button id="saveClientBtn" class="btn-primary" style="width:auto;">💾 Salvar</button>
           </div>
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem; flex-wrap:wrap; gap:0.5rem;">
             <h3 style="margin:0;">Lista de Clientes</h3>
-            <button id="refreshClientsBtn" class="btn-secondary" style="width: auto; padding: 0.4rem 1rem;">🔄 Atualizar</button>
+            <button id="refreshClientsBtn" class="btn-secondary" style="width:auto; padding:0.3rem 0.8rem;">🔄 Atualizar</button>
           </div>
-          <div class="search-box">
-            <input type="text" id="clientSearch" placeholder="🔍 Filtrar clientes por nome...">
-          </div>
+          <div class="search-box"><input type="text" id="clientSearch" placeholder="🔍 Filtrar clientes..."></div>
           <div id="clientsList" class="client-grid"></div>
+        </div>
+
+        <!-- Estoque -->
+        <div id="stockArea" style="display:none;">
+          <div style="background:var(--card-bg); padding:1rem; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:1.2rem;">
+            <h3>Cadastrar Peça no Estoque</h3>
+            <div id="stockMessage" class="alert success"></div>
+            <div class="form-group"><label>Tipo de Peça (opcional)</label><input type="text" id="stockItemType" placeholder="Ex: Vestido"></div>
+            <div class="form-group"><label>Valor (R$)</label><input type="number" id="stockValue" step="0.01" min="0"></div>
+            <div class="form-group">
+              <label>Código da Peça</label>
+              <div style="display:flex; gap:0.5rem; align-items:center;">
+                <input type="text" id="stockCode" placeholder="Ex: BL01" style="flex:1;">
+                <button class="btn-secondary btn-sm" id="suggestCodeBtn" title="Sugerir código">💡</button>
+              </div>
+              <small id="stockCodeSuggestion" style="color:var(--text-light); font-size:0.8rem;"></small>
+            </div>
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+              <button id="addStockBtn" class="btn-primary" style="background:#2563eb; flex:2;">➕ Adicionar ao Estoque</button>
+              <button id="resetStockFormBtn" class="btn-secondary" style="flex:1;">🔄 Zerar Campos</button>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem; flex-wrap:wrap; gap:0.5rem;">
+            <h3 style="margin:0;">Peças em Estoque</h3>
+            <button id="refreshStockBtn" class="btn-secondary" style="width:auto; padding:0.3rem 0.8rem;">🔄 Atualizar</button>
+          </div>
+          <div class="search-box"><input type="text" id="stockSearch" placeholder="🔍 Buscar por código ou tipo..."></div>
+          <ul class="sales-list" id="stockList"></ul>
         </div>
       </div>
 
-      <!-- Área da Live Ativa -->
-      <div id="livePanel" class="live-panel-container" style="display: none;">
+      <!-- Live Ativa -->
+      <div id="livePanel" class="live-panel-container" style="display:none;">
         <div class="live-header">
           <div>
-            <span style="background: #fce7f3; color: #be185d; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">🔴 AO VIVO</span>
-            <h2 id="activeLiveName" style="margin-top: 0.5rem;">Nome da Live</h2>
+            <span style="background:#fce7f3; color:#be185d; padding:0.2rem 0.6rem; border-radius:20px; font-size:0.75rem; font-weight:600;">🔴 AO VIVO</span>
+            <h2 id="activeLiveName" style="margin-top:0.3rem;">Nome da Live</h2>
           </div>
-          <button class="btn-danger" id="endLiveReportBtn" style="width: auto;">⏹ Encerrar Live</button>
+          <button class="btn-danger" id="endLiveReportBtn" style="width:auto;">⏹ Encerrar</button>
         </div>
-        
         <div id="liveMessage" class="alert success"></div>
         <datalist id="clientNamesList"></datalist>
-        
-        <div style="background: white; padding: 1.5rem; border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 2rem;">
-          <h3 style="font-size: 1.1rem; margin-bottom: 1rem;">Registrar Peça Vendida</h3>
-          <div class="flex-row">
-            <div class="form-group"><label>Código da Peça</label><input type="text" id="saleCode" placeholder="Ex: BL01"></div>
-            <div class="form-group"><label>Valor (R$)</label><input type="number" id="saleValue" step="0.01" placeholder="Ex: 49.90" min="0"></div>
+        <datalist id="liveStockCodes"></datalist>
+        <div style="background:white; padding:1rem; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:1.2rem;">
+          <h3 style="font-size:1rem; margin-bottom:0.8rem;">Registrar Venda</h3>
+          <div class="form-group"><label>Tipo de Peça (opcional)</label><input type="text" id="saleItemType" placeholder="Ex: Vestido"></div>
+          <div class="form-group"><label>Valor (R$)</label><input type="number" id="saleValue" step="0.01" min="0"></div>
+          <div class="form-group"><label>Código da Peça</label>
+            <input type="text" id="saleCode" list="liveStockCodes" placeholder="Ex: BL01" autocomplete="off">
           </div>
-          <div class="form-group"><label>Tipo de Peça</label><input type="text" id="saleItemType" placeholder="Ex: Vestido, Calça, Bolsa..."></div>
-          <div class="form-group"><label>👤 Cliente Principal (Comprador)</label><input type="text" id="client1" list="clientNamesList" autocomplete="off" placeholder="Digite para buscar nomes salvos..."></div>
-          
-          <details style="margin-bottom: 1rem;">
-            <summary style="cursor: pointer; color: var(--text-light); font-size: 0.9rem; font-weight: 500;">Mostrar Fila de Espera (Opcional)</summary>
-            <div style="padding-top: 1rem; border-top: 1px dashed var(--border); margin-top: 0.5rem;">
-              <div class="form-group"><label>👤 2ª Opção (Fila)</label><input type="text" id="client2" list="clientNamesList" autocomplete="off"></div>
-              <div class="form-group"><label>👤 3ª Opção (Fila)</label><input type="text" id="client3" list="clientNamesList" autocomplete="off"></div>
+          <div class="form-group"><label>👤 Cliente Principal</label><input type="text" id="client1" list="clientNamesList" autocomplete="off"></div>
+          <details style="margin-bottom:0.5rem;">
+            <summary style="cursor:pointer; color:var(--text-light); font-size:0.85rem;">Fila de Espera (até 3)</summary>
+            <div style="padding-top:0.5rem; border-top:1px dashed var(--border); margin-top:0.3rem;">
+              <div class="form-group"><label>👤 2ª Opção</label><input type="text" id="client2" list="clientNamesList" autocomplete="off"></div>
+              <div class="form-group"><label>👤 3ª Opção</label><input type="text" id="client3" list="clientNamesList" autocomplete="off"></div>
+              <div class="form-group"><label>👤 4ª Opção</label><input type="text" id="client4" list="clientNamesList" autocomplete="off"></div>
             </div>
           </details>
-          
-          <button id="registerSaleBtn" class="btn-primary" style="background: #10b981;">➕ Adicionar Venda</button>
+          <button id="registerSaleBtn" class="btn-primary" style="background:#10b981;">➕ Adicionar Venda</button>
         </div>
-
-        <div class="live-sales-list">
-          <h4 style="margin-bottom: 1rem; color: var(--text-dark);">Últimas Vendas Desta Live</h4>
-          <ul class="sales-list" id="liveSalesList"></ul>
-        </div>
+        <div><h4 style="margin-bottom:0.5rem;">Vendas desta Live</h4></div>
+        <ul class="sales-list" id="liveSalesList"></ul>
       </div>
     </div>
   </div>
@@ -601,7 +660,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, where, getDocs, serverTimestamp, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, where, getDocs, serverTimestamp, deleteDoc, updateDoc, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBLfJR31G2DKV38E4x6HFR-bY3tnH3Yrso",
@@ -625,6 +684,7 @@
     let currentReportMode = 'general';
     let currentReportSales = [];
     let knownClientNames = new Set();
+    let stockItems = [];
     const AVULSAS_ID = 'avulsas_virtual';
 
     // --- Gerenciamento de opções salvas (localStorage) ---
@@ -635,44 +695,26 @@
     };
 
     function getOptions(key) {
-      try {
-        const data = localStorage.getItem(key);
-        return data ? JSON.parse(data) : [];
-      } catch { return []; }
+      try { const data = localStorage.getItem(key); return data ? JSON.parse(data) : []; } catch { return []; }
     }
-
-    function setOptions(key, options) {
-      localStorage.setItem(key, JSON.stringify(options));
-    }
-
-    function addOption(key, value) {
-      if (!value.trim()) return;
-      const options = getOptions(key);
-      if (!options.includes(value.trim())) {
-        options.push(value.trim());
-        setOptions(key, options);
-      }
-    }
-
-    function deleteOption(key, value) {
-      let options = getOptions(key);
-      options = options.filter(item => item !== value);
-      setOptions(key, options);
-    }
-
-    function updateOption(key, oldValue, newValue) {
-      if (!newValue.trim() || oldValue === newValue.trim()) return;
-      let options = getOptions(key);
-      const index = options.indexOf(oldValue);
-      if (index !== -1) {
-        options[index] = newValue.trim();
-        setOptions(key, options);
-      }
-    }
+    function setOptions(key, options) { localStorage.setItem(key, JSON.stringify(options)); }
+    function addOption(key, value) { if (!value.trim()) return; const opts = getOptions(key); if (!opts.includes(value.trim())) { opts.push(value.trim()); setOptions(key, opts); } }
+    function deleteOption(key, value) { let opts = getOptions(key); opts = opts.filter(item => item !== value); setOptions(key, opts); }
+    function updateOption(key, oldValue, newValue) { if (!newValue.trim() || oldValue === newValue.trim()) return; let opts = getOptions(key); const idx = opts.indexOf(oldValue); if (idx !== -1) { opts[idx] = newValue.trim(); setOptions(key, opts); } }
 
     // --- Funções de utilidade ---
     const formatMoney = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
     
+    // Função auxiliar: verifica se a venda está ativa (possui cliente definido)
+    function isActiveSale(sale) {
+      return sale.clientQueue && sale.clientQueue.length > 0 && sale.clientQueue[0] && sale.clientQueue[0].length > 0;
+    }
+
+    // Filtra apenas vendas ativas para cálculo de totais
+    function getActiveSales(sales) {
+      return sales.filter(s => isActiveSale(s));
+    }
+
     function showScreen(id) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.getElementById(id).classList.add('active');
@@ -680,18 +722,18 @@
 
     function switchDashboardTab(tab) {
       document.getElementById('summaryArea').style.display = tab === 'summary' ? 'block' : 'none';
-      document.getElementById('avulsasArea').style.display = tab === 'avulsas' ? 'block' : 'none';
       document.getElementById('reportsArea').style.display = tab === 'reports' ? 'block' : 'none';
       document.getElementById('clientsArea').style.display = tab === 'clients' ? 'block' : 'none';
+      document.getElementById('stockArea').style.display = tab === 'stock' ? 'block' : 'none';
       
       document.getElementById('tabSummary').classList.toggle('active', tab === 'summary');
-      document.getElementById('tabAvulsas').classList.toggle('active', tab === 'avulsas');
       document.getElementById('tabReports').classList.toggle('active', tab === 'reports');
       document.getElementById('tabClients').classList.toggle('active', tab === 'clients');
+      document.getElementById('tabStock').classList.toggle('active', tab === 'stock');
       
       if (tab === 'reports') loadReportsLiveSelector();
       if (tab === 'clients') loadClientsList();
-      if (tab === 'avulsas') loadAvulsasSales();
+      if (tab === 'stock') loadStockList();
     }
 
     function showMessage(id, msg, type = 'success') {
@@ -705,7 +747,7 @@
 
     function showToast(msg) {
       const toast = document.getElementById('toastMessage');
-      toast.textContent = msg || "✅ Ação realizada com sucesso!";
+      toast.textContent = msg || "✅ Ação realizada!";
       toast.style.display = 'block';
       setTimeout(() => { toast.style.transform = 'translateY(0)'; }, 10);
       setTimeout(() => {
@@ -734,11 +776,7 @@
     async function login() {
       const email = document.getElementById('loginEmail').value.trim();
       const pass = document.getElementById('loginPassword').value;
-      try {
-        await signInWithEmailAndPassword(auth, email, pass);
-      } catch (e) {
-        showMessage('loginError', 'Erro ao logar: ' + getFirebaseErrorMessage(e), 'error');
-      }
+      try { await signInWithEmailAndPassword(auth, email, pass); } catch (e) { showMessage('loginError', 'Erro: ' + getFirebaseErrorMessage(e), 'error'); }
     }
 
     async function register() {
@@ -747,28 +785,251 @@
       const confirm = document.getElementById('regConfirmPassword').value;
       const storeName = document.getElementById('regStoreName').value.trim();
       if (pass !== confirm) return showMessage('registerError', 'Senhas não conferem.', 'error');
-      if (pass.length < 6) return showMessage('registerError', 'A senha deve ter pelo menos 6 caracteres.', 'error');
+      if (pass.length < 6) return showMessage('registerError', 'Mínimo 6 caracteres.', 'error');
       try {
         const cred = await createUserWithEmailAndPassword(auth, email, pass);
         await setDoc(doc(db, 'stores', cred.user.uid), { email, storeName, createdAt: new Date().toISOString() });
-        showToast("✅ Conta criada com sucesso!");
-      } catch (e) {
-        showMessage('registerError', 'Erro: ' + getFirebaseErrorMessage(e), 'error');
-      }
+        showToast("✅ Conta criada!");
+      } catch (e) { showMessage('registerError', 'Erro: ' + getFirebaseErrorMessage(e), 'error'); }
     }
 
     async function logout() { await signOut(auth); }
 
-    // --- Resumo Diário ---
-    async function loadDailySummary(dateStr) {
+    // --- Atualizar resumo do estoque (usado na aba Resumo) ---
+    function updateStockSummary() {
+      let totalValue = 0;
+      stockItems.forEach(item => totalValue += item.value);
+      document.getElementById('stockTotalValue').textContent = formatMoney(totalValue);
+      document.getElementById('stockTotalItems').textContent = stockItems.length;
+    }
+
+    // --- ESTOQUE ---
+    async function loadStockList() {
       if (!currentUser) return;
-      const salesQ = query(collection(db, 'sales'), where('storeId', '==', currentUser.uid), where('date', '==', dateStr));
-      const salesSnap = await getDocs(salesQ).catch(()=>null);
-      let totalSales = 0;
-      if(salesSnap) salesSnap.forEach(d => totalSales += d.data().value);
-      
-      document.getElementById('dailySales').textContent = formatMoney(totalSales);
-      document.getElementById('dailyItems').textContent = salesSnap ? salesSnap.size : 0;
+      const q = query(collection(db, 'stock'), where('storeId', '==', currentUser.uid));
+      const snap = await getDocs(q).catch(()=>null);
+      stockItems = [];
+      if(snap) snap.forEach(d => stockItems.push({ id: d.id, ...d.data() }));
+      renderStockList();
+      updateStockDatalist('modalAvulsaCode');
+      updateStockDatalist('saleCode');
+      updateStockDatalist('liveStockCodes');
+      updateStockSummary();
+      suggestCode();
+    }
+
+    function renderStockList() {
+      const container = document.getElementById('stockList');
+      const search = document.getElementById('stockSearch').value.toLowerCase().trim();
+      let filtered = stockItems;
+      if (search) {
+        filtered = stockItems.filter(item => 
+          item.code.toLowerCase().includes(search) || 
+          (item.itemType && item.itemType.toLowerCase().includes(search))
+        );
+      }
+      if (filtered.length === 0) {
+        container.innerHTML = '<li style="text-align:center; padding:1rem; color:var(--text-light);">Nenhuma peça em estoque.</li>';
+        return;
+      }
+      container.innerHTML = filtered.map(item => `
+        <li class="sale-item-card">
+          <div class="sale-item-header">
+            <span class="sale-code">${item.code} ${item.itemType ? `<span class="sale-type">${item.itemType}</span>` : ''}</span>
+            <span class="sale-price">${formatMoney(item.value)}</span>
+          </div>
+          <div style="display:flex; gap:0.5rem; justify-content:flex-end; flex-wrap:wrap;">
+            <button class="btn-stock-sell btn-sm" data-code="${item.code}" data-type="${item.itemType || ''}" data-value="${item.value}">🛒 Vender</button>
+            <button class="btn-edit btn-sm" data-id="${item.id}">✏️ Editar</button>
+            <button class="btn-danger btn-sm" data-id="${item.id}">🗑️ Excluir</button>
+          </div>
+        </li>
+      `).join('');
+
+      container.querySelectorAll('.btn-stock-sell').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const code = btn.dataset.code;
+          const type = btn.dataset.type;
+          const value = btn.dataset.value;
+          document.getElementById('modalAvulsaCode').value = code;
+          document.getElementById('modalAvulsaItemType').value = type;
+          document.getElementById('modalAvulsaValue').value = value;
+          document.getElementById('avulsaModal').classList.add('active');
+          document.getElementById('modalAvulsaClient1').focus();
+          showToast('🛒 Preencha o cliente e confirme a venda.');
+        });
+      });
+
+      container.querySelectorAll('.btn-edit').forEach(btn => {
+        btn.addEventListener('click', () => openEditStock(btn.dataset.id));
+      });
+      container.querySelectorAll('.btn-danger').forEach(btn => {
+        btn.addEventListener('click', () => deleteStockItem(btn.dataset.id));
+      });
+    }
+
+    // --- Sugestão de código (estoque) ---
+    function suggestCode() {
+      const type = document.getElementById('stockItemType').value.trim();
+      const currentCode = document.getElementById('stockCode').value.trim();
+      if (currentCode.length > 0) {
+        document.getElementById('stockCodeSuggestion').textContent = '';
+        return;
+      }
+      let prefix = 'PECA';
+      if (type.length > 0) {
+        const words = type.split(' ');
+        if (words.length === 1) prefix = type.substring(0, 3).toUpperCase();
+        else prefix = words.map(w => w[0].toUpperCase()).join('').substring(0, 3);
+      }
+      const existingCodes = stockItems.map(item => item.code).filter(c => c.startsWith(prefix));
+      let maxNum = 0;
+      existingCodes.forEach(c => {
+        const numPart = c.replace(prefix, '');
+        if (numPart && !isNaN(parseInt(numPart))) {
+          const n = parseInt(numPart);
+          if (n > maxNum) maxNum = n;
+        }
+      });
+      let numero = maxNum === 0 ? existingCodes.length + 1 : maxNum + 1;
+      let suggestion = prefix + String(numero).padStart(2, '0');
+      let tentativa = 1;
+      while (stockItems.some(item => item.code === suggestion)) {
+        numero = maxNum + tentativa;
+        suggestion = prefix + String(numero).padStart(2, '0');
+        tentativa++;
+      }
+      if (!type) {
+        const variacoes = ['AZUL','VERMELHO','VERDE','AMARELO','ROSA','PRETO','BRANCO','CINZA','LARANJA','ROXO','MARROM','BEGE','FLORAL','LISTRADO','XADREZ','POA','CANELADO','FRIO','COLORIDO','BASICO'];
+        const randomWord = variacoes[Math.floor(Math.random() * variacoes.length)];
+        suggestion = randomWord + String(Math.floor(Math.random() * 90) + 10);
+        let counter = 1;
+        while (stockItems.some(item => item.code === suggestion)) {
+          suggestion = randomWord + String(Math.floor(Math.random() * 90) + 10 + counter);
+          counter++;
+        }
+      }
+      const suggestionEl = document.getElementById('stockCodeSuggestion');
+      suggestionEl.textContent = `Sugestão: ${suggestion}`;
+      suggestionEl.style.cursor = 'pointer';
+      suggestionEl.onclick = () => {
+        document.getElementById('stockCode').value = suggestion;
+        suggestionEl.textContent = '';
+      };
+    }
+
+    document.getElementById('stockItemType').addEventListener('input', suggestCode);
+    document.getElementById('stockCode').addEventListener('input', () => {
+      if (document.getElementById('stockCode').value.trim().length > 0) {
+        document.getElementById('stockCodeSuggestion').textContent = '';
+      } else {
+        suggestCode();
+      }
+    });
+    document.getElementById('suggestCodeBtn').addEventListener('click', () => {
+      const suggestionEl = document.getElementById('stockCodeSuggestion');
+      if (suggestionEl.textContent) {
+        document.getElementById('stockCode').value = suggestionEl.textContent.replace('Sugestão: ', '');
+        suggestionEl.textContent = '';
+      } else {
+        suggestCode();
+      }
+    });
+
+    // --- Adicionar ao estoque ---
+    async function addStockItem() {
+      const code = document.getElementById('stockCode').value.trim();
+      const value = parseFloat(document.getElementById('stockValue').value);
+      const itemType = document.getElementById('stockItemType').value.trim();
+      if (!code) return showMessage('stockMessage', 'Informe o código.', 'error');
+      if (isNaN(value) || value <= 0) return showMessage('stockMessage', 'Valor inválido.', 'error');
+      const exists = stockItems.some(item => item.code === code);
+      if (exists) {
+        let newCode = code;
+        let counter = 1;
+        while (stockItems.some(item => item.code === newCode)) {
+          if (counter === 1) newCode = code + '01';
+          else newCode = code + String(counter).padStart(2, '0');
+          counter++;
+        }
+        showMessage('stockMessage', `❌ Código "${code}" já existe. Sugestão: "${newCode}". Use o botão "💡" para aceitar.`, 'error');
+        document.getElementById('stockCodeSuggestion').textContent = `Sugestão: ${newCode}`;
+        document.getElementById('stockCodeSuggestion').style.cursor = 'pointer';
+        document.getElementById('stockCodeSuggestion').onclick = () => {
+          document.getElementById('stockCode').value = newCode;
+          document.getElementById('stockCodeSuggestion').textContent = '';
+        };
+        return;
+      }
+      try {
+        await addDoc(collection(db, 'stock'), { storeId: currentUser.uid, code, value, itemType, createdAt: serverTimestamp() });
+        showMessage('stockMessage', `✅ Peça "${code}" adicionada.`, 'success');
+        resetStockForm();
+        await loadStockList();
+      } catch (e) { showMessage('stockMessage', 'Erro: ' + getFirebaseErrorMessage(e), 'error'); }
+    }
+
+    function resetStockForm() {
+      document.getElementById('stockItemType').value = '';
+      document.getElementById('stockValue').value = '';
+      document.getElementById('stockCode').value = '';
+      document.getElementById('stockCodeSuggestion').textContent = '';
+      document.getElementById('stockItemType').focus();
+    }
+    document.getElementById('resetStockFormBtn').addEventListener('click', resetStockForm);
+
+    async function deleteStockItem(id) {
+      if (!confirm('Remover esta peça do estoque?')) return;
+      try {
+        await deleteDoc(doc(db, 'stock', id));
+        showToast('🗑️ Peça removida.');
+        await loadStockList();
+      } catch (e) { alert('Erro: ' + getFirebaseErrorMessage(e)); }
+    }
+
+    async function openEditStock(id) {
+      const item = stockItems.find(i => i.id === id);
+      if (!item) return;
+      const newCode = prompt('Editar código:', item.code);
+      if (newCode === null) return;
+      const newValue = prompt('Editar valor:', item.value);
+      if (newValue === null) return;
+      const newType = prompt('Editar tipo (opcional):', item.itemType || '');
+      if (newType === null) return;
+      const val = parseFloat(newValue);
+      if (isNaN(val) || val <= 0) return alert('Valor inválido.');
+      if (newCode.trim() !== item.code && stockItems.some(i => i.code === newCode.trim())) {
+        alert('Código já existe.');
+        return;
+      }
+      try {
+        await updateDoc(doc(db, 'stock', id), { code: newCode.trim(), value: val, itemType: newType.trim() });
+        showToast('✅ Estoque atualizado.');
+        await loadStockList();
+      } catch (e) { alert('Erro: ' + getFirebaseErrorMessage(e)); }
+    }
+
+    function updateStockDatalist(inputId) {
+      const input = document.getElementById(inputId);
+      if (!input) return;
+      const datalistId = input.getAttribute('list');
+      if (!datalistId) return;
+      const datalist = document.getElementById(datalistId);
+      if (!datalist) return;
+      datalist.innerHTML = stockItems.map(item => `<option value="${item.code}">`).join('');
+    }
+
+    function setupStockAutoFill(inputId, typeFieldId, valueFieldId) {
+      const input = document.getElementById(inputId);
+      if (!input) return;
+      input.addEventListener('input', () => {
+        const code = input.value.trim();
+        const found = stockItems.find(item => item.code === code);
+        if (found) {
+          if (typeFieldId) document.getElementById(typeFieldId).value = found.itemType || '';
+          if (valueFieldId) document.getElementById(valueFieldId).value = found.value || '';
+        }
+      });
     }
 
     // --- Lives ---
@@ -777,70 +1038,133 @@
       allLivesList = [];
       const q = query(collection(db, 'lives'), where('storeId', '==', currentUser.uid));
       const snap = await getDocs(q).catch(()=>null);
-      if(snap) {
-        snap.forEach(d => allLivesList.push({ id: d.id, ...d.data() }));
-        allLivesList.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-      }
+      if(snap) { snap.forEach(d => allLivesList.push({ id: d.id, ...d.data() })); allLivesList.sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0)); }
     }
 
     function loadReportsLiveSelector() {
       const select = document.getElementById('reportLiveSelect');
-      let options = '';
-      if (allLivesList.length === 0) {
-        options = '<option value="">Nenhuma live encontrada</option>';
-      } else {
-        allLivesList.forEach(l => {
-          options += `<option value="${l.id}">${l.name} (${l.date})</option>`;
-        });
+      let options = '<option value="">Selecione...</option>';
+      if (allLivesList.length > 0) {
+        allLivesList.forEach(l => options += `<option value="${l.id}">${l.name} (${l.date})</option>`);
       }
       options += `<option value="${AVULSAS_ID}">📦 Vendas Avulsas</option>`;
       select.innerHTML = options;
-      
-      if (allLivesList.length > 0) {
-        select.value = allLivesList[0].id;
-        document.getElementById('deleteLiveBtn').style.display = 'inline-flex';
-        loadReportForLive(allLivesList[0].id);
-      } else {
-        select.value = AVULSAS_ID;
-        document.getElementById('deleteLiveBtn').style.display = 'none';
-        loadReportForLive(AVULSAS_ID);
-      }
+      document.getElementById('avulsasFilter').style.display = 'none';
+      document.getElementById('reportSummary').style.display = 'none';
+      document.getElementById('reportSalesList').innerHTML = '';
+      document.getElementById('clientReportList').innerHTML = '';
+      document.getElementById('deleteLiveBtn').style.display = 'none';
     }
+
+    document.getElementById('reportLiveSelect').addEventListener('change', function(e) {
+      const val = e.target.value;
+      if (!val) {
+        document.getElementById('avulsasFilter').style.display = 'none';
+        document.getElementById('reportSummary').style.display = 'none';
+        document.getElementById('reportSalesList').innerHTML = '';
+        document.getElementById('clientReportList').innerHTML = '';
+        document.getElementById('deleteLiveBtn').style.display = 'none';
+        return;
+      }
+      if (val === AVULSAS_ID) {
+        document.getElementById('deleteLiveBtn').style.display = 'none';
+        document.getElementById('avulsasFilter').style.display = 'block';
+        document.getElementById('avulsasDateFilter').value = '';
+        loadAvulsasReport(null);
+      } else {
+        document.getElementById('deleteLiveBtn').style.display = 'inline-flex';
+        document.getElementById('avulsasFilter').style.display = 'none';
+        loadReportForLive(val);
+      }
+    });
+
+    async function loadAvulsasReport(dateFilter, last100 = false) {
+      document.getElementById('reportLoading').style.display = 'block';
+      document.getElementById('reportSalesList').innerHTML = '';
+      document.getElementById('clientReportList').innerHTML = '';
+      document.getElementById('reportSummary').style.display = 'none';
+
+      let q;
+      if (last100) {
+        q = query(
+          collection(db, 'sales'),
+          where('storeId', '==', currentUser.uid),
+          where('liveId', '==', null),
+          orderBy('createdAt', 'desc'),
+          limit(100)
+        );
+      } else if (dateFilter) {
+        q = query(
+          collection(db, 'sales'),
+          where('storeId', '==', currentUser.uid),
+          where('liveId', '==', null),
+          where('date', '==', dateFilter)
+        );
+      } else {
+        q = query(
+          collection(db, 'sales'),
+          where('storeId', '==', currentUser.uid),
+          where('liveId', '==', null)
+        );
+      }
+
+      const snap = await getDocs(q).catch(()=>null);
+      let sales = [];
+      if(snap) snap.forEach(d => sales.push({ id: d.id, ...d.data() }));
+
+      // Ordenação: se for "Últimas 100", ordem decrescente (mais recentes primeiro); senão, crescente
+      if (last100) {
+        sales.sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+      } else {
+        sales.sort((a,b) => (a.createdAt?.seconds||0) - (b.createdAt?.seconds||0));
+      }
+
+      // Guarda todas as vendas (inclusive devolvidas) para exibição na lista
+      currentReportSales = sales;
+
+      // Para totais, considera apenas vendas ativas
+      const activeSales = getActiveSales(sales);
+      const totalVal = activeSales.reduce((sum, sale) => sum + sale.value, 0);
+
+      document.getElementById('reportLoading').style.display = 'none';
+      document.getElementById('totalItems').textContent = activeSales.length;
+      document.getElementById('totalValue').textContent = formatMoney(totalVal);
+      document.getElementById('reportSummary').style.display = 'flex';
+
+      if (currentReportMode === 'general') renderGeneralReport();
+      else renderClientReport();
+    }
+
+    document.getElementById('applyAvulsasFilter').addEventListener('click', () => {
+      const date = document.getElementById('avulsasDateFilter').value;
+      loadAvulsasReport(date || null, false);
+    });
+    document.getElementById('last100AvulsasBtn').addEventListener('click', () => {
+      loadAvulsasReport(null, true);
+    });
 
     async function loadReportForLive(liveId) {
       document.getElementById('reportLoading').style.display = 'block';
       document.getElementById('reportSalesList').innerHTML = '';
       document.getElementById('clientReportList').innerHTML = '';
       document.getElementById('reportSummary').style.display = 'none';
-
       let sales = [];
-      let isAvulsas = (liveId === AVULSAS_ID);
-      
-      if (isAvulsas) {
-        const q = query(collection(db, 'sales'), where('storeId', '==', currentUser.uid), where('liveId', '==', null));
-        const snap = await getDocs(q).catch(()=>null);
-        if(snap) snap.forEach(d => sales.push({ id: d.id, ...d.data() }));
-      } else {
-        const q = query(collection(db, 'sales'), where('liveId', '==', liveId), where('storeId', '==', currentUser.uid));
-        const snap = await getDocs(q).catch(()=>null);
-        if(snap) snap.forEach(d => sales.push({ id: d.id, ...d.data() }));
-      }
-      
-      sales.sort((a, b) => (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0));
+      const q = query(collection(db, 'sales'), where('liveId', '==', liveId), where('storeId', '==', currentUser.uid));
+      const snap = await getDocs(q).catch(()=>null);
+      if(snap) snap.forEach(d => sales.push({ id: d.id, ...d.data() }));
+      sales.sort((a,b) => (a.createdAt?.seconds||0) - (b.createdAt?.seconds||0));
       currentReportSales = sales;
-      
-      document.getElementById('reportLoading').style.display = 'none';
 
-      let totalVal = currentReportSales.reduce((sum, sale) => sum + sale.value, 0);
-      document.getElementById('totalItems').textContent = currentReportSales.length;
+      const activeSales = getActiveSales(sales);
+      const totalVal = activeSales.reduce((sum, sale) => sum + sale.value, 0);
+
+      document.getElementById('reportLoading').style.display = 'none';
+      document.getElementById('totalItems').textContent = activeSales.length;
       document.getElementById('totalValue').textContent = formatMoney(totalVal);
       document.getElementById('reportSummary').style.display = 'flex';
-      
-      if (currentReportMode === 'general') {
-        renderGeneralReport();
-      } else {
-        renderClientReport();
-      }
+
+      if (currentReportMode === 'general') renderGeneralReport();
+      else renderClientReport();
     }
 
     // --- Renderizações ---
@@ -848,63 +1172,59 @@
       const listEl = document.getElementById('reportSalesList');
       listEl.style.display = 'grid';
       document.getElementById('clientReportList').style.display = 'none';
-      
-      if (currentReportSales.length === 0) {
-        listEl.innerHTML = '<li style="text-align:center; padding:2rem; color:var(--text-light);">Nenhuma venda registrada.</li>';
-        return;
-      }
-
+      if (currentReportSales.length === 0) { listEl.innerHTML = '<li style="text-align:center; padding:1rem; color:var(--text-light);">Nenhuma venda.</li>'; return; }
       listEl.innerHTML = currentReportSales.map(sale => {
         const queue = sale.clientQueue.slice(1);
-        const queueHtml = queue.length > 0 ? `<div class="sale-queue">⏳ <strong>Fila:</strong> ${queue.join(', ')}</div>` : '';
+        const queueHtml = queue.length ? `<div class="sale-queue">⏳ Fila: ${queue.join(', ')}</div>` : '';
         const typeHtml = sale.itemType ? `<span class="sale-type">${sale.itemType}</span>` : '';
+        const hasClient = isActiveSale(sale);
         return `
         <li class="sale-item-card">
           <div class="sale-item-header">
-            <span class="sale-code">Ref: ${sale.code} ${typeHtml}</span>
+            <span class="sale-code">${sale.code} ${typeHtml}</span>
             <div>
-              <span class="sale-price" style="margin-right: 10px;">${formatMoney(sale.value)}</span>
-              <button class="btn-edit" data-sale-id="${sale.id}" style="width:auto; padding:0.3rem 0.5rem; font-size:0.8rem; margin-right:4px;">✏️</button>
-              <button class="btn-danger" data-sale-id="${sale.id}" style="width:auto; padding:0.3rem 0.5rem; font-size:0.8rem;">🗑️</button>
+              <span class="sale-price">${formatMoney(sale.value)}</span>
+              <button class="btn-edit btn-sm" data-sale-id="${sale.id}">✏️</button>
+              ${hasClient ? `<button class="btn-return btn-sm" data-sale-id="${sale.id}" data-code="${sale.code}" data-type="${sale.itemType || ''}" data-value="${sale.value}">📦 Devolver</button>` : ''}
+              <button class="btn-danger btn-sm" data-sale-id="${sale.id}">🗑️</button>
             </div>
           </div>
-          <div class="sale-buyer">👤 Comprador: ${sale.clientQueue[0]}</div>
+          ${hasClient ? `<div class="sale-buyer">👤 ${sale.clientQueue[0]}</div>` : '<div class="sale-buyer" style="color:var(--text-light);">🔄 Peça devolvida ao estoque</div>'}
           ${queueHtml}
         </li>`;
       }).join('');
 
       listEl.querySelectorAll('button[data-sale-id]').forEach(btn => {
-        if (btn.classList.contains('btn-danger')) {
-          btn.addEventListener('click', () => deleteSale(btn.dataset.saleId));
-        } else if (btn.classList.contains('btn-edit')) {
-          btn.addEventListener('click', () => openEditModal(btn.dataset.saleId));
+        if (btn.classList.contains('btn-danger')) btn.addEventListener('click', () => deleteSale(btn.dataset.saleId));
+        else if (btn.classList.contains('btn-edit')) btn.addEventListener('click', () => openEditModal(btn.dataset.saleId));
+        else if (btn.classList.contains('btn-return')) {
+          btn.addEventListener('click', () => returnToStock(btn.dataset.saleId, btn.dataset.code, btn.dataset.type, btn.dataset.value));
         }
       });
     }
 
     function renderClientReport() {
-      const listEl = document.getElementById('reportSalesList');
-      listEl.style.display = 'none';
+      document.getElementById('reportSalesList').style.display = 'none';
       const clientContainer = document.getElementById('clientReportList');
       clientContainer.style.display = 'grid';
       clientContainer.innerHTML = '';
-
-      if (currentReportSales.length === 0) {
-        clientContainer.innerHTML = '<div style="text-align:center; padding:2rem; color:var(--text-light); grid-column:1/-1;">Nenhuma venda para exibir.</div>';
+      if (currentReportSales.length === 0) { clientContainer.innerHTML = '<div style="text-align:center; padding:1rem; color:var(--text-light); grid-column:1/-1;">Nenhuma venda.</div>'; return; }
+      
+      const activeSales = getActiveSales(currentReportSales);
+      if (activeSales.length === 0) {
+        clientContainer.innerHTML = '<div style="text-align:center; padding:1rem; color:var(--text-light); grid-column:1/-1;">Nenhuma venda ativa.</div>';
         return;
       }
 
       const clientMap = new Map();
-      currentReportSales.forEach(sale => {
+      activeSales.forEach(sale => {
         const buyer = sale.clientQueue[0];
         if (!clientMap.has(buyer)) clientMap.set(buyer, { name: buyer, total: 0, items: [] });
         const entry = clientMap.get(buyer);
         entry.total += sale.value;
-        entry.items.push({ id: sale.id, code: sale.code, value: sale.value, itemType: sale.itemType || sale.code });
+        entry.items.push({ id: sale.id, code: sale.code, value: sale.value, itemType: sale.itemType || sale.code, clientQueue: sale.clientQueue });
       });
-
       window.currentClientMap = Object.fromEntries(clientMap);
-
       for (const [name, data] of clientMap) {
         let itemsHtml = data.items.map(item => `
           <li>
@@ -912,141 +1232,232 @@
             <span>
               ${formatMoney(item.value)}
               <span class="item-actions">
-                <button class="btn-edit" data-sale-id="${item.id}" style="padding:0.1rem 0.4rem; font-size:0.7rem;">✏️</button>
-                <button class="btn-danger" data-sale-id="${item.id}" style="padding:0.1rem 0.4rem; font-size:0.7rem;">🗑️</button>
+                <button class="btn-edit btn-sm" data-sale-id="${item.id}">✏️</button>
+                <button class="btn-return btn-sm" data-sale-id="${item.id}" data-code="${item.code}" data-type="${item.itemType || ''}" data-value="${item.value}">📦 Devolver</button>
+                <button class="btn-success btn-sm" data-sale-id="${item.id}" data-client="${name}">🔄 Passar</button>
+                <button class="btn-danger btn-sm" data-sale-id="${item.id}">🗑️</button>
               </span>
             </span>
           </li>
         `).join('');
-        
         const card = document.createElement('div');
         card.className = 'client-report-card';
         card.innerHTML = `
           <h4>${name}</h4>
           <ul class="client-report-items">${itemsHtml}</ul>
           <div class="client-report-total"><span>Total</span><span>${formatMoney(data.total)}</span></div>
-          <div class="flex-row">
-            <button class="btn-whatsapp" data-client-name="${name}" style="font-size: 0.85rem;">📋 Copiar Resumo</button>
-          </div>
+          <div class="flex-row"><button class="btn-whatsapp" data-client-name="${name}" style="width:auto;">📋 Copiar Resumo</button></div>
         `;
         clientContainer.appendChild(card);
       }
-
       clientContainer.querySelectorAll('button[data-sale-id]').forEach(btn => {
-        if (btn.classList.contains('btn-danger')) {
-          btn.addEventListener('click', () => deleteSale(btn.dataset.saleId));
-        } else if (btn.classList.contains('btn-edit')) {
-          btn.addEventListener('click', () => openEditModal(btn.dataset.saleId));
+        if (btn.classList.contains('btn-danger')) btn.addEventListener('click', () => deleteSale(btn.dataset.saleId));
+        else if (btn.classList.contains('btn-edit')) btn.addEventListener('click', () => openEditModal(btn.dataset.saleId));
+        else if (btn.classList.contains('btn-return')) {
+          btn.addEventListener('click', () => returnToStock(btn.dataset.saleId, btn.dataset.code, btn.dataset.type, btn.dataset.value));
         }
+        else if (btn.classList.contains('btn-success')) btn.addEventListener('click', () => handlePassClient(btn.dataset.saleId, btn.dataset.client));
       });
-
       clientContainer.querySelectorAll('button[data-client-name]').forEach(btn => {
         btn.addEventListener('click', () => openPreviewModal(btn.dataset.clientName));
       });
     }
 
-    // --- Vendas Avulsas ---
-    async function loadAvulsasSales() {
-      if (!currentUser) return;
-      const q = query(collection(db, 'sales'), where('storeId', '==', currentUser.uid), where('liveId', '==', null));
-      const snap = await getDocs(q).catch(()=>null);
-      const listEl = document.getElementById('avulsaSalesList');
-      listEl.innerHTML = '';
-      if (snap) {
-        const sales = [];
-        snap.forEach(d => sales.push({ id: d.id, ...d.data() }));
-        sales.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-        if (sales.length === 0) {
-          listEl.innerHTML = '<li style="text-align:center; padding:1rem; color:var(--text-light);">Nenhuma venda avulsa registrada.</li>';
-          return;
+    // --- Devolver ao estoque ---
+    async function returnToStock(saleId, code, type, value) {
+      if (!confirm(`Devolver a peça "${code}" ao estoque?`)) return;
+      try {
+        await updateDoc(doc(db, 'sales', saleId), { clientQueue: [''] });
+        const exists = stockItems.some(item => item.code === code);
+        if (!exists) {
+          await addDoc(collection(db, 'stock'), {
+            storeId: currentUser.uid,
+            code: code,
+            value: parseFloat(value),
+            itemType: type,
+            createdAt: serverTimestamp()
+          });
+          showToast('📦 Peça devolvida ao estoque.');
+          await loadStockList();
+        } else {
+          showToast('⚠️ Peça já existe no estoque.');
         }
-        sales.forEach(sale => {
-          const queue = sale.clientQueue.slice(1);
-          const queueHtml = queue.length > 0 ? `<div class="sale-queue">⏳ <strong>Fila:</strong> ${queue.join(', ')}</div>` : '';
-          const typeHtml = sale.itemType ? `<span class="sale-type">${sale.itemType}</span>` : '';
-          listEl.innerHTML += `
-          <li class="sale-item-card">
-            <div class="sale-item-header">
-              <span class="sale-code">Ref: ${sale.code} ${typeHtml}</span>
-              <div>
-                <span class="sale-price" style="margin-right: 10px;">${formatMoney(sale.value)}</span>
-                <button class="btn-edit" data-sale-id="${sale.id}" style="width:auto; padding:0.3rem 0.5rem; font-size:0.8rem; margin-right:4px;">✏️</button>
-                <button class="btn-danger" data-sale-id="${sale.id}" style="width:auto; padding:0.3rem 0.5rem; font-size:0.8rem;">🗑️</button>
-              </div>
-            </div>
-            <div class="sale-buyer">👤 Comprador: ${sale.clientQueue[0]}</div>
-            ${queueHtml}
-          </li>`;
-        });
-        listEl.querySelectorAll('button[data-sale-id]').forEach(btn => {
-          if (btn.classList.contains('btn-danger')) {
-            btn.addEventListener('click', () => deleteSale(btn.dataset.saleId));
-          } else if (btn.classList.contains('btn-edit')) {
-            btn.addEventListener('click', () => openEditModal(btn.dataset.saleId));
-          }
-        });
+        refreshAllLists();
+      } catch (e) {
+        alert('Erro ao devolver: ' + getFirebaseErrorMessage(e));
       }
     }
 
-    async function registerAvulsaSale() {
-      const code = document.getElementById('avulsaCode').value.trim();
-      const value = parseFloat(document.getElementById('avulsaValue').value);
-      const itemType = document.getElementById('avulsaItemType').value.trim();
-      const c1 = document.getElementById('avulsaClient1').value.trim();
-      const c2 = document.getElementById('avulsaClient2').value.trim();
-      const c3 = document.getElementById('avulsaClient3').value.trim();
+    // --- Passar cliente (com opções quando não há próximo) ---
+    async function handlePassClient(saleId, currentClient) {
+      const sale = currentReportSales.find(s => s.id === saleId);
+      if (!sale) return alert('Venda não encontrada.');
+      const queue = sale.clientQueue || [];
+      if (queue.length > 1) {
+        const next = queue[1];
+        if (confirm(`Passar a peça para o próximo da fila: ${next}?`)) {
+          const newQueue = queue.slice(1);
+          try {
+            await updateDoc(doc(db, 'sales', saleId), { clientQueue: newQueue });
+            showToast(`✅ Venda passada para ${next}.`);
+            refreshAllLists();
+          } catch (e) { alert('Erro: ' + getFirebaseErrorMessage(e)); }
+        }
+        return;
+      }
+      if (queue.length <= 1) {
+        const confirmMsg = `Não há próximo cliente na fila para "${currentClient}". Deseja devolver ao estoque?`;
+        if (confirm(confirmMsg)) {
+          await returnToStock(saleId, sale.code, sale.itemType || '', sale.value);
+        } else {
+          const newClient = prompt('Digite o nome do novo cliente para esta peça:');
+          if (newClient && newClient.trim()) {
+            await ensureClientExists(newClient.trim());
+            await updateDoc(doc(db, 'sales', saleId), { clientQueue: [newClient.trim()] });
+            showToast(`✅ Cliente alterado para ${newClient.trim()}.`);
+            refreshAllLists();
+          }
+        }
+      }
+    }
 
-      if (!code) return showMessage('avulsaMessage', 'Preencha o código da peça.', 'error');
-      if (isNaN(value) || value <= 0) return showMessage('avulsaMessage', 'Informe um valor válido (maior que zero).', 'error');
-      if (!c1) return showMessage('avulsaMessage', 'Preencha o comprador principal.', 'error');
+    // --- Auto-cadastro de clientes ---
+    async function ensureClientExists(name) {
+      if (!name || !currentUser) return;
+      const exists = allClients.some(c => c.name === name);
+      if (exists) return;
+      const q = query(collection(db, 'clients'), where('storeId', '==', currentUser.uid), where('name', '==', name));
+      const snap = await getDocs(q).catch(()=>null);
+      if (snap && !snap.empty) {
+        allClients.push({ id: snap.docs[0].id, ...snap.docs[0].data() });
+        return;
+      }
+      try {
+        const docRef = await addDoc(collection(db, 'clients'), {
+          storeId: currentUser.uid,
+          name: name,
+          phone: '',
+          address: '',
+          createdAt: serverTimestamp()
+        });
+        allClients.push({ id: docRef.id, name, phone: '', address: '' });
+        knownClientNames.add(name);
+        renderDatalist();
+        showToast(`✅ Cliente "${name}" cadastrado automaticamente.`);
+      } catch (e) {
+        console.error('Erro ao cadastrar cliente automático:', e);
+      }
+    }
+
+    // --- Função de registro de venda avulsa (usada no modal) ---
+    async function registerAvulsaSaleFromModal() {
+      const itemType = document.getElementById('modalAvulsaItemType').value.trim();
+      const value = parseFloat(document.getElementById('modalAvulsaValue').value);
+      const code = document.getElementById('modalAvulsaCode').value.trim();
+      const c1 = document.getElementById('modalAvulsaClient1').value.trim();
+      const c2 = document.getElementById('modalAvulsaClient2').value.trim();
+      const c3 = document.getElementById('modalAvulsaClient3').value.trim();
+      const c4 = document.getElementById('modalAvulsaClient4').value.trim();
+
+      if (!code) return showMessage('avulsaModalMessage', 'Preencha o código.', 'error');
+      if (isNaN(value) || value <= 0) return showMessage('avulsaModalMessage', 'Valor inválido.', 'error');
+      if (!c1) return showMessage('avulsaModalMessage', 'Preencha o comprador principal.', 'error');
+      
+      await ensureClientExists(c1);
+      if (c2) await ensureClientExists(c2);
+      if (c3) await ensureClientExists(c3);
+      if (c4) await ensureClientExists(c4);
 
       const queue = [c1];
       if (c2) queue.push(c2);
       if (c3) queue.push(c3);
-
+      if (c4) queue.push(c4);
       try {
         await addDoc(collection(db, 'sales'), {
-          liveId: null,
-          storeId: currentUser.uid,
-          code,
-          value,
-          itemType,
-          clientQueue: queue,
-          currentClientIndex: 0,
-          date: getTodayString(),
-          createdAt: serverTimestamp()
+          liveId: null, storeId: currentUser.uid, code, value, itemType,
+          clientQueue: queue, currentClientIndex: 0, date: getTodayString(), createdAt: serverTimestamp()
         });
-        knownClientNames.add(c1);
-        if(c2) knownClientNames.add(c2);
-        if(c3) knownClientNames.add(c3);
+        knownClientNames.add(c1); if(c2) knownClientNames.add(c2); if(c3) knownClientNames.add(c3); if(c4) knownClientNames.add(c4);
         renderDatalist();
-
-        showMessage('avulsaMessage', `✅ Venda avulsa registrada! ${code} para ${c1}.`);
-        document.getElementById('avulsaCode').value = '';
-        document.getElementById('avulsaValue').value = '';
-        document.getElementById('avulsaItemType').value = '';
-        document.getElementById('avulsaClient1').value = '';
-        document.getElementById('avulsaClient2').value = '';
-        document.getElementById('avulsaClient3').value = '';
-        loadAvulsasSales();
-        loadDailySummary(document.getElementById('summaryDate').value);
+        showMessage('avulsaModalMessage', `✅ Venda ${code} para ${c1}.`, 'success');
+        const stockItem = stockItems.find(item => item.code === code);
+        if (stockItem) { await deleteDoc(doc(db, 'stock', stockItem.id)); await loadStockList(); }
+        document.getElementById('modalAvulsaItemType').value = '';
+        document.getElementById('modalAvulsaValue').value = '';
+        document.getElementById('modalAvulsaCode').value = '';
+        document.getElementById('modalAvulsaClient1').value = '';
+        document.getElementById('modalAvulsaClient2').value = '';
+        document.getElementById('modalAvulsaClient3').value = '';
+        document.getElementById('modalAvulsaClient4').value = '';
+        setTimeout(() => {
+          document.getElementById('avulsaModal').classList.remove('active');
+        }, 1000);
         const selected = document.getElementById('reportLiveSelect').value;
-        if (selected === AVULSAS_ID) loadReportForLive(AVULSAS_ID);
-      } catch (e) {
-        showMessage('avulsaMessage', 'Erro ao registrar: ' + getFirebaseErrorMessage(e), 'error');
-      }
+        if (selected === AVULSAS_ID) {
+          const dateFilter = document.getElementById('avulsasDateFilter').value;
+          loadAvulsasReport(dateFilter || null, false);
+        }
+      } catch (e) { showMessage('avulsaModalMessage', 'Erro: ' + getFirebaseErrorMessage(e), 'error'); }
     }
 
-    // --- Funções de Edição e Exclusão ---
+    // --- Registrar Venda Live ---
+    async function registerSaleInActiveLive() {
+      const itemType = document.getElementById('saleItemType').value.trim();
+      const value = parseFloat(document.getElementById('saleValue').value);
+      const code = document.getElementById('saleCode').value.trim();
+      const c1 = document.getElementById('client1').value.trim();
+      const c2 = document.getElementById('client2').value.trim();
+      const c3 = document.getElementById('client3').value.trim();
+      const c4 = document.getElementById('client4').value.trim();
+
+      if (!code) return showMessage('liveMessage', 'Preencha o código.', 'error');
+      if (isNaN(value) || value <= 0) return showMessage('liveMessage', 'Valor inválido.', 'error');
+      if (!c1) return showMessage('liveMessage', 'Preencha o comprador principal.', 'error');
+      
+      await ensureClientExists(c1);
+      if (c2) await ensureClientExists(c2);
+      if (c3) await ensureClientExists(c3);
+      if (c4) await ensureClientExists(c4);
+
+      const queue = [c1];
+      if (c2) queue.push(c2);
+      if (c3) queue.push(c3);
+      if (c4) queue.push(c4);
+      try {
+        await addDoc(collection(db, 'sales'), {
+          liveId: activeLiveId, storeId: currentUser.uid, code, value, itemType,
+          clientQueue: queue, currentClientIndex: 0, date: activeLiveData.date, createdAt: serverTimestamp()
+        });
+        knownClientNames.add(c1); if(c2) knownClientNames.add(c2); if(c3) knownClientNames.add(c3); if(c4) knownClientNames.add(c4);
+        renderDatalist();
+        showMessage('liveMessage', `✅ ${code} para ${c1}.`, 'success');
+        const stockItem = stockItems.find(item => item.code === code);
+        if (stockItem) { await deleteDoc(doc(db, 'stock', stockItem.id)); await loadStockList(); }
+        resetSaleFields('');
+        loadActiveLiveSales();
+      } catch (e) { showMessage('liveMessage', 'Erro: ' + getFirebaseErrorMessage(e), 'error'); }
+    }
+
+    // --- Reset dos campos de venda live ---
+    function resetSaleFields(prefix = '') {
+      document.getElementById('saleItemType').value = '';
+      document.getElementById('saleValue').value = '';
+      document.getElementById('saleCode').value = '';
+      document.getElementById('client1').value = '';
+      document.getElementById('client2').value = '';
+      document.getElementById('client3').value = '';
+      document.getElementById('client4').value = '';
+      document.getElementById('saleCode').focus();
+    }
+
+    // --- Funções de Edição e Exclusão de vendas ---
     async function deleteSale(saleId) {
-      if(!confirm('🚨 Deseja realmente cancelar e APAGAR esta venda?')) return;
+      if(!confirm('🚨 Apagar esta venda?')) return;
       try {
         await deleteDoc(doc(db, 'sales', saleId));
-        showToast("🗑️ Venda apagada com sucesso!");
+        showToast("🗑️ Venda apagada.");
         refreshAllLists();
-      } catch (e) {
-        alert('Erro ao apagar venda: ' + getFirebaseErrorMessage(e));
-      }
+      } catch (e) { alert('Erro: ' + getFirebaseErrorMessage(e)); }
     }
 
     async function openEditModal(saleId) {
@@ -1064,47 +1475,37 @@
     document.getElementById('cancelEditBtn').addEventListener('click', () => {
       document.getElementById('editModal').classList.remove('active');
     });
-
     document.getElementById('saveEditBtn').addEventListener('click', async () => {
       const saleId = document.getElementById('editSaleId').value;
       const code = document.getElementById('editCode').value.trim();
       const value = parseFloat(document.getElementById('editValue').value);
       const itemType = document.getElementById('editItemType').value.trim();
-
-      if (!code) return alert('Código é obrigatório.');
-      if (isNaN(value) || value <= 0) return alert('Valor deve ser maior que zero.');
-
+      if (!code) return alert('Código obrigatório.');
+      if (isNaN(value) || value <= 0) return alert('Valor inválido.');
       try {
-        await updateDoc(doc(db, 'sales', saleId), {
-          code,
-          value,
-          itemType
-        });
-        showToast("✅ Venda atualizada!");
+        await updateDoc(doc(db, 'sales', saleId), { code, value, itemType });
+        showToast("✅ Venda atualizada.");
         document.getElementById('editModal').classList.remove('active');
         refreshAllLists();
-      } catch (e) {
-        alert('Erro ao editar: ' + getFirebaseErrorMessage(e));
-      }
+      } catch (e) { alert('Erro: ' + getFirebaseErrorMessage(e)); }
     });
 
     function refreshAllLists() {
       if (activeLiveId) loadActiveLiveSales();
-      loadAvulsasSales();
       const selected = document.getElementById('reportLiveSelect').value;
-      if (selected) loadReportForLive(selected);
-      loadDailySummary(document.getElementById('summaryDate').value);
+      if (selected === AVULSAS_ID) {
+        const dateFilter = document.getElementById('avulsasDateFilter').value;
+        loadAvulsasReport(dateFilter || null, false);
+      } else if (selected) {
+        loadReportForLive(selected);
+      }
+      loadStockList();
     }
 
-    // --- PRÉ-VISUALIZAÇÃO COM TEMPLATE PERSONALIZÁVEL E OPÇÕES SALVAS ---
+    // --- Pré-visualização (mantida) ---
     function openPreviewModal(clientName) {
       const data = window.currentClientMap[clientName];
-      if (!data) {
-        alert('Dados do cliente não encontrados.');
-        return;
-      }
-
-      // Preenche data atual
+      if (!data) { alert('Dados não encontrados.'); return; }
       const today = new Date();
       const day = String(today.getDate()).padStart(2,'0');
       const month = String(today.getMonth()+1).padStart(2,'0');
@@ -1113,28 +1514,17 @@
       document.getElementById('templateDeadlineDate').value = defaultDate;
       document.getElementById('templateDeadlineTime').value = '18:00';
       document.getElementById('templatePaymentMethod').value = 'Pix';
-
-      // Carrega as opções salvas nos selects
       populateSelect('templatePixKeySelect', STORAGE_KEYS.pix);
       populateSelect('templateBankSelect', STORAGE_KEYS.bank);
       populateSelect('templateAccountNameSelect', STORAGE_KEYS.name);
-      
-      // Limpa os campos de input
       document.getElementById('templatePixKey').value = '';
       document.getElementById('templateBank').value = '';
       document.getElementById('templateAccountName').value = '';
       document.getElementById('templatePixType').value = '';
-
-      // Gera a mensagem base
       const nomeLoja = storeData ? storeData.storeName : 'nossa loja';
       let summary = '';
-      data.items.forEach((item, index) => {
-        const desc = item.itemType || item.code;
-        summary += `🔸 ${desc} | ${formatMoney(item.value)}\n`;
-      });
+      data.items.forEach(item => { summary += `🔸 ${item.itemType} | ${formatMoney(item.value)}\n`; });
       const total = formatMoney(data.total);
-
-      // Template com o texto exato que o usuário pediu
       const baseMsg = `Olá *${clientName}*! Tudo bem? 🌸
 Aqui está o resumo detalhado do seu pedido:
 
@@ -1150,10 +1540,8 @@ Dados para pagamento:
 Chave Pix: 
 Banco: 
 Nome: `;
-
       document.getElementById('previewMessage').value = baseMsg;
 
-      // Função para atualizar a mensagem com os campos atuais
       const updatePreview = () => {
         const paymentMethod = document.getElementById('templatePaymentMethod').value.trim() || 'Pix';
         const deadlineTime = document.getElementById('templateDeadlineTime').value.trim() || '18:00';
@@ -1162,15 +1550,9 @@ Nome: `;
         const pixKey = document.getElementById('templatePixKey').value.trim();
         const bank = document.getElementById('templateBank').value.trim();
         const accountName = document.getElementById('templateAccountName').value.trim();
-
-        // Monta a chave Pix com tipo + valor
         let pixDisplay = '';
-        if (pixType && pixKey) {
-          pixDisplay = `${pixType}: ${pixKey}`;
-        } else if (pixKey) {
-          pixDisplay = `Chave: ${pixKey}`;
-        }
-
+        if (pixType && pixKey) pixDisplay = `${pixType}: ${pixKey}`;
+        else if (pixKey) pixDisplay = `Chave: ${pixKey}`;
         let msg = `Olá *${clientName}*! Tudo bem? 🌸
 Aqui está o resumo detalhado do seu pedido:
 
@@ -1190,11 +1572,7 @@ Dados para pagamento:
         document.getElementById('previewMessage').value = msg;
       };
 
-      // Remove listeners antigos e adiciona novos
-      const fields = [
-        'templatePaymentMethod', 'templateDeadlineTime', 'templateDeadlineDate',
-        'templatePixKey', 'templateBank', 'templateAccountName', 'templatePixType'
-      ];
+      const fields = ['templatePaymentMethod','templateDeadlineTime','templateDeadlineDate','templatePixKey','templateBank','templateAccountName','templatePixType'];
       fields.forEach(id => {
         const el = document.getElementById(id);
         el.removeEventListener('input', updatePreview);
@@ -1202,76 +1580,51 @@ Dados para pagamento:
         el.addEventListener('input', updatePreview);
         el.addEventListener('change', updatePreview);
       });
+      document.getElementById('templatePixKeySelect').onchange = (e) => { document.getElementById('templatePixKey').value = e.target.value; updatePreview(); };
+      document.getElementById('templateBankSelect').onchange = (e) => { document.getElementById('templateBank').value = e.target.value; updatePreview(); };
+      document.getElementById('templateAccountNameSelect').onchange = (e) => { document.getElementById('templateAccountName').value = e.target.value; updatePreview(); };
 
-      // Adiciona listeners nos selects para sincronizar com os inputs
-      document.getElementById('templatePixKeySelect').addEventListener('change', (e) => {
-        const val = e.target.value;
-        document.getElementById('templatePixKey').value = val;
-        updatePreview();
-      });
-      document.getElementById('templateBankSelect').addEventListener('change', (e) => {
-        const val = e.target.value;
-        document.getElementById('templateBank').value = val;
-        updatePreview();
-      });
-      document.getElementById('templateAccountNameSelect').addEventListener('change', (e) => {
-        const val = e.target.value;
-        document.getElementById('templateAccountName').value = val;
-        updatePreview();
-      });
-
-      // Botões para método de pagamento
       document.getElementById('addPixBtn').onclick = () => {
         const input = document.getElementById('templatePaymentMethod');
         const current = input.value.trim();
-        if (current === '') {
-          input.value = 'Pix';
-        } else if (!current.includes('Pix')) {
-          input.value = current + ' ou Pix';
-        } else {
-          input.value = current.replace('Pix', '').replace(/  +/g, ' ').trim();
-          if (input.value === '') input.value = 'Link de pagamento';
-        }
+        if (current === '') input.value = 'Pix';
+        else if (!current.includes('Pix')) input.value = current + ' ou Pix';
+        else { input.value = current.replace('Pix','').replace(/  +/g,' ').trim(); if (!input.value) input.value = 'Link de pagamento'; }
         updatePreview();
       };
       document.getElementById('addLinkBtn').onclick = () => {
         const input = document.getElementById('templatePaymentMethod');
         const current = input.value.trim();
-        if (current === '') {
-          input.value = 'Link de pagamento';
-        } else if (!current.includes('Link de pagamento')) {
-          input.value = current + ' ou Link de pagamento';
-        } else {
-          input.value = current.replace('Link de pagamento', '').replace(/  +/g, ' ').trim();
-          if (input.value === '') input.value = 'Pix';
-        }
+        if (current === '') input.value = 'Link de pagamento';
+        else if (!current.includes('Link de pagamento')) input.value = current + ' ou Link de pagamento';
+        else { input.value = current.replace('Link de pagamento','').replace(/  +/g,' ').trim(); if (!input.value) input.value = 'Pix'; }
         updatePreview();
       };
-      document.getElementById('clearPaymentBtn').onclick = () => {
-        document.getElementById('templatePaymentMethod').value = '';
-        updatePreview();
-      };
+      document.getElementById('clearPaymentBtn').onclick = () => { document.getElementById('templatePaymentMethod').value = ''; updatePreview(); };
 
-      // Abre o modal
       document.getElementById('previewModal').classList.add('active');
-      // Força uma atualização inicial
       setTimeout(updatePreview, 100);
     }
 
-    // Função auxiliar para popular selects com opções salvas
+    document.getElementById('cancelPreviewBtn').addEventListener('click', () => {
+      document.getElementById('previewModal').classList.remove('active');
+    });
+    document.getElementById('copyPreviewBtn').addEventListener('click', () => {
+      const msg = document.getElementById('previewMessage').value;
+      navigator.clipboard.writeText(msg).then(() => {
+        showToast("✅ Mensagem copiada!");
+        document.getElementById('previewModal').classList.remove('active');
+      }).catch(err => alert('Erro ao copiar: ' + err));
+    });
+
     function populateSelect(selectId, storageKey) {
       const select = document.getElementById(selectId);
       const options = getOptions(storageKey);
-      select.innerHTML = '<option value="">Selecione uma opção</option>';
-      options.forEach(opt => {
-        const option = document.createElement('option');
-        option.value = opt;
-        option.textContent = opt;
-        select.appendChild(option);
-      });
+      select.innerHTML = '<option value="">Selecione</option>';
+      options.forEach(opt => { const op = document.createElement('option'); op.value = opt; op.textContent = opt; select.appendChild(op); });
     }
 
-    // --- Gerenciamento de Opções (Modal) ---
+    // --- Gerenciamento de Opções ---
     function openManageOptions(storageKey, title) {
       document.getElementById('manageOptionsTitle').textContent = title;
       document.getElementById('manageOptionsKey').value = storageKey;
@@ -1283,10 +1636,7 @@ Dados para pagamento:
       const list = document.getElementById('manageOptionsList');
       const options = getOptions(storageKey);
       list.innerHTML = '';
-      if (options.length === 0) {
-        list.innerHTML = '<div style="color:var(--text-light); font-size:0.9rem;">Nenhuma opção cadastrada.</div>';
-        return;
-      }
+      if (options.length === 0) { list.innerHTML = '<div style="color:var(--text-light);">Nenhuma opção.</div>'; return; }
       options.forEach(opt => {
         const div = document.createElement('div');
         div.className = 'option-item';
@@ -1299,12 +1649,10 @@ Dados para pagamento:
         `;
         list.appendChild(div);
       });
-
-      // Editar
       list.querySelectorAll('.btn-edit').forEach(btn => {
         btn.addEventListener('click', () => {
           const oldVal = btn.dataset.value;
-          const newVal = prompt('Editar opção:', oldVal);
+          const newVal = prompt('Editar:', oldVal);
           if (newVal && newVal.trim() && newVal.trim() !== oldVal) {
             updateOption(storageKey, oldVal, newVal.trim());
             renderManageOptions(storageKey);
@@ -1312,8 +1660,6 @@ Dados para pagamento:
           }
         });
       });
-
-      // Excluir
       list.querySelectorAll('.btn-danger').forEach(btn => {
         btn.addEventListener('click', () => {
           const val = btn.dataset.value;
@@ -1327,27 +1673,21 @@ Dados para pagamento:
     }
 
     function refreshSelectsForKey(storageKey) {
-      const map = {
-        [STORAGE_KEYS.pix]: 'templatePixKeySelect',
-        [STORAGE_KEYS.bank]: 'templateBankSelect',
-        [STORAGE_KEYS.name]: 'templateAccountNameSelect'
-      };
+      const map = { [STORAGE_KEYS.pix]: 'templatePixKeySelect', [STORAGE_KEYS.bank]: 'templateBankSelect', [STORAGE_KEYS.name]: 'templateAccountNameSelect' };
       const selectId = map[storageKey];
       if (selectId) populateSelect(selectId, storageKey);
     }
 
-    // --- Listeners do modal de gerenciamento ---
     document.getElementById('manageOptionsAddBtn').addEventListener('click', () => {
       const key = document.getElementById('manageOptionsKey').value;
       const input = document.getElementById('manageOptionsInput');
       const value = input.value.trim();
-      if (!value) return alert('Digite uma opção válida.');
+      if (!value) return alert('Digite uma opção.');
       addOption(key, value);
       input.value = '';
       renderManageOptions(key);
       refreshSelectsForKey(key);
     });
-
     document.getElementById('manageOptionsCloseBtn').addEventListener('click', () => {
       document.getElementById('manageOptionsModal').classList.remove('active');
     });
@@ -1355,32 +1695,11 @@ Dados para pagamento:
       if (e.key === 'Enter') document.getElementById('manageOptionsAddBtn').click();
     });
 
-    // --- Listeners dos botões "Gerenciar" no preview ---
-    document.getElementById('managePixBtn').addEventListener('click', () => {
-      openManageOptions(STORAGE_KEYS.pix, 'Gerenciar Chaves Pix');
-    });
-    document.getElementById('manageBankBtn').addEventListener('click', () => {
-      openManageOptions(STORAGE_KEYS.bank, 'Gerenciar Bancos');
-    });
-    document.getElementById('manageNameBtn').addEventListener('click', () => {
-      openManageOptions(STORAGE_KEYS.name, 'Gerenciar Nomes de Titular');
-    });
+    document.getElementById('managePixBtn').addEventListener('click', () => openManageOptions(STORAGE_KEYS.pix, 'Chaves Pix'));
+    document.getElementById('manageBankBtn').addEventListener('click', () => openManageOptions(STORAGE_KEYS.bank, 'Bancos'));
+    document.getElementById('manageNameBtn').addEventListener('click', () => openManageOptions(STORAGE_KEYS.name, 'Nomes'));
 
-    document.getElementById('cancelPreviewBtn').addEventListener('click', () => {
-      document.getElementById('previewModal').classList.remove('active');
-    });
-
-    document.getElementById('copyPreviewBtn').addEventListener('click', () => {
-      const msg = document.getElementById('previewMessage').value;
-      navigator.clipboard.writeText(msg).then(() => {
-        showToast("✅ Mensagem copiada para a área de transferência!");
-        document.getElementById('previewModal').classList.remove('active');
-      }).catch(err => {
-        alert('Erro ao copiar: ' + err);
-      });
-    });
-
-    // --- Clientes ---
+    // --- Clientes com edição ---
     async function loadAllClients() {
       if (!currentUser) return;
       const q = query(collection(db, 'clients'), where('storeId', '==', currentUser.uid));
@@ -1395,12 +1714,7 @@ Dados para pagamento:
       if (currentUser) {
         const q = query(collection(db, 'sales'), where('storeId', '==', currentUser.uid));
         const snap = await getDocs(q).catch(()=>null);
-        if(snap) {
-          snap.forEach(d => {
-            const queue = d.data().clientQueue;
-            if(queue) queue.forEach(name => knownClientNames.add(name));
-          });
-        }
+        if(snap) snap.forEach(d => { const queue = d.data().clientQueue; if(queue) queue.forEach(name => knownClientNames.add(name)); });
       }
       renderDatalist();
     }
@@ -1408,11 +1722,19 @@ Dados para pagamento:
     function renderDatalist() {
       const datalist = document.getElementById('clientNamesList');
       datalist.innerHTML = '';
-      const sortedNames = Array.from(knownClientNames).sort();
-      sortedNames.forEach(name => {
-        const option = document.createElement('option');
-        option.value = name;
-        datalist.appendChild(option);
+      const sorted = Array.from(knownClientNames).sort();
+      sorted.forEach(name => { const op = document.createElement('option'); op.value = name; datalist.appendChild(op); });
+      ['modalAvulsaClient1','modalAvulsaClient2','modalAvulsaClient3','modalAvulsaClient4','client1','client2','client3','client4'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          const listId = el.getAttribute('list');
+          if (listId) {
+            const list = document.getElementById(listId);
+            if (list) {
+              list.innerHTML = datalist.innerHTML;
+            }
+          }
+        }
       });
     }
 
@@ -1426,71 +1748,83 @@ Dados para pagamento:
     function renderClientsList() {
       const container = document.getElementById('clientsList');
       const searchTerm = document.getElementById('clientSearch').value.toLowerCase().trim();
-      
       let filtered = allClients;
-      if (searchTerm) {
-        filtered = allClients.filter(c => c.name.toLowerCase().includes(searchTerm));
-      }
-      
-      if (filtered.length === 0) {
-        container.innerHTML = '<div style="text-align:center; padding:1rem; color:var(--text-light);">Nenhum cliente encontrado.</div>';
-        return;
-      }
-      
+      if (searchTerm) filtered = allClients.filter(c => c.name.toLowerCase().includes(searchTerm));
+      if (filtered.length === 0) { container.innerHTML = '<div style="text-align:center; padding:1rem; color:var(--text-light);">Nenhum cliente.</div>'; return; }
       container.innerHTML = filtered.map(c => `
-        <div class="client-report-card" style="padding: 1.2rem;">
-          <h4 style="font-size:1.1rem; margin-bottom:0.5rem;">${c.name}</h4>
+        <div class="client-report-card">
+          <h4 style="font-size:1rem;">${c.name}</h4>
           <div class="client-info"><strong>📱 WhatsApp:</strong> ${c.phone || 'Não informado'}</div>
           <div class="client-info"><strong>📍 Endereço:</strong> ${c.address || 'Não informado'}</div>
           <div class="client-card-actions">
-            <button class="btn-danger" data-client-id="${c.id}" data-client-name="${c.name}" style="width:auto; padding:0.3rem 0.6rem; font-size:0.8rem;">🗑️ Excluir</button>
+            <button class="btn-edit btn-sm" data-client-id="${c.id}" data-client-name="${c.name}" data-phone="${c.phone || ''}" data-address="${c.address || ''}">✏️ Editar</button>
+            <button class="btn-danger btn-sm" data-client-id="${c.id}" data-client-name="${c.name}">🗑️ Excluir</button>
           </div>
         </div>
       `).join('');
 
-      container.querySelectorAll('button[data-client-id]').forEach(btn => {
+      container.querySelectorAll('.btn-edit').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.clientId;
+          const name = btn.dataset.clientName;
+          const phone = btn.dataset.phone;
+          const address = btn.dataset.address;
+          const newName = prompt('Editar nome:', name);
+          if (newName === null) return;
+          const newPhone = prompt('Editar WhatsApp:', phone);
+          if (newPhone === null) return;
+          const newAddress = prompt('Editar endereço:', address);
+          if (newAddress === null) return;
+          (async () => {
+            try {
+              await updateDoc(doc(db, 'clients', id), {
+                name: newName.trim(),
+                phone: newPhone.trim(),
+                address: newAddress.trim()
+              });
+              showToast('✅ Cliente atualizado.');
+              await loadClientsList();
+              await buildClientMemory();
+            } catch (e) { alert('Erro: ' + getFirebaseErrorMessage(e)); }
+          })();
+        });
+      });
+
+      container.querySelectorAll('.btn-danger').forEach(btn => {
         btn.addEventListener('click', () => deleteClient(btn.dataset.clientId, btn.dataset.clientName));
       });
     }
 
     async function deleteClient(clientId, clientName) {
-      if(!confirm(`🚨 Deseja excluir o cliente "${clientName}"?`)) return;
+      if(!confirm(`Excluir "${clientName}"?`)) return;
       try {
         await deleteDoc(doc(db, 'clients', clientId));
-        showToast(`🗑️ Cliente "${clientName}" removido.`);
-        loadClientsList();
+        showToast(`🗑️ Cliente removido.`);
+        await loadClientsList();
         await loadAllClients();
         await buildClientMemory();
-      } catch (e) {
-        alert('Erro ao excluir cliente: ' + getFirebaseErrorMessage(e));
-      }
+      } catch (e) { alert('Erro: ' + getFirebaseErrorMessage(e)); }
     }
 
     // --- Live Ativa ---
     async function startNewLive() {
-      const name = prompt('Qual o nome desta Live?');
+      const name = prompt('Nome da Live:');
       if (!name) return;
       const dateStr = getTodayString();
       try {
         const docRef = await addDoc(collection(db, 'lives'), { storeId: currentUser.uid, name, date: dateStr, createdAt: serverTimestamp() });
         activeLiveId = docRef.id;
         activeLiveData = { name, date: dateStr };
-        
         document.getElementById('activeLiveName').textContent = name;
         document.getElementById('mainPanel').style.display = 'none';
         document.getElementById('livePanel').style.display = 'block';
-        
-        document.getElementById('saleCode').value = '';
-        document.getElementById('saleValue').value = '';
-        document.getElementById('saleItemType').value = '';
-        document.getElementById('client1').value = '';
-        document.getElementById('client2').value = '';
-        document.getElementById('client3').value = '';
+        resetSaleFields('');
         document.getElementById('liveSalesList').innerHTML = '';
+        await loadStockList();
+        updateStockDatalist('liveStockCodes');
+        setupStockAutoFill('saleCode', 'saleItemType', 'saleValue');
         showToast("🎥 Live iniciada!");
-      } catch (e) {
-        alert('Erro ao iniciar live: ' + getFirebaseErrorMessage(e));
-      }
+      } catch (e) { alert('Erro: ' + getFirebaseErrorMessage(e)); }
     }
 
     async function loadActiveLiveSales() {
@@ -1502,136 +1836,59 @@ Dados para pagamento:
       if(snap) {
         const sales = [];
         snap.forEach(d => sales.push({ id: d.id, ...d.data() }));
-        sales.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-        
-        if (sales.length === 0) {
-          listEl.innerHTML = '<li style="text-align:center; padding:1rem; color:var(--text-light);">Nenhuma venda registrada nesta live.</li>';
-          return;
-        }
-
+        sales.sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+        if (sales.length === 0) { listEl.innerHTML = '<li style="text-align:center; padding:1rem; color:var(--text-light);">Nenhuma venda.</li>'; return; }
         sales.forEach(sale => {
           const typeHtml = sale.itemType ? `<span class="sale-type">${sale.itemType}</span>` : '';
           listEl.innerHTML += `
-          <li class="sale-item-card" style="padding: 0.8rem;">
-            <div style="display:flex; justify-content:space-between; align-items: center;">
+          <li class="sale-item-card" style="padding:0.6rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
               <div>
-                <strong>${sale.code}</strong> ${typeHtml} <span style="color:var(--success); font-weight:bold; margin-left:10px;">${formatMoney(sale.value)}</span>
-                <div style="color:var(--primary); font-size:0.9rem; margin-top:4px;">👤 ${sale.clientQueue[0]}</div>
+                <strong>${sale.code}</strong> ${typeHtml} <span style="color:var(--success); font-weight:bold;">${formatMoney(sale.value)}</span>
+                <div style="font-size:0.85rem; color:var(--primary);">👤 ${sale.clientQueue[0]}</div>
               </div>
               <div>
-                <button class="btn-edit" data-sale-id="${sale.id}" style="width:auto; padding:0.3rem 0.5rem; font-size:0.8rem; margin-right:4px;">✏️</button>
-                <button class="btn-danger" data-sale-id="${sale.id}" style="width:auto; padding:0.4rem 0.6rem; font-size:0.8rem;">🗑️</button>
+                <button class="btn-edit btn-sm" data-sale-id="${sale.id}">✏️</button>
+                <button class="btn-danger btn-sm" data-sale-id="${sale.id}">🗑️</button>
               </div>
             </div>
           </li>`;
         });
-
         listEl.querySelectorAll('button[data-sale-id]').forEach(btn => {
-          if (btn.classList.contains('btn-danger')) {
-            btn.addEventListener('click', () => deleteSale(btn.dataset.saleId));
-          } else if (btn.classList.contains('btn-edit')) {
-            btn.addEventListener('click', () => openEditModal(btn.dataset.saleId));
-          }
+          if (btn.classList.contains('btn-danger')) btn.addEventListener('click', () => deleteSale(btn.dataset.saleId));
+          else if (btn.classList.contains('btn-edit')) btn.addEventListener('click', () => openEditModal(btn.dataset.saleId));
         });
-      }
-    }
-
-    async function registerSaleInActiveLive() {
-      const code = document.getElementById('saleCode').value.trim();
-      const value = parseFloat(document.getElementById('saleValue').value);
-      const itemType = document.getElementById('saleItemType').value.trim();
-      const c1 = document.getElementById('client1').value.trim();
-      const c2 = document.getElementById('client2').value.trim();
-      const c3 = document.getElementById('client3').value.trim();
-
-      if (!code) return showMessage('liveMessage', 'Preencha o código da peça.', 'error');
-      if (isNaN(value) || value <= 0) return showMessage('liveMessage', 'Informe um valor válido (maior que zero).', 'error');
-      if (!c1) return showMessage('liveMessage', 'Preencha o comprador principal.', 'error');
-      
-      const queue = [c1];
-      if (c2) queue.push(c2);
-      if (c3) queue.push(c3);
-      
-      try {
-        await addDoc(collection(db, 'sales'), {
-          liveId: activeLiveId,
-          storeId: currentUser.uid,
-          code,
-          value,
-          itemType,
-          clientQueue: queue,
-          currentClientIndex: 0,
-          date: activeLiveData.date,
-          createdAt: serverTimestamp()
-        });
-        
-        knownClientNames.add(c1);
-        if(c2) knownClientNames.add(c2);
-        if(c3) knownClientNames.add(c3);
-        renderDatalist(); 
-
-        showMessage('liveMessage', `✅ Vendido! ${code} para ${c1}.`);
-        
-        document.getElementById('saleCode').value = '';
-        document.getElementById('saleValue').value = '';
-        document.getElementById('saleItemType').value = '';
-        document.getElementById('client1').value = '';
-        document.getElementById('client2').value = '';
-        document.getElementById('client3').value = '';
-        document.getElementById('saleCode').focus();
-        
-        loadActiveLiveSales();
-        loadDailySummary(document.getElementById('summaryDate').value);
-      } catch (e) {
-        showMessage('liveMessage', 'Erro ao vender: ' + getFirebaseErrorMessage(e), 'error');
       }
     }
 
     document.getElementById('endLiveReportBtn').addEventListener('click', async () => {
-      if (confirm("Encerrar esta live?")) {
+      if (confirm("Encerrar live?")) {
         const liveIdToReport = activeLiveId;
         activeLiveId = null; activeLiveData = null;
         document.getElementById('mainPanel').style.display = 'block';
         document.getElementById('livePanel').style.display = 'none';
-        
         await loadAllLivesList();
-        loadDailySummary(document.getElementById('summaryDate').value);
         switchDashboardTab('reports');
-        setTimeout(() => { 
-          if (liveIdToReport) {
-            document.getElementById('reportLiveSelect').value = liveIdToReport; 
-            loadReportForLive(liveIdToReport);
-          }
-        }, 300);
+        setTimeout(() => { if (liveIdToReport) { document.getElementById('reportLiveSelect').value = liveIdToReport; loadReportForLive(liveIdToReport); } }, 300);
       }
     });
 
-    // --- Listeners para apagar live ---
     document.getElementById('deleteLiveBtn').addEventListener('click', async () => {
       const liveId = document.getElementById('reportLiveSelect').value;
-      if (!liveId || liveId === AVULSAS_ID) {
-        alert('Selecione uma live válida para apagar (não é possível apagar vendas avulsas por aqui).');
-        return;
-      }
-      if (!confirm('🚨 TEM CERTEZA ABSOLUTA? \n\nIsso vai apagar a live inteira e TODAS AS VENDAS registradas nela de forma permanente.')) return;
-      
+      if (!liveId || liveId === AVULSAS_ID) { alert('Selecione uma live válida.'); return; }
+      if (!confirm('Apagar live e todas as vendas?')) return;
       document.getElementById('reportLoading').style.display = 'block';
       try {
         const salesQ = query(collection(db, 'sales'), where('liveId', '==', liveId));
         const salesSnap = await getDocs(salesQ);
         const deletePromises = [];
-        salesSnap.forEach(d => { deletePromises.push(deleteDoc(doc(db, 'sales', d.id))); });
+        salesSnap.forEach(d => deletePromises.push(deleteDoc(doc(db, 'sales', d.id))));
         await Promise.all(deletePromises);
-        
         await deleteDoc(doc(db, 'lives', liveId));
-        showToast("🗑️ Live e todas as vendas apagadas!");
-        
+        showToast("🗑️ Live apagada.");
         await loadAllLivesList();
         loadReportsLiveSelector();
-        loadDailySummary(document.getElementById('summaryDate').value);
-      } catch (e) {
-        alert('Erro ao apagar live: ' + getFirebaseErrorMessage(e));
-      }
+      } catch (e) { alert('Erro: ' + getFirebaseErrorMessage(e)); }
       document.getElementById('reportLoading').style.display = 'none';
     });
 
@@ -1640,14 +1897,49 @@ Dados para pagamento:
       currentReportMode = 'general';
       document.getElementById('modeGeneralBtn').className = 'btn-primary';
       document.getElementById('modeByClientBtn').className = 'btn-secondary';
-      renderGeneralReport();
+      const selected = document.getElementById('reportLiveSelect').value;
+      if (selected === AVULSAS_ID) {
+        const dateFilter = document.getElementById('avulsasDateFilter').value;
+        loadAvulsasReport(dateFilter || null, false);
+      } else if (selected) {
+        loadReportForLive(selected);
+      }
     });
-
     document.getElementById('modeByClientBtn').addEventListener('click', () => {
       currentReportMode = 'byClient';
       document.getElementById('modeByClientBtn').className = 'btn-primary';
       document.getElementById('modeGeneralBtn').className = 'btn-secondary';
-      renderClientReport();
+      const selected = document.getElementById('reportLiveSelect').value;
+      if (selected === AVULSAS_ID) {
+        const dateFilter = document.getElementById('avulsasDateFilter').value;
+        loadAvulsasReport(dateFilter || null, false);
+      } else if (selected) {
+        loadReportForLive(selected);
+      }
+    });
+
+    // --- Event Listeners do modal de venda avulsa ---
+    document.getElementById('openAvulsaModalBtn').addEventListener('click', () => {
+      document.getElementById('modalAvulsaItemType').value = '';
+      document.getElementById('modalAvulsaValue').value = '';
+      document.getElementById('modalAvulsaCode').value = '';
+      document.getElementById('modalAvulsaClient1').value = '';
+      document.getElementById('modalAvulsaClient2').value = '';
+      document.getElementById('modalAvulsaClient3').value = '';
+      document.getElementById('modalAvulsaClient4').value = '';
+      document.getElementById('avulsaModalMessage').style.display = 'none';
+      document.getElementById('avulsaModal').classList.add('active');
+      document.getElementById('modalAvulsaCode').focus();
+    });
+    document.getElementById('cancelAvulsaModalBtn').addEventListener('click', () => {
+      document.getElementById('avulsaModal').classList.remove('active');
+    });
+    document.getElementById('confirmAvulsaModalBtn').addEventListener('click', registerAvulsaSaleFromModal);
+
+    document.getElementById('avulsaModal').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) {
+        document.getElementById('avulsaModal').classList.remove('active');
+      }
     });
 
     // --- Event Listeners principais ---
@@ -1658,56 +1950,43 @@ Dados para pagamento:
     document.getElementById('goToLogin').addEventListener('click', () => showScreen('loginScreen'));
     
     document.getElementById('tabSummary').addEventListener('click', () => switchDashboardTab('summary'));
-    document.getElementById('tabAvulsas').addEventListener('click', () => switchDashboardTab('avulsas'));
     document.getElementById('tabReports').addEventListener('click', () => switchDashboardTab('reports'));
     document.getElementById('tabClients').addEventListener('click', () => switchDashboardTab('clients'));
+    document.getElementById('tabStock').addEventListener('click', () => switchDashboardTab('stock'));
     
     document.getElementById('startLiveBtn').addEventListener('click', startNewLive);
     document.getElementById('registerSaleBtn').addEventListener('click', registerSaleInActiveLive);
-    document.getElementById('registerAvulsaBtn').addEventListener('click', registerAvulsaSale);
-    
-    document.getElementById('summaryDate').addEventListener('change', (e) => loadDailySummary(e.target.value));
-    document.getElementById('reportLiveSelect').addEventListener('change', (e) => {
-      const val = e.target.value;
-      if (val === AVULSAS_ID) {
-        document.getElementById('deleteLiveBtn').style.display = 'none';
-      } else {
-        document.getElementById('deleteLiveBtn').style.display = 'inline-flex';
-      }
-      loadReportForLive(val);
-    });
-    document.getElementById('summaryDate').value = getTodayString();
+    document.getElementById('addStockBtn').addEventListener('click', addStockItem);
 
     document.getElementById('saveClientBtn').addEventListener('click', async () => {
       const name = document.getElementById('clientName').value.trim();
       const phone = document.getElementById('clientPhone').value.trim();
       const address = document.getElementById('clientAddress').value.trim();
-      if (!name) return showMessage('clientMessage', 'Informe o nome do cliente.', 'error');
+      if (!name) return showMessage('clientMessage', 'Informe o nome.', 'error');
       try {
         await addDoc(collection(db, 'clients'), { storeId: currentUser.uid, name, phone, address, createdAt: serverTimestamp() });
-        showMessage('clientMessage', '✅ Cliente cadastrado!', 'success');
+        showMessage('clientMessage', '✅ Cliente cadastrado.', 'success');
         document.getElementById('clientName').value = '';
         document.getElementById('clientPhone').value = '';
         document.getElementById('clientAddress').value = '';
         await loadAllClients();
         await buildClientMemory();
         renderClientsList();
-      } catch (e) {
-        showMessage('clientMessage', 'Erro: ' + getFirebaseErrorMessage(e), 'error');
-      }
+      } catch (e) { showMessage('clientMessage', 'Erro: ' + getFirebaseErrorMessage(e), 'error'); }
     });
 
-    document.getElementById('refreshClientsBtn').addEventListener('click', () => {
-      loadClientsList();
-      showToast("🔄 Lista atualizada!");
-    });
+    document.getElementById('refreshClientsBtn').addEventListener('click', () => { loadClientsList(); showToast("🔄 Atualizado!"); });
     document.getElementById('clientSearch').addEventListener('input', renderClientsList);
+    document.getElementById('refreshStockBtn').addEventListener('click', () => { loadStockList(); showToast("🔄 Estoque atualizado!"); });
+    document.getElementById('stockSearch').addEventListener('input', renderStockList);
 
-    // Fechar modais clicando fora
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
-      overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) overlay.classList.remove('active');
-      });
+      overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('active'); });
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      setupStockAutoFill('modalAvulsaCode', 'modalAvulsaItemType', 'modalAvulsaValue');
+      setupStockAutoFill('saleCode', 'saleItemType', 'saleValue');
     });
 
     // --- Auth State ---
@@ -1717,11 +1996,8 @@ Dados para pagamento:
         const snap = await getDoc(doc(db, 'stores', user.uid));
         storeData = snap.exists() ? snap.data() : { storeName: 'Loja' };
         document.getElementById('storeNameDisplay').textContent = storeData.storeName || 'Loja';
-        
-        await Promise.all([loadAllLivesList(), loadAllClients()]);
-        await buildClientMemory(); 
-        await loadDailySummary(getTodayString());
-        
+        await Promise.all([loadAllLivesList(), loadAllClients(), loadStockList()]);
+        await buildClientMemory();
         showScreen('dashboardScreen');
         switchDashboardTab('summary');
       } else {
