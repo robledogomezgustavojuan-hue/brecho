@@ -6,6 +6,7 @@
   <title>Brechó Inteligente | Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    /* ===== Variáveis ===== */
     :root {
       --primary: #6366f1;
       --primary-hover: #4f46e5;
@@ -66,7 +67,7 @@
       font-size: 0.9rem;
       color: var(--text-dark);
     }
-    input, select {
+    input, select, textarea {
       width: 100%;
       padding: 0.8rem 1rem;
       border: 1px solid var(--border);
@@ -76,11 +77,12 @@
       transition: all 0.2s;
       background: #fff;
     }
-    input:focus, select:focus {
+    input:focus, select:focus, textarea:focus {
       border-color: var(--primary);
       outline: none;
       box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
     }
+    textarea { resize: vertical; }
 
     button {
       width: 100%;
@@ -106,6 +108,7 @@
     button.btn-whatsapp:hover { background: #bbf7d0; }
     button.btn-edit { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
     button.btn-edit:hover { background: #bae6fd; }
+    button.btn-sm { width: auto; padding: 0.3rem 0.6rem; font-size: 0.8rem; }
 
     .link { text-align: center; margin-top: 1.5rem; color: var(--primary); font-weight: 500; cursor: pointer; font-size: 0.9rem; }
     .link:hover { text-decoration: underline; }
@@ -200,7 +203,25 @@
     }
     .client-report-card h4 { color: var(--primary); margin-bottom: 1rem; font-size: 1.2rem; border-bottom: 2px solid var(--secondary); padding-bottom: 0.5rem; text-transform: uppercase;}
     .client-report-items { list-style: none; margin-bottom: 1rem; flex-grow: 1; }
-    .client-report-items li { display: flex; justify-content: space-between; font-size: 0.95rem; margin-bottom: 0.4rem; color: var(--text-dark); }
+    .client-report-items li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.95rem;
+      margin-bottom: 0.4rem;
+      color: var(--text-dark);
+      padding: 0.2rem 0;
+    }
+    .client-report-items li .item-actions {
+      display: flex;
+      gap: 0.3rem;
+    }
+    .client-report-items li .item-actions button {
+      width: auto;
+      padding: 0.1rem 0.4rem;
+      font-size: 0.7rem;
+      border-radius: 4px;
+    }
     .client-report-total { display: flex; justify-content: space-between; font-weight: 700; font-size: 1.2rem; color: var(--success); border-top: 2px solid var(--secondary); padding-top: 0.8rem; margin-bottom: 1.5rem; }
     
     .live-panel-container { background: #fdf2f8; border: 2px solid #fbcfe8; border-radius: var(--radius); padding: 2rem; }
@@ -209,6 +230,7 @@
     
     .flex-row { display: flex; gap: 1rem; margin-bottom: 1rem; }
     .flex-row > * { flex: 1; }
+    .flex-row .btn { width: auto; }
 
     .search-box { margin-bottom: 1.5rem; }
     .client-card-actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
@@ -216,7 +238,7 @@
     .client-info { font-size: 0.9rem; color: var(--text-light); }
     .client-info strong { color: var(--text-dark); }
 
-    /* Modal */
+    /* ===== MODAIS ===== */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -224,13 +246,17 @@
       display: none;
       align-items: center;
       justify-content: center;
-      z-index: 9999;
       padding: 1rem;
+      z-index: 9999;
     }
     .modal-overlay.active { display: flex; }
+
+    #previewModal { z-index: 9999; }
+    #manageOptionsModal { z-index: 10000; }
+
     .modal-box {
       background: white;
-      max-width: 500px;
+      max-width: 550px;
       width: 100%;
       padding: 2rem;
       border-radius: var(--radius);
@@ -241,6 +267,35 @@
     .modal-box h3 { margin-bottom: 1rem; }
     .modal-actions { display: flex; gap: 1rem; margin-top: 1.5rem; }
     .modal-actions button { flex: 1; }
+
+    /* Template fields */
+    .template-fields {
+      background: #f8fafc;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      border: 1px solid var(--border);
+    }
+    .template-fields .form-group { margin-bottom: 0.8rem; }
+    .template-fields .form-group:last-child { margin-bottom: 0; }
+    .template-fields label { font-weight: 500; font-size: 0.85rem; color: var(--text-light); }
+    .template-fields input, .template-fields select { font-size: 0.9rem; padding: 0.5rem 0.8rem; }
+    .inline-actions { display: flex; gap: 0.5rem; align-items: center; }
+    .inline-actions .btn { width: auto; padding: 0.3rem 0.8rem; font-size: 0.8rem; }
+    .option-list { margin-top: 0.5rem; }
+    .option-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.3rem 0.5rem;
+      background: white;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      margin-bottom: 0.3rem;
+      font-size: 0.9rem;
+    }
+    .option-item .actions { display: flex; gap: 0.3rem; }
+    .option-item .actions button { width: auto; padding: 0.1rem 0.4rem; font-size: 0.7rem; }
   </style>
 </head>
 <body>
@@ -251,7 +306,7 @@
       ✅ Ação realizada com sucesso!
     </div>
 
-    <!-- Modal de Edição -->
+    <!-- Modal de Edição de Venda -->
     <div id="editModal" class="modal-overlay">
       <div class="modal-box">
         <h3>✏️ Editar Venda</h3>
@@ -266,17 +321,105 @@
       </div>
     </div>
 
-    <!-- Modal de Pré-visualização do Resumo -->
+    <!-- Modal de Gerenciar Opções (Pix, Banco, Nome) -->
+    <div id="manageOptionsModal" class="modal-overlay">
+      <div class="modal-box">
+        <h3 id="manageOptionsTitle">Gerenciar Opções</h3>
+        <input type="hidden" id="manageOptionsKey">
+        <div class="form-group">
+          <label>Nova opção</label>
+          <div class="inline-actions">
+            <input type="text" id="manageOptionsInput" placeholder="Digite a nova opção">
+            <button class="btn-primary btn" id="manageOptionsAddBtn">➕ Adicionar</button>
+          </div>
+        </div>
+        <div id="manageOptionsList" class="option-list"></div>
+        <div class="modal-actions">
+          <button class="btn-secondary" id="manageOptionsCloseBtn">Fechar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Pré-visualização com Template Personalizável -->
     <div id="previewModal" class="modal-overlay">
       <div class="modal-box">
         <h3>📋 Pré-visualizar Mensagem para o Cliente</h3>
-        <div class="form-group">
-          <label>Mensagem (editável)</label>
-          <textarea id="previewMessage" rows="8" style="width:100%; padding:0.8rem; border:1px solid var(--border); border-radius:8px; font-family:inherit; font-size:0.95rem;"></textarea>
+        
+        <!-- Campos editáveis do template -->
+        <div class="template-fields">
+          <!-- Método de pagamento com botões -->
+          <div class="form-group">
+            <label>Método de pagamento</label>
+            <div class="inline-actions" style="margin-bottom: 0.3rem;">
+              <button class="btn-secondary btn" id="addPixBtn">Pix</button>
+              <button class="btn-secondary btn" id="addLinkBtn">Link de pagamento</button>
+              <button class="btn-secondary btn" id="clearPaymentBtn">Limpar</button>
+            </div>
+            <input type="text" id="templatePaymentMethod" placeholder="Ex: Pix ou Link de pagamento" value="Pix">
+          </div>
+
+          <!-- Prazo -->
+          <div class="flex-row">
+            <div class="form-group">
+              <label>Hora limite</label>
+              <input type="text" id="templateDeadlineTime" placeholder="18:00" value="18:00">
+            </div>
+            <div class="form-group">
+              <label>Dia limite</label>
+              <input type="text" id="templateDeadlineDate" placeholder="05/07/2026" value="">
+            </div>
+          </div>
+
+          <!-- Chave Pix com tipo + valor + opções salvas -->
+          <div class="form-group">
+            <label>Chave Pix</label>
+            <div class="inline-actions" style="margin-bottom:0.3rem;">
+              <select id="templatePixType" style="flex:1;">
+                <option value="">Tipo da chave</option>
+                <option value="CPF">CPF</option>
+                <option value="CNPJ">CNPJ</option>
+                <option value="Telefone">Telefone</option>
+                <option value="Email">E-mail</option>
+                <option value="Chave aleatória">Chave aleatória</option>
+              </select>
+              <select id="templatePixKeySelect" style="flex:1;">
+                <option value="">Selecione uma chave</option>
+              </select>
+              <button class="btn-secondary btn" id="managePixBtn">⚙️</button>
+            </div>
+            <div style="display:flex; gap:0.5rem;">
+              <input type="text" id="templatePixKey" placeholder="Digite a chave" style="flex:1;">
+            </div>
+          </div>
+
+          <!-- Banco com opções salvas -->
+          <div class="form-group">
+            <label>Banco</label>
+            <div class="inline-actions">
+              <select id="templateBankSelect" style="flex:1;">
+                <option value="">Selecione um banco</option>
+              </select>
+              <button class="btn-secondary btn" id="manageBankBtn">⚙️</button>
+            </div>
+            <input type="text" id="templateBank" placeholder="Digite ou selecione um banco" style="margin-top:0.3rem;">
+          </div>
+
+          <!-- Nome do titular com opções salvas -->
+          <div class="form-group">
+            <label>Nome do titular</label>
+            <div class="inline-actions">
+              <select id="templateAccountNameSelect" style="flex:1;">
+                <option value="">Selecione um nome</option>
+              </select>
+              <button class="btn-secondary btn" id="manageNameBtn">⚙️</button>
+            </div>
+            <input type="text" id="templateAccountName" placeholder="Digite ou selecione um nome" style="margin-top:0.3rem;">
+          </div>
         </div>
+
         <div class="form-group">
-          <label>Informações adicionais (ex: dados de pagamento, horários, datas)</label>
-          <textarea id="previewExtra" rows="4" style="width:100%; padding:0.8rem; border:1px solid var(--border); border-radius:8px; font-family:inherit; font-size:0.95rem;" placeholder="Adicione aqui seus dados de pagamento, prazos, etc."></textarea>
+          <label>Mensagem final (editável)</label>
+          <textarea id="previewMessage" rows="12" style="width:100%; padding:0.8rem; border:1px solid var(--border); border-radius:8px; font-family:inherit; font-size:0.95rem;"></textarea>
         </div>
         <div class="modal-actions">
           <button class="btn-secondary" id="cancelPreviewBtn">Fechar</button>
@@ -370,7 +513,7 @@
         <div id="reportsArea" style="display: none;">
           <div class="form-group flex-row" style="align-items: flex-end;">
             <div style="flex-grow: 1;">
-              <label>Selecione a Live para Gerar o Relatório</label>
+              <label>Selecione a Live ou Vendas Avulsas</label>
               <select id="reportLiveSelect"></select>
             </div>
             <button id="deleteLiveBtn" class="btn-danger" style="width: auto; padding: 0.8rem 1rem;" title="Apagar esta Live e todas as suas vendas">🗑️ Apagar Live</button>
@@ -383,7 +526,7 @@
           
           <div id="reportSummary" class="summary-cards" style="display: none; margin-bottom: 1.5rem;">
             <div class="summary-card" style="padding: 1rem;"><div class="value" id="totalItems" style="font-size: 1.5rem;">0</div><div class="label">Total de Peças</div></div>
-            <div class="summary-card" style="padding: 1rem;"><div class="value" id="totalValue" style="font-size: 1.5rem;">R$ 0,00</div><div class="label">Faturamento da Live</div></div>
+            <div class="summary-card" style="padding: 1rem;"><div class="value" id="totalValue" style="font-size: 1.5rem;">R$ 0,00</div><div class="label">Faturamento</div></div>
           </div>
           
           <div id="reportLoading" style="display: none; text-align: center; padding: 2rem;">Buscando dados...</div>
@@ -479,11 +622,55 @@
     let activeLiveData = null;
     let allLivesList = [];
     let allClients = [];
-    let currentReportMode = 'general'; // 'general' ou 'byClient'
+    let currentReportMode = 'general';
     let currentReportSales = [];
     let knownClientNames = new Set();
-    let allSales = [];
+    const AVULSAS_ID = 'avulsas_virtual';
 
+    // --- Gerenciamento de opções salvas (localStorage) ---
+    const STORAGE_KEYS = {
+      pix: 'brecho_pix_keys',
+      bank: 'brecho_banks',
+      name: 'brecho_account_names'
+    };
+
+    function getOptions(key) {
+      try {
+        const data = localStorage.getItem(key);
+        return data ? JSON.parse(data) : [];
+      } catch { return []; }
+    }
+
+    function setOptions(key, options) {
+      localStorage.setItem(key, JSON.stringify(options));
+    }
+
+    function addOption(key, value) {
+      if (!value.trim()) return;
+      const options = getOptions(key);
+      if (!options.includes(value.trim())) {
+        options.push(value.trim());
+        setOptions(key, options);
+      }
+    }
+
+    function deleteOption(key, value) {
+      let options = getOptions(key);
+      options = options.filter(item => item !== value);
+      setOptions(key, options);
+    }
+
+    function updateOption(key, oldValue, newValue) {
+      if (!newValue.trim() || oldValue === newValue.trim()) return;
+      let options = getOptions(key);
+      const index = options.indexOf(oldValue);
+      if (index !== -1) {
+        options[index] = newValue.trim();
+        setOptions(key, options);
+      }
+    }
+
+    // --- Funções de utilidade ---
     const formatMoney = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
     
     function showScreen(id) {
@@ -516,9 +703,9 @@
       setTimeout(() => { el.style.display = 'none'; }, 4000);
     }
 
-    function showToast(msg = "✅ Ação realizada com sucesso!") {
+    function showToast(msg) {
       const toast = document.getElementById('toastMessage');
-      toast.textContent = msg;
+      toast.textContent = msg || "✅ Ação realizada com sucesso!";
       toast.style.display = 'block';
       setTimeout(() => { toast.style.transform = 'translateY(0)'; }, 10);
       setTimeout(() => {
@@ -598,15 +785,26 @@
 
     function loadReportsLiveSelector() {
       const select = document.getElementById('reportLiveSelect');
+      let options = '';
       if (allLivesList.length === 0) {
-        select.innerHTML = '<option value="">Nenhuma live encontrada</option>';
-        document.getElementById('deleteLiveBtn').style.display = 'none';
-        return;
+        options = '<option value="">Nenhuma live encontrada</option>';
+      } else {
+        allLivesList.forEach(l => {
+          options += `<option value="${l.id}">${l.name} (${l.date})</option>`;
+        });
       }
-      document.getElementById('deleteLiveBtn').style.display = 'inline-flex';
-      select.innerHTML = allLivesList.map(l => `<option value="${l.id}">${l.name} (${l.date})</option>`).join('');
-      select.value = allLivesList[0].id;
-      loadReportForLive(allLivesList[0].id);
+      options += `<option value="${AVULSAS_ID}">📦 Vendas Avulsas</option>`;
+      select.innerHTML = options;
+      
+      if (allLivesList.length > 0) {
+        select.value = allLivesList[0].id;
+        document.getElementById('deleteLiveBtn').style.display = 'inline-flex';
+        loadReportForLive(allLivesList[0].id);
+      } else {
+        select.value = AVULSAS_ID;
+        document.getElementById('deleteLiveBtn').style.display = 'none';
+        loadReportForLive(AVULSAS_ID);
+      }
     }
 
     async function loadReportForLive(liveId) {
@@ -615,14 +813,22 @@
       document.getElementById('clientReportList').innerHTML = '';
       document.getElementById('reportSummary').style.display = 'none';
 
-      const q = query(collection(db, 'sales'), where('liveId', '==', liveId), where('storeId', '==', currentUser.uid));
-      const snap = await getDocs(q).catch(()=>null);
+      let sales = [];
+      let isAvulsas = (liveId === AVULSAS_ID);
       
-      currentReportSales = [];
-      if(snap) {
-        snap.forEach(d => currentReportSales.push({ id: d.id, ...d.data() }));
-        currentReportSales.sort((a, b) => (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0));
+      if (isAvulsas) {
+        const q = query(collection(db, 'sales'), where('storeId', '==', currentUser.uid), where('liveId', '==', null));
+        const snap = await getDocs(q).catch(()=>null);
+        if(snap) snap.forEach(d => sales.push({ id: d.id, ...d.data() }));
+      } else {
+        const q = query(collection(db, 'sales'), where('liveId', '==', liveId), where('storeId', '==', currentUser.uid));
+        const snap = await getDocs(q).catch(()=>null);
+        if(snap) snap.forEach(d => sales.push({ id: d.id, ...d.data() }));
       }
+      
+      sales.sort((a, b) => (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0));
+      currentReportSales = sales;
+      
       document.getElementById('reportLoading').style.display = 'none';
 
       let totalVal = currentReportSales.reduce((sum, sale) => sum + sale.value, 0);
@@ -630,7 +836,6 @@
       document.getElementById('totalValue').textContent = formatMoney(totalVal);
       document.getElementById('reportSummary').style.display = 'flex';
       
-      // Renderiza de acordo com o modo atual
       if (currentReportMode === 'general') {
         renderGeneralReport();
       } else {
@@ -638,14 +843,14 @@
       }
     }
 
-    // --- Renderização Geral ---
+    // --- Renderizações ---
     function renderGeneralReport() {
       const listEl = document.getElementById('reportSalesList');
       listEl.style.display = 'grid';
       document.getElementById('clientReportList').style.display = 'none';
       
       if (currentReportSales.length === 0) {
-        listEl.innerHTML = '<li style="text-align:center; padding:2rem; color:var(--text-light);">Nenhuma venda registrada nesta live.</li>';
+        listEl.innerHTML = '<li style="text-align:center; padding:2rem; color:var(--text-light);">Nenhuma venda registrada.</li>';
         return;
       }
 
@@ -677,7 +882,6 @@
       });
     }
 
-    // --- Renderização por Cliente (CORRIGIDA) ---
     function renderClientReport() {
       const listEl = document.getElementById('reportSalesList');
       listEl.style.display = 'none';
@@ -696,14 +900,24 @@
         if (!clientMap.has(buyer)) clientMap.set(buyer, { name: buyer, total: 0, items: [] });
         const entry = clientMap.get(buyer);
         entry.total += sale.value;
-        entry.items.push({ code: sale.code, value: sale.value, itemType: sale.itemType || sale.code });
+        entry.items.push({ id: sale.id, code: sale.code, value: sale.value, itemType: sale.itemType || sale.code });
       });
 
-      // Guarda para uso no preview
       window.currentClientMap = Object.fromEntries(clientMap);
 
       for (const [name, data] of clientMap) {
-        let itemsHtml = data.items.map(i => `<li><span>${i.itemType}</span><span>${formatMoney(i.value)}</span></li>`).join('');
+        let itemsHtml = data.items.map(item => `
+          <li>
+            <span>${item.itemType}</span>
+            <span>
+              ${formatMoney(item.value)}
+              <span class="item-actions">
+                <button class="btn-edit" data-sale-id="${item.id}" style="padding:0.1rem 0.4rem; font-size:0.7rem;">✏️</button>
+                <button class="btn-danger" data-sale-id="${item.id}" style="padding:0.1rem 0.4rem; font-size:0.7rem;">🗑️</button>
+              </span>
+            </span>
+          </li>
+        `).join('');
         
         const card = document.createElement('div');
         card.className = 'client-report-card';
@@ -718,7 +932,14 @@
         clientContainer.appendChild(card);
       }
 
-      // Adiciona listeners para os botões de copiar
+      clientContainer.querySelectorAll('button[data-sale-id]').forEach(btn => {
+        if (btn.classList.contains('btn-danger')) {
+          btn.addEventListener('click', () => deleteSale(btn.dataset.saleId));
+        } else if (btn.classList.contains('btn-edit')) {
+          btn.addEventListener('click', () => openEditModal(btn.dataset.saleId));
+        }
+      });
+
       clientContainer.querySelectorAll('button[data-client-name]').forEach(btn => {
         btn.addEventListener('click', () => openPreviewModal(btn.dataset.clientName));
       });
@@ -809,6 +1030,8 @@
         document.getElementById('avulsaClient3').value = '';
         loadAvulsasSales();
         loadDailySummary(document.getElementById('summaryDate').value);
+        const selected = document.getElementById('reportLiveSelect').value;
+        if (selected === AVULSAS_ID) loadReportForLive(AVULSAS_ID);
       } catch (e) {
         showMessage('avulsaMessage', 'Erro ao registrar: ' + getFirebaseErrorMessage(e), 'error');
       }
@@ -868,39 +1091,287 @@
     function refreshAllLists() {
       if (activeLiveId) loadActiveLiveSales();
       loadAvulsasSales();
-      const currentLiveId = document.getElementById('reportLiveSelect').value;
-      if (currentLiveId) loadReportForLive(currentLiveId);
+      const selected = document.getElementById('reportLiveSelect').value;
+      if (selected) loadReportForLive(selected);
       loadDailySummary(document.getElementById('summaryDate').value);
     }
 
-    // --- Pré-visualização de Mensagem ---
+    // --- PRÉ-VISUALIZAÇÃO COM TEMPLATE PERSONALIZÁVEL E OPÇÕES SALVAS ---
     function openPreviewModal(clientName) {
       const data = window.currentClientMap[clientName];
       if (!data) {
         alert('Dados do cliente não encontrados.');
         return;
       }
-      const nomeLoja = storeData ? storeData.storeName : 'nossa loja';
-      let msg = `Olá *${clientName}*! Tudo bem? 🌸\nAqui é do *${nomeLoja}*.\n\nAqui está o resumo detalhado do seu pedido:\n\n🛍️ *SUAS PEÇAS:*\n`;
-      data.items.forEach(item => {
-        const desc = item.itemType || item.code;
-        msg += `🔸 ${desc} | ${formatMoney(item.value)}\n`;
-      });
-      msg += `\n💰 *Total da Compra: ${formatMoney(data.total)}*\n\nComo você prefere realizar o pagamento? (Pix, Cartão, Dinheiro)\nFico no aguardo para separarmos o seu pedido com muito carinho! ✨`;
+
+      // Preenche data atual
+      const today = new Date();
+      const day = String(today.getDate()).padStart(2,'0');
+      const month = String(today.getMonth()+1).padStart(2,'0');
+      const year = today.getFullYear();
+      const defaultDate = `${day}/${month}/${year}`;
+      document.getElementById('templateDeadlineDate').value = defaultDate;
+      document.getElementById('templateDeadlineTime').value = '18:00';
+      document.getElementById('templatePaymentMethod').value = 'Pix';
+
+      // Carrega as opções salvas nos selects
+      populateSelect('templatePixKeySelect', STORAGE_KEYS.pix);
+      populateSelect('templateBankSelect', STORAGE_KEYS.bank);
+      populateSelect('templateAccountNameSelect', STORAGE_KEYS.name);
       
-      document.getElementById('previewMessage').value = msg;
-      document.getElementById('previewExtra').value = '';
+      // Limpa os campos de input
+      document.getElementById('templatePixKey').value = '';
+      document.getElementById('templateBank').value = '';
+      document.getElementById('templateAccountName').value = '';
+      document.getElementById('templatePixType').value = '';
+
+      // Gera a mensagem base
+      const nomeLoja = storeData ? storeData.storeName : 'nossa loja';
+      let summary = '';
+      data.items.forEach((item, index) => {
+        const desc = item.itemType || item.code;
+        summary += `🔸 ${desc} | ${formatMoney(item.value)}\n`;
+      });
+      const total = formatMoney(data.total);
+
+      // Template com o texto exato que o usuário pediu
+      const baseMsg = `Olá *${clientName}*! Tudo bem? 🌸
+Aqui está o resumo detalhado do seu pedido:
+
+🛍️ *SUAS PEÇAS:*
+${summary}
+💰 *Total da Compra: ${total}*
+
+Como você prefere realizar o pagamento? (Pix ou Link de pagamento) lembrando que 
+O prazo de pagamento está liberado até as 18:00 do dia ${defaultDate}, após esse prazo as peças ficarão disponíveis novamente para venda.
+Fico no aguardo para separarmos o seu pedido com muito carinho! ✨
+
+Dados para pagamento:
+Chave Pix: 
+Banco: 
+Nome: `;
+
+      document.getElementById('previewMessage').value = baseMsg;
+
+      // Função para atualizar a mensagem com os campos atuais
+      const updatePreview = () => {
+        const paymentMethod = document.getElementById('templatePaymentMethod').value.trim() || 'Pix';
+        const deadlineTime = document.getElementById('templateDeadlineTime').value.trim() || '18:00';
+        const deadlineDate = document.getElementById('templateDeadlineDate').value.trim() || defaultDate;
+        const pixType = document.getElementById('templatePixType').value.trim();
+        const pixKey = document.getElementById('templatePixKey').value.trim();
+        const bank = document.getElementById('templateBank').value.trim();
+        const accountName = document.getElementById('templateAccountName').value.trim();
+
+        // Monta a chave Pix com tipo + valor
+        let pixDisplay = '';
+        if (pixType && pixKey) {
+          pixDisplay = `${pixType}: ${pixKey}`;
+        } else if (pixKey) {
+          pixDisplay = `Chave: ${pixKey}`;
+        }
+
+        let msg = `Olá *${clientName}*! Tudo bem? 🌸
+Aqui está o resumo detalhado do seu pedido:
+
+🛍️ *SUAS PEÇAS:*
+${summary}
+💰 *Total da Compra: ${total}*
+
+Como você prefere realizar o pagamento? (${paymentMethod}) lembrando que 
+O prazo de pagamento está liberado até as ${deadlineTime} do dia ${deadlineDate}, após esse prazo as peças ficarão disponíveis novamente para venda.
+Fico no aguardo para separarmos o seu pedido com muito carinho! ✨
+
+Dados para pagamento:
+`;
+        if (pixDisplay) msg += `Chave Pix: ${pixDisplay}\n`;
+        if (bank) msg += `Banco: ${bank}\n`;
+        if (accountName) msg += `Nome: ${accountName}`;
+        document.getElementById('previewMessage').value = msg;
+      };
+
+      // Remove listeners antigos e adiciona novos
+      const fields = [
+        'templatePaymentMethod', 'templateDeadlineTime', 'templateDeadlineDate',
+        'templatePixKey', 'templateBank', 'templateAccountName', 'templatePixType'
+      ];
+      fields.forEach(id => {
+        const el = document.getElementById(id);
+        el.removeEventListener('input', updatePreview);
+        el.removeEventListener('change', updatePreview);
+        el.addEventListener('input', updatePreview);
+        el.addEventListener('change', updatePreview);
+      });
+
+      // Adiciona listeners nos selects para sincronizar com os inputs
+      document.getElementById('templatePixKeySelect').addEventListener('change', (e) => {
+        const val = e.target.value;
+        document.getElementById('templatePixKey').value = val;
+        updatePreview();
+      });
+      document.getElementById('templateBankSelect').addEventListener('change', (e) => {
+        const val = e.target.value;
+        document.getElementById('templateBank').value = val;
+        updatePreview();
+      });
+      document.getElementById('templateAccountNameSelect').addEventListener('change', (e) => {
+        const val = e.target.value;
+        document.getElementById('templateAccountName').value = val;
+        updatePreview();
+      });
+
+      // Botões para método de pagamento
+      document.getElementById('addPixBtn').onclick = () => {
+        const input = document.getElementById('templatePaymentMethod');
+        const current = input.value.trim();
+        if (current === '') {
+          input.value = 'Pix';
+        } else if (!current.includes('Pix')) {
+          input.value = current + ' ou Pix';
+        } else {
+          input.value = current.replace('Pix', '').replace(/  +/g, ' ').trim();
+          if (input.value === '') input.value = 'Link de pagamento';
+        }
+        updatePreview();
+      };
+      document.getElementById('addLinkBtn').onclick = () => {
+        const input = document.getElementById('templatePaymentMethod');
+        const current = input.value.trim();
+        if (current === '') {
+          input.value = 'Link de pagamento';
+        } else if (!current.includes('Link de pagamento')) {
+          input.value = current + ' ou Link de pagamento';
+        } else {
+          input.value = current.replace('Link de pagamento', '').replace(/  +/g, ' ').trim();
+          if (input.value === '') input.value = 'Pix';
+        }
+        updatePreview();
+      };
+      document.getElementById('clearPaymentBtn').onclick = () => {
+        document.getElementById('templatePaymentMethod').value = '';
+        updatePreview();
+      };
+
+      // Abre o modal
       document.getElementById('previewModal').classList.add('active');
+      // Força uma atualização inicial
+      setTimeout(updatePreview, 100);
     }
+
+    // Função auxiliar para popular selects com opções salvas
+    function populateSelect(selectId, storageKey) {
+      const select = document.getElementById(selectId);
+      const options = getOptions(storageKey);
+      select.innerHTML = '<option value="">Selecione uma opção</option>';
+      options.forEach(opt => {
+        const option = document.createElement('option');
+        option.value = opt;
+        option.textContent = opt;
+        select.appendChild(option);
+      });
+    }
+
+    // --- Gerenciamento de Opções (Modal) ---
+    function openManageOptions(storageKey, title) {
+      document.getElementById('manageOptionsTitle').textContent = title;
+      document.getElementById('manageOptionsKey').value = storageKey;
+      renderManageOptions(storageKey);
+      document.getElementById('manageOptionsModal').classList.add('active');
+    }
+
+    function renderManageOptions(storageKey) {
+      const list = document.getElementById('manageOptionsList');
+      const options = getOptions(storageKey);
+      list.innerHTML = '';
+      if (options.length === 0) {
+        list.innerHTML = '<div style="color:var(--text-light); font-size:0.9rem;">Nenhuma opção cadastrada.</div>';
+        return;
+      }
+      options.forEach(opt => {
+        const div = document.createElement('div');
+        div.className = 'option-item';
+        div.innerHTML = `
+          <span>${opt}</span>
+          <div class="actions">
+            <button class="btn-edit btn-sm" data-value="${opt}">✏️</button>
+            <button class="btn-danger btn-sm" data-value="${opt}">🗑️</button>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+
+      // Editar
+      list.querySelectorAll('.btn-edit').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const oldVal = btn.dataset.value;
+          const newVal = prompt('Editar opção:', oldVal);
+          if (newVal && newVal.trim() && newVal.trim() !== oldVal) {
+            updateOption(storageKey, oldVal, newVal.trim());
+            renderManageOptions(storageKey);
+            refreshSelectsForKey(storageKey);
+          }
+        });
+      });
+
+      // Excluir
+      list.querySelectorAll('.btn-danger').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const val = btn.dataset.value;
+          if (confirm(`Remover "${val}"?`)) {
+            deleteOption(storageKey, val);
+            renderManageOptions(storageKey);
+            refreshSelectsForKey(storageKey);
+          }
+        });
+      });
+    }
+
+    function refreshSelectsForKey(storageKey) {
+      const map = {
+        [STORAGE_KEYS.pix]: 'templatePixKeySelect',
+        [STORAGE_KEYS.bank]: 'templateBankSelect',
+        [STORAGE_KEYS.name]: 'templateAccountNameSelect'
+      };
+      const selectId = map[storageKey];
+      if (selectId) populateSelect(selectId, storageKey);
+    }
+
+    // --- Listeners do modal de gerenciamento ---
+    document.getElementById('manageOptionsAddBtn').addEventListener('click', () => {
+      const key = document.getElementById('manageOptionsKey').value;
+      const input = document.getElementById('manageOptionsInput');
+      const value = input.value.trim();
+      if (!value) return alert('Digite uma opção válida.');
+      addOption(key, value);
+      input.value = '';
+      renderManageOptions(key);
+      refreshSelectsForKey(key);
+    });
+
+    document.getElementById('manageOptionsCloseBtn').addEventListener('click', () => {
+      document.getElementById('manageOptionsModal').classList.remove('active');
+    });
+    document.getElementById('manageOptionsInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') document.getElementById('manageOptionsAddBtn').click();
+    });
+
+    // --- Listeners dos botões "Gerenciar" no preview ---
+    document.getElementById('managePixBtn').addEventListener('click', () => {
+      openManageOptions(STORAGE_KEYS.pix, 'Gerenciar Chaves Pix');
+    });
+    document.getElementById('manageBankBtn').addEventListener('click', () => {
+      openManageOptions(STORAGE_KEYS.bank, 'Gerenciar Bancos');
+    });
+    document.getElementById('manageNameBtn').addEventListener('click', () => {
+      openManageOptions(STORAGE_KEYS.name, 'Gerenciar Nomes de Titular');
+    });
 
     document.getElementById('cancelPreviewBtn').addEventListener('click', () => {
       document.getElementById('previewModal').classList.remove('active');
     });
 
     document.getElementById('copyPreviewBtn').addEventListener('click', () => {
-      let msg = document.getElementById('previewMessage').value;
-      const extra = document.getElementById('previewExtra').value.trim();
-      if (extra) msg += '\n\n' + extra;
+      const msg = document.getElementById('previewMessage').value;
       navigator.clipboard.writeText(msg).then(() => {
         showToast("✅ Mensagem copiada para a área de transferência!");
         document.getElementById('previewModal').classList.remove('active');
@@ -1138,7 +1609,10 @@
     // --- Listeners para apagar live ---
     document.getElementById('deleteLiveBtn').addEventListener('click', async () => {
       const liveId = document.getElementById('reportLiveSelect').value;
-      if (!liveId) return;
+      if (!liveId || liveId === AVULSAS_ID) {
+        alert('Selecione uma live válida para apagar (não é possível apagar vendas avulsas por aqui).');
+        return;
+      }
       if (!confirm('🚨 TEM CERTEZA ABSOLUTA? \n\nIsso vai apagar a live inteira e TODAS AS VENDAS registradas nela de forma permanente.')) return;
       
       document.getElementById('reportLoading').style.display = 'block';
@@ -1166,18 +1640,14 @@
       currentReportMode = 'general';
       document.getElementById('modeGeneralBtn').className = 'btn-primary';
       document.getElementById('modeByClientBtn').className = 'btn-secondary';
-      if (currentReportSales.length > 0 || true) { // sempre renderiza, mesmo vazio
-        renderGeneralReport();
-      } else {
-        renderGeneralReport(); // mostra mensagem de vazio
-      }
+      renderGeneralReport();
     });
 
     document.getElementById('modeByClientBtn').addEventListener('click', () => {
       currentReportMode = 'byClient';
       document.getElementById('modeByClientBtn').className = 'btn-primary';
       document.getElementById('modeGeneralBtn').className = 'btn-secondary';
-      renderClientReport(); // sempre renderiza (mostra vazio se não houver dados)
+      renderClientReport();
     });
 
     // --- Event Listeners principais ---
@@ -1197,7 +1667,15 @@
     document.getElementById('registerAvulsaBtn').addEventListener('click', registerAvulsaSale);
     
     document.getElementById('summaryDate').addEventListener('change', (e) => loadDailySummary(e.target.value));
-    document.getElementById('reportLiveSelect').addEventListener('change', (e) => loadReportForLive(e.target.value));
+    document.getElementById('reportLiveSelect').addEventListener('change', (e) => {
+      const val = e.target.value;
+      if (val === AVULSAS_ID) {
+        document.getElementById('deleteLiveBtn').style.display = 'none';
+      } else {
+        document.getElementById('deleteLiveBtn').style.display = 'inline-flex';
+      }
+      loadReportForLive(val);
+    });
     document.getElementById('summaryDate').value = getTodayString();
 
     document.getElementById('saveClientBtn').addEventListener('click', async () => {
