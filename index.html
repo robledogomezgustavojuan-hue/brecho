@@ -104,6 +104,8 @@
     button.btn-danger:hover { background: #fecaca; color: var(--danger-hover); }
     button.btn-whatsapp { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; font-size: 0.85rem;}
     button.btn-whatsapp:hover { background: #bbf7d0; }
+    button.btn-edit { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+    button.btn-edit:hover { background: #bae6fd; }
 
     .link { text-align: center; margin-top: 1.5rem; color: var(--primary); font-weight: 500; cursor: pointer; font-size: 0.9rem; }
     .link:hover { text-decoration: underline; }
@@ -134,6 +136,7 @@
       padding: 0.5rem;
       border-radius: var(--radius);
       border: 1px solid var(--border);
+      flex-wrap: wrap;
     }
     .tab {
       flex: 1;
@@ -144,6 +147,7 @@
       cursor: pointer;
       color: var(--text-light);
       transition: all 0.2s;
+      min-width: 80px;
     }
     .tab.active { background: var(--secondary); color: var(--text-dark); }
     .tab:hover:not(.active) { background: #f9fafb; }
@@ -181,6 +185,7 @@
     .sale-price { font-weight: 700; color: var(--success); font-size: 1.1rem;}
     .sale-buyer { font-size: 0.95rem; color: var(--primary); font-weight: 600; margin-top: 0.3rem;}
     .sale-queue { font-size: 0.85rem; color: var(--text-light); background: var(--secondary); padding: 0.4rem; border-radius: 6px; margin-top: 0.2rem;}
+    .sale-type { font-size: 0.9rem; color: var(--text-dark); background: #fef3c7; padding: 0.2rem 0.6rem; border-radius: 12px; display: inline-block; }
 
     .client-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
     
@@ -204,16 +209,83 @@
     
     .flex-row { display: flex; gap: 1rem; margin-bottom: 1rem; }
     .flex-row > * { flex: 1; }
+
+    .search-box { margin-bottom: 1.5rem; }
+    .client-card-actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+    .client-card-actions button { width: auto; padding: 0.4rem 0.8rem; font-size: 0.8rem; }
+    .client-info { font-size: 0.9rem; color: var(--text-light); }
+    .client-info strong { color: var(--text-dark); }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 1rem;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+      background: white;
+      max-width: 500px;
+      width: 100%;
+      padding: 2rem;
+      border-radius: var(--radius);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-box h3 { margin-bottom: 1rem; }
+    .modal-actions { display: flex; gap: 1rem; margin-top: 1.5rem; }
+    .modal-actions button { flex: 1; }
   </style>
 </head>
 <body>
   <div id="app">
     
+    <!-- Toast -->
     <div id="toastMessage" style="position: fixed; top: 20px; right: 20px; background: #10b981; color: white; padding: 1rem 1.5rem; border-radius: 8px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: none; z-index: 9999; transform: translateY(-20px); transition: all 0.3s ease;">
       ✅ Ação realizada com sucesso!
     </div>
 
-    <!-- Tela de Login -->
+    <!-- Modal de Edição -->
+    <div id="editModal" class="modal-overlay">
+      <div class="modal-box">
+        <h3>✏️ Editar Venda</h3>
+        <input type="hidden" id="editSaleId">
+        <div class="form-group"><label>Código da Peça</label><input type="text" id="editCode"></div>
+        <div class="form-group"><label>Valor (R$)</label><input type="number" id="editValue" step="0.01" min="0"></div>
+        <div class="form-group"><label>Tipo de Peça</label><input type="text" id="editItemType" placeholder="Ex: Vestido, Calça, Bolsa..."></div>
+        <div class="modal-actions">
+          <button class="btn-secondary" id="cancelEditBtn">Cancelar</button>
+          <button class="btn-primary" id="saveEditBtn">💾 Salvar Alterações</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Pré-visualização do Resumo -->
+    <div id="previewModal" class="modal-overlay">
+      <div class="modal-box">
+        <h3>📋 Pré-visualizar Mensagem para o Cliente</h3>
+        <div class="form-group">
+          <label>Mensagem (editável)</label>
+          <textarea id="previewMessage" rows="8" style="width:100%; padding:0.8rem; border:1px solid var(--border); border-radius:8px; font-family:inherit; font-size:0.95rem;"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Informações adicionais (ex: dados de pagamento, horários, datas)</label>
+          <textarea id="previewExtra" rows="4" style="width:100%; padding:0.8rem; border:1px solid var(--border); border-radius:8px; font-family:inherit; font-size:0.95rem;" placeholder="Adicione aqui seus dados de pagamento, prazos, etc."></textarea>
+        </div>
+        <div class="modal-actions">
+          <button class="btn-secondary" id="cancelPreviewBtn">Fechar</button>
+          <button class="btn-primary" id="copyPreviewBtn">📋 Copiar Mensagem</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Telas de Login/Cadastro -->
     <div id="loginScreen" class="screen active">
       <div class="auth-container">
         <h1>Brechó Inteligente</h1>
@@ -225,7 +297,6 @@
       </div>
     </div>
 
-    <!-- Tela de Cadastro -->
     <div id="registerScreen" class="screen">
       <div class="auth-container">
         <h1>Nova Loja</h1>
@@ -239,7 +310,7 @@
       </div>
     </div>
 
-    <!-- Dashboard Principal -->
+    <!-- Dashboard -->
     <div id="dashboardScreen" class="screen">
       <div class="header">
         <div class="store-name" id="storeNameDisplay">Minha Loja</div>
@@ -249,20 +320,50 @@
       <div id="mainPanel">
         <div class="tab-bar">
           <div class="tab active" id="tabSummary">Painel Resumo</div>
-          <div class="tab" id="tabReports">Relatórios Detalhados</div>
+          <div class="tab" id="tabAvulsas">📦 Avulsas</div>
+          <div class="tab" id="tabReports">Relatórios</div>
           <div class="tab" id="tabClients">Meus Clientes</div>
         </div>
 
-        <!-- Resumo Diário -->
+        <!-- Resumo Diário e Botão Live -->
         <div id="summaryArea">
           <div class="form-group" style="max-width: 250px;"><label>Data de Análise</label><input type="date" id="summaryDate"></div>
           <div class="summary-cards">
             <div class="summary-card"><div class="value" id="dailySales">R$ 0,00</div><div class="label">Total Faturado</div></div>
             <div class="summary-card"><div class="value" id="dailyItems">0</div><div class="label">Peças Vendidas</div></div>
           </div>
-          <button class="btn-primary" id="startLiveBtn" style="padding: 1.2rem; font-size: 1.1rem; background: #be185d;">
-            🎥 Iniciar Nova Live de Vendas
-          </button>
+          <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+            <button class="btn-primary" id="startLiveBtn" style="padding: 1.2rem; font-size: 1.1rem; background: #be185d; flex:1;">
+              🎥 Iniciar Nova Live
+            </button>
+          </div>
+        </div>
+
+        <!-- Vendas Avulsas -->
+        <div id="avulsasArea" style="display: none;">
+          <div style="background: var(--card-bg); padding: 1.5rem; border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 2rem;">
+            <h3>Registrar Venda Avulsa</h3>
+            <div id="avulsaMessage" class="alert success"></div>
+            <div class="flex-row">
+              <div class="form-group"><label>Código da Peça</label><input type="text" id="avulsaCode" placeholder="Ex: BL01"></div>
+              <div class="form-group"><label>Valor (R$)</label><input type="number" id="avulsaValue" step="0.01" min="0" placeholder="Ex: 49.90"></div>
+            </div>
+            <div class="flex-row">
+              <div class="form-group"><label>Tipo de Peça</label><input type="text" id="avulsaItemType" placeholder="Ex: Vestido, Calça, Bolsa..."></div>
+              <div class="form-group"><label>👤 Cliente Principal</label><input type="text" id="avulsaClient1" list="clientNamesList" autocomplete="off"></div>
+            </div>
+            <details style="margin-bottom: 1rem;">
+              <summary style="cursor: pointer; color: var(--text-light); font-size: 0.9rem; font-weight: 500;">Fila de Espera (Opcional)</summary>
+              <div style="padding-top: 1rem; border-top: 1px dashed var(--border); margin-top: 0.5rem;">
+                <div class="form-group"><label>👤 2ª Opção</label><input type="text" id="avulsaClient2" list="clientNamesList" autocomplete="off"></div>
+                <div class="form-group"><label>👤 3ª Opção</label><input type="text" id="avulsaClient3" list="clientNamesList" autocomplete="off"></div>
+              </div>
+            </details>
+            <button id="registerAvulsaBtn" class="btn-primary" style="background: #8b5cf6;">➕ Registrar Venda Avulsa</button>
+          </div>
+
+          <h3>Lista de Vendas Avulsas</h3>
+          <ul class="sales-list" id="avulsaSalesList"></ul>
         </div>
 
         <!-- Relatórios -->
@@ -302,7 +403,13 @@
             </div>
             <button id="saveClientBtn" class="btn-primary" style="width: auto; margin-top: 1rem;">💾 Salvar Cadastro</button>
           </div>
-          <h3>Lista de Clientes</h3>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h3 style="margin:0;">Lista de Clientes</h3>
+            <button id="refreshClientsBtn" class="btn-secondary" style="width: auto; padding: 0.4rem 1rem;">🔄 Atualizar</button>
+          </div>
+          <div class="search-box">
+            <input type="text" id="clientSearch" placeholder="🔍 Filtrar clientes por nome...">
+          </div>
           <div id="clientsList" class="client-grid"></div>
         </div>
       </div>
@@ -318,15 +425,15 @@
         </div>
         
         <div id="liveMessage" class="alert success"></div>
-        
         <datalist id="clientNamesList"></datalist>
         
         <div style="background: white; padding: 1.5rem; border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 2rem;">
           <h3 style="font-size: 1.1rem; margin-bottom: 1rem;">Registrar Peça Vendida</h3>
           <div class="flex-row">
             <div class="form-group"><label>Código da Peça</label><input type="text" id="saleCode" placeholder="Ex: BL01"></div>
-            <div class="form-group"><label>Valor (R$)</label><input type="number" id="saleValue" step="0.01" placeholder="Ex: 49.90"></div>
+            <div class="form-group"><label>Valor (R$)</label><input type="number" id="saleValue" step="0.01" placeholder="Ex: 49.90" min="0"></div>
           </div>
+          <div class="form-group"><label>Tipo de Peça</label><input type="text" id="saleItemType" placeholder="Ex: Vestido, Calça, Bolsa..."></div>
           <div class="form-group"><label>👤 Cliente Principal (Comprador)</label><input type="text" id="client1" list="clientNamesList" autocomplete="off" placeholder="Digite para buscar nomes salvos..."></div>
           
           <details style="margin-bottom: 1rem;">
@@ -351,7 +458,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, where, getDocs, orderBy, serverTimestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, where, getDocs, serverTimestamp, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBLfJR31G2DKV38E4x6HFR-bY3tnH3Yrso",
@@ -375,6 +482,7 @@
     let currentReportMode = 'general';
     let currentReportSales = [];
     let knownClientNames = new Set();
+    let allSales = []; // para avulsas e outras
 
     const formatMoney = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
     
@@ -385,15 +493,18 @@
 
     function switchDashboardTab(tab) {
       document.getElementById('summaryArea').style.display = tab === 'summary' ? 'block' : 'none';
+      document.getElementById('avulsasArea').style.display = tab === 'avulsas' ? 'block' : 'none';
       document.getElementById('reportsArea').style.display = tab === 'reports' ? 'block' : 'none';
       document.getElementById('clientsArea').style.display = tab === 'clients' ? 'block' : 'none';
       
       document.getElementById('tabSummary').classList.toggle('active', tab === 'summary');
+      document.getElementById('tabAvulsas').classList.toggle('active', tab === 'avulsas');
       document.getElementById('tabReports').classList.toggle('active', tab === 'reports');
       document.getElementById('tabClients').classList.toggle('active', tab === 'clients');
       
       if (tab === 'reports') loadReportsLiveSelector();
       if (tab === 'clients') loadClientsList();
+      if (tab === 'avulsas') loadAvulsasSales();
     }
 
     function showMessage(id, msg, type = 'success') {
@@ -416,16 +527,31 @@
       }, 3000);
     }
 
+    function getFirebaseErrorMessage(error) {
+      const code = error.code || '';
+      switch (code) {
+        case 'auth/user-not-found': return 'Usuário não encontrado.';
+        case 'auth/wrong-password': return 'Senha incorreta.';
+        case 'auth/email-already-in-use': return 'Este email já está em uso.';
+        case 'auth/weak-password': return 'A senha deve ter pelo menos 6 caracteres.';
+        default: return error.message || 'Erro desconhecido.';
+      }
+    }
+
     function getTodayString() {
       const d = new Date();
       return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     }
 
+    // --- Autenticação ---
     async function login() {
       const email = document.getElementById('loginEmail').value.trim();
       const pass = document.getElementById('loginPassword').value;
-      try { await signInWithEmailAndPassword(auth, email, pass); }
-      catch (e) { showMessage('loginError', 'Erro ao logar.', 'error'); }
+      try {
+        await signInWithEmailAndPassword(auth, email, pass);
+      } catch (e) {
+        showMessage('loginError', 'Erro ao logar: ' + getFirebaseErrorMessage(e), 'error');
+      }
     }
 
     async function register() {
@@ -434,14 +560,19 @@
       const confirm = document.getElementById('regConfirmPassword').value;
       const storeName = document.getElementById('regStoreName').value.trim();
       if (pass !== confirm) return showMessage('registerError', 'Senhas não conferem.', 'error');
+      if (pass.length < 6) return showMessage('registerError', 'A senha deve ter pelo menos 6 caracteres.', 'error');
       try {
         const cred = await createUserWithEmailAndPassword(auth, email, pass);
         await setDoc(doc(db, 'stores', cred.user.uid), { email, storeName, createdAt: new Date().toISOString() });
-      } catch (e) { showMessage('registerError', 'Erro: ' + e.message, 'error'); }
+        showToast("✅ Conta criada com sucesso!");
+      } catch (e) {
+        showMessage('registerError', 'Erro: ' + getFirebaseErrorMessage(e), 'error');
+      }
     }
 
     async function logout() { await signOut(auth); }
 
+    // --- Resumo Diário ---
     async function loadDailySummary(dateStr) {
       if (!currentUser) return;
       const salesQ = query(collection(db, 'sales'), where('storeId', '==', currentUser.uid), where('date', '==', dateStr));
@@ -453,12 +584,16 @@
       document.getElementById('dailyItems').textContent = salesSnap ? salesSnap.size : 0;
     }
 
+    // --- Lives ---
     async function loadAllLivesList() {
       if (!currentUser) return;
       allLivesList = [];
-      const q = query(collection(db, 'lives'), where('storeId', '==', currentUser.uid), orderBy('createdAt', 'desc'));
+      const q = query(collection(db, 'lives'), where('storeId', '==', currentUser.uid));
       const snap = await getDocs(q).catch(()=>null);
-      if(snap) snap.forEach(d => allLivesList.push({ id: d.id, ...d.data() }));
+      if(snap) {
+        snap.forEach(d => allLivesList.push({ id: d.id, ...d.data() }));
+        allLivesList.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+      }
     }
 
     function loadReportsLiveSelector() {
@@ -480,11 +615,14 @@
       document.getElementById('clientReportList').innerHTML = '';
       document.getElementById('reportSummary').style.display = 'none';
 
-      const q = query(collection(db, 'sales'), where('liveId', '==', liveId), where('storeId', '==', currentUser.uid), orderBy('createdAt', 'asc'));
+      const q = query(collection(db, 'sales'), where('liveId', '==', liveId), where('storeId', '==', currentUser.uid));
       const snap = await getDocs(q).catch(()=>null);
       
       currentReportSales = [];
-      if(snap) snap.forEach(d => currentReportSales.push({ id: d.id, ...d.data() }));
+      if(snap) {
+        snap.forEach(d => currentReportSales.push({ id: d.id, ...d.data() }));
+        currentReportSales.sort((a, b) => (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0));
+      }
       document.getElementById('reportLoading').style.display = 'none';
 
       let totalVal = currentReportSales.reduce((sum, sale) => sum + sale.value, 0);
@@ -503,19 +641,29 @@
       listEl.innerHTML = currentReportSales.map(sale => {
         const queue = sale.clientQueue.slice(1);
         const queueHtml = queue.length > 0 ? `<div class="sale-queue">⏳ <strong>Fila:</strong> ${queue.join(', ')}</div>` : '';
+        const typeHtml = sale.itemType ? `<span class="sale-type">${sale.itemType}</span>` : '';
         return `
         <li class="sale-item-card">
           <div class="sale-item-header">
-            <span class="sale-code">Ref: ${sale.code}</span>
+            <span class="sale-code">Ref: ${sale.code} ${typeHtml}</span>
             <div>
               <span class="sale-price" style="margin-right: 10px;">${formatMoney(sale.value)}</span>
-              <button class="btn-danger" onclick="deleteSale('${sale.id}')" style="width:auto; padding:0.3rem 0.5rem; font-size:0.8rem;" title="Apagar Venda">🗑️</button>
+              <button class="btn-edit" data-sale-id="${sale.id}" style="width:auto; padding:0.3rem 0.5rem; font-size:0.8rem; margin-right:4px;">✏️</button>
+              <button class="btn-danger" data-sale-id="${sale.id}" style="width:auto; padding:0.3rem 0.5rem; font-size:0.8rem;">🗑️</button>
             </div>
           </div>
           <div class="sale-buyer">👤 Comprador: ${sale.clientQueue[0]}</div>
           ${queueHtml}
         </li>`;
       }).join('');
+
+      listEl.querySelectorAll('button[data-sale-id]').forEach(btn => {
+        if (btn.classList.contains('btn-danger')) {
+          btn.addEventListener('click', () => deleteSale(btn.dataset.saleId));
+        } else if (btn.classList.contains('btn-edit')) {
+          btn.addEventListener('click', () => openEditModal(btn.dataset.saleId));
+        }
+      });
     }
 
     function renderClientReport() {
@@ -530,13 +678,13 @@
         if (!clientMap.has(buyer)) clientMap.set(buyer, { name: buyer, total: 0, items: [] });
         const entry = clientMap.get(buyer);
         entry.total += sale.value;
-        entry.items.push({ code: sale.code, value: sale.value });
+        entry.items.push({ code: sale.code, value: sale.value, itemType: sale.itemType || sale.code });
       });
 
       window.currentClientMap = Object.fromEntries(clientMap);
 
       for (const [name, data] of clientMap) {
-        let itemsHtml = data.items.map(i => `<li><span>Ref: ${i.code}</span><span>${formatMoney(i.value)}</span></li>`).join('');
+        let itemsHtml = data.items.map(i => `<li><span>${i.itemType}</span><span>${formatMoney(i.value)}</span></li>`).join('');
         
         const card = document.createElement('div');
         card.className = 'client-report-card';
@@ -545,89 +693,196 @@
           <ul class="client-report-items">${itemsHtml}</ul>
           <div class="client-report-total"><span>Total</span><span>${formatMoney(data.total)}</span></div>
           <div class="flex-row">
-            <button class="btn-secondary" onclick="generateWhatsAppSummary('${name}')" style="font-size: 0.85rem;">📋 Copiar Resumo</button>
+            <button class="btn-whatsapp" data-client-name="${name}" style="font-size: 0.85rem;">📋 Copiar Resumo</button>
           </div>
         `;
         clientContainer.appendChild(card);
       }
+
+      clientContainer.querySelectorAll('button[data-client-name]').forEach(btn => {
+        btn.addEventListener('click', () => openPreviewModal(btn.dataset.clientName));
+      });
     }
 
-    window.generateWhatsAppSummary = function(clientName) {
-      const data = window.currentClientMap[clientName];
-      if (!data) return;
-      const nomeLoja = storeData ? storeData.storeName : 'nossa loja';
-      let msg = `Olá *${clientName}*! Tudo bem? 🌸\nAqui é do *${nomeLoja}*.\n\nAqui está o resumo detalhado do seu pedido da nossa live:\n\n🛍️ *SUAS PEÇAS:*\n`;
-      data.items.forEach(item => { msg += `🔸 Ref: ${item.code} | ${formatMoney(item.value)}\n`; });
-      msg += `\n💰 *Total da Compra: ${formatMoney(data.total)}*\n\nComo você prefere realizar o pagamento? (Pix, Cartão, Dinheiro)\nFico no aguardo para separarmos o seu pedido com muito carinho! ✨`;
-      navigator.clipboard.writeText(msg).then(() => { showToast("✅ Resumo copiado para a área de transferência!"); })
-      .catch(err => { alert("Erro ao copiar texto."); });
-    };
+    // --- Vendas Avulsas ---
+    async function loadAvulsasSales() {
+      if (!currentUser) return;
+      const q = query(collection(db, 'sales'), where('storeId', '==', currentUser.uid), where('liveId', '==', null));
+      const snap = await getDocs(q).catch(()=>null);
+      const listEl = document.getElementById('avulsaSalesList');
+      listEl.innerHTML = '';
+      if (snap) {
+        const sales = [];
+        snap.forEach(d => sales.push({ id: d.id, ...d.data() }));
+        sales.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+        sales.forEach(sale => {
+          const queue = sale.clientQueue.slice(1);
+          const queueHtml = queue.length > 0 ? `<div class="sale-queue">⏳ <strong>Fila:</strong> ${queue.join(', ')}</div>` : '';
+          const typeHtml = sale.itemType ? `<span class="sale-type">${sale.itemType}</span>` : '';
+          listEl.innerHTML += `
+          <li class="sale-item-card">
+            <div class="sale-item-header">
+              <span class="sale-code">Ref: ${sale.code} ${typeHtml}</span>
+              <div>
+                <span class="sale-price" style="margin-right: 10px;">${formatMoney(sale.value)}</span>
+                <button class="btn-edit" data-sale-id="${sale.id}" style="width:auto; padding:0.3rem 0.5rem; font-size:0.8rem; margin-right:4px;">✏️</button>
+                <button class="btn-danger" data-sale-id="${sale.id}" style="width:auto; padding:0.3rem 0.5rem; font-size:0.8rem;">🗑️</button>
+              </div>
+            </div>
+            <div class="sale-buyer">👤 Comprador: ${sale.clientQueue[0]}</div>
+            ${queueHtml}
+          </li>`;
+        });
+        listEl.querySelectorAll('button[data-sale-id]').forEach(btn => {
+          if (btn.classList.contains('btn-danger')) {
+            btn.addEventListener('click', () => deleteSale(btn.dataset.saleId));
+          } else if (btn.classList.contains('btn-edit')) {
+            btn.addEventListener('click', () => openEditModal(btn.dataset.saleId));
+          }
+        });
+      }
+    }
 
-    // --- FUNÇÕES DE EXCLUSÃO (NOVIDADE) ---
-    window.deleteSale = async function(saleId) {
+    async function registerAvulsaSale() {
+      const code = document.getElementById('avulsaCode').value.trim();
+      const value = parseFloat(document.getElementById('avulsaValue').value);
+      const itemType = document.getElementById('avulsaItemType').value.trim();
+      const c1 = document.getElementById('avulsaClient1').value.trim();
+      const c2 = document.getElementById('avulsaClient2').value.trim();
+      const c3 = document.getElementById('avulsaClient3').value.trim();
+
+      if (!code) return showMessage('avulsaMessage', 'Preencha o código da peça.', 'error');
+      if (isNaN(value) || value <= 0) return showMessage('avulsaMessage', 'Informe um valor válido (maior que zero).', 'error');
+      if (!c1) return showMessage('avulsaMessage', 'Preencha o comprador principal.', 'error');
+
+      const queue = [c1];
+      if (c2) queue.push(c2);
+      if (c3) queue.push(c3);
+
+      try {
+        await addDoc(collection(db, 'sales'), {
+          liveId: null,
+          storeId: currentUser.uid,
+          code,
+          value,
+          itemType,
+          clientQueue: queue,
+          currentClientIndex: 0,
+          date: getTodayString(),
+          createdAt: serverTimestamp()
+        });
+        knownClientNames.add(c1);
+        if(c2) knownClientNames.add(c2);
+        if(c3) knownClientNames.add(c3);
+        renderDatalist();
+
+        showMessage('avulsaMessage', `✅ Venda avulsa registrada! ${code} para ${c1}.`);
+        document.getElementById('avulsaCode').value = '';
+        document.getElementById('avulsaValue').value = '';
+        document.getElementById('avulsaItemType').value = '';
+        document.getElementById('avulsaClient1').value = '';
+        document.getElementById('avulsaClient2').value = '';
+        document.getElementById('avulsaClient3').value = '';
+        loadAvulsasSales();
+        loadDailySummary(document.getElementById('summaryDate').value);
+      } catch (e) {
+        showMessage('avulsaMessage', 'Erro ao registrar: ' + getFirebaseErrorMessage(e), 'error');
+      }
+    }
+
+    // --- Funções de Edição e Exclusão ---
+    async function deleteSale(saleId) {
       if(!confirm('🚨 Deseja realmente cancelar e APAGAR esta venda?')) return;
       try {
         await deleteDoc(doc(db, 'sales', saleId));
         showToast("🗑️ Venda apagada com sucesso!");
-        
-        if (activeLiveId) {
-          // Atualiza a lista da live ativa
-          loadActiveLiveSales();
-        } else {
-          // Atualiza o relatório geral
-          const currentLiveId = document.getElementById('reportLiveSelect').value;
-          if(currentLiveId) loadReportForLive(currentLiveId);
-        }
-        loadDailySummary(document.getElementById('summaryDate').value);
+        refreshAllLists();
       } catch (e) {
-        alert('Erro ao apagar venda.');
+        alert('Erro ao apagar venda: ' + getFirebaseErrorMessage(e));
       }
-    };
+    }
 
-    document.getElementById('deleteLiveBtn').addEventListener('click', async () => {
-      const liveId = document.getElementById('reportLiveSelect').value;
-      if (!liveId) return;
-      if (!confirm('🚨 TEM CERTEZA ABSOLUTA? \n\nIsso vai apagar a live inteira e TODAS AS VENDAS registradas nela de forma permanente.')) return;
-      
-      document.getElementById('reportLoading').style.display = 'block';
+    async function openEditModal(saleId) {
+      const docRef = doc(db, 'sales', saleId);
+      const snap = await getDoc(docRef);
+      if (!snap.exists()) return alert('Venda não encontrada.');
+      const data = snap.data();
+      document.getElementById('editSaleId').value = saleId;
+      document.getElementById('editCode').value = data.code || '';
+      document.getElementById('editValue').value = data.value || '';
+      document.getElementById('editItemType').value = data.itemType || '';
+      document.getElementById('editModal').classList.add('active');
+    }
+
+    document.getElementById('cancelEditBtn').addEventListener('click', () => {
+      document.getElementById('editModal').classList.remove('active');
+    });
+
+    document.getElementById('saveEditBtn').addEventListener('click', async () => {
+      const saleId = document.getElementById('editSaleId').value;
+      const code = document.getElementById('editCode').value.trim();
+      const value = parseFloat(document.getElementById('editValue').value);
+      const itemType = document.getElementById('editItemType').value.trim();
+
+      if (!code) return alert('Código é obrigatório.');
+      if (isNaN(value) || value <= 0) return alert('Valor deve ser maior que zero.');
+
       try {
-        // 1. Busca e apaga todas as vendas da live primeiro
-        const salesQ = query(collection(db, 'sales'), where('liveId', '==', liveId));
-        const salesSnap = await getDocs(salesQ);
-        const deletePromises = [];
-        salesSnap.forEach(d => { deletePromises.push(deleteDoc(doc(db, 'sales', d.id))); });
-        await Promise.all(deletePromises);
-        
-        // 2. Apaga a live
-        await deleteDoc(doc(db, 'lives', liveId));
-        showToast("🗑️ Live e todas as vendas apagadas!");
-        
-        // 3. Atualiza tudo
-        await loadAllLivesList();
-        loadReportsLiveSelector();
-        loadDailySummary(document.getElementById('summaryDate').value);
+        await updateDoc(doc(db, 'sales', saleId), {
+          code,
+          value,
+          itemType
+        });
+        showToast("✅ Venda atualizada!");
+        document.getElementById('editModal').classList.remove('active');
+        refreshAllLists();
       } catch (e) {
-        alert('Erro ao apagar live: ' + e.message);
+        alert('Erro ao editar: ' + getFirebaseErrorMessage(e));
       }
-      document.getElementById('reportLoading').style.display = 'none';
     });
 
-    // ------------------------------------------
+    function refreshAllLists() {
+      if (activeLiveId) loadActiveLiveSales();
+      loadAvulsasSales();
+      const currentLiveId = document.getElementById('reportLiveSelect').value;
+      if (currentLiveId) loadReportForLive(currentLiveId);
+      loadDailySummary(document.getElementById('summaryDate').value);
+    }
 
-    document.getElementById('modeGeneralBtn').addEventListener('click', () => {
-      currentReportMode = 'general';
-      document.getElementById('modeGeneralBtn').className = 'btn-primary';
-      document.getElementById('modeByClientBtn').className = 'btn-secondary';
-      if (currentReportSales.length > 0) renderGeneralReport();
+    // --- Pré-visualização de Mensagem ---
+    function openPreviewModal(clientName) {
+      const data = window.currentClientMap[clientName];
+      if (!data) return;
+      const nomeLoja = storeData ? storeData.storeName : 'nossa loja';
+      let msg = `Olá *${clientName}*! Tudo bem? 🌸\nAqui é do *${nomeLoja}*.\n\nAqui está o resumo detalhado do seu pedido da nossa live:\n\n🛍️ *SUAS PEÇAS:*\n`;
+      data.items.forEach(item => {
+        const desc = item.itemType || item.code;
+        msg += `🔸 ${desc} | ${formatMoney(item.value)}\n`;
+      });
+      msg += `\n💰 *Total da Compra: ${formatMoney(data.total)}*\n\nComo você prefere realizar o pagamento? (Pix, Cartão, Dinheiro)\nFico no aguardo para separarmos o seu pedido com muito carinho! ✨`;
+      
+      document.getElementById('previewMessage').value = msg;
+      document.getElementById('previewExtra').value = '';
+      document.getElementById('previewModal').classList.add('active');
+    }
+
+    document.getElementById('cancelPreviewBtn').addEventListener('click', () => {
+      document.getElementById('previewModal').classList.remove('active');
     });
 
-    document.getElementById('modeByClientBtn').addEventListener('click', () => {
-      currentReportMode = 'byClient';
-      document.getElementById('modeByClientBtn').className = 'btn-primary';
-      document.getElementById('modeGeneralBtn').className = 'btn-secondary';
-      if (currentReportSales.length > 0) renderClientReport();
+    document.getElementById('copyPreviewBtn').addEventListener('click', () => {
+      let msg = document.getElementById('previewMessage').value;
+      const extra = document.getElementById('previewExtra').value.trim();
+      if (extra) msg += '\n\n' + extra;
+      navigator.clipboard.writeText(msg).then(() => {
+        showToast("✅ Mensagem copiada para a área de transferência!");
+        document.getElementById('previewModal').classList.remove('active');
+      }).catch(err => {
+        alert('Erro ao copiar: ' + err);
+      });
     });
 
+    // --- Clientes ---
     async function loadAllClients() {
       if (!currentUser) return;
       const q = query(collection(db, 'clients'), where('storeId', '==', currentUser.uid));
@@ -663,46 +918,117 @@
       });
     }
 
+    async function loadClientsList() {
+      const container = document.getElementById('clientsList');
+      container.innerHTML = '<div style="text-align:center; padding:1rem;">Carregando...</div>';
+      await loadAllClients();
+      renderClientsList();
+    }
+
+    function renderClientsList() {
+      const container = document.getElementById('clientsList');
+      const searchTerm = document.getElementById('clientSearch').value.toLowerCase().trim();
+      
+      let filtered = allClients;
+      if (searchTerm) {
+        filtered = allClients.filter(c => c.name.toLowerCase().includes(searchTerm));
+      }
+      
+      if (filtered.length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding:1rem; color:var(--text-light);">Nenhum cliente encontrado.</div>';
+        return;
+      }
+      
+      container.innerHTML = filtered.map(c => `
+        <div class="client-report-card" style="padding: 1.2rem;">
+          <h4 style="font-size:1.1rem; margin-bottom:0.5rem;">${c.name}</h4>
+          <div class="client-info"><strong>📱 WhatsApp:</strong> ${c.phone || 'Não informado'}</div>
+          <div class="client-info"><strong>📍 Endereço:</strong> ${c.address || 'Não informado'}</div>
+          <div class="client-card-actions">
+            <button class="btn-danger" data-client-id="${c.id}" data-client-name="${c.name}" style="width:auto; padding:0.3rem 0.6rem; font-size:0.8rem;">🗑️ Excluir</button>
+          </div>
+        </div>
+      `).join('');
+
+      container.querySelectorAll('button[data-client-id]').forEach(btn => {
+        btn.addEventListener('click', () => deleteClient(btn.dataset.clientId, btn.dataset.clientName));
+      });
+    }
+
+    async function deleteClient(clientId, clientName) {
+      if(!confirm(`🚨 Deseja excluir o cliente "${clientName}"?`)) return;
+      try {
+        await deleteDoc(doc(db, 'clients', clientId));
+        showToast(`🗑️ Cliente "${clientName}" removido.`);
+        loadClientsList();
+        await loadAllClients();
+        await buildClientMemory();
+      } catch (e) {
+        alert('Erro ao excluir cliente: ' + getFirebaseErrorMessage(e));
+      }
+    }
+
+    // --- Live Ativa ---
     async function startNewLive() {
       const name = prompt('Qual o nome desta Live?');
       if (!name) return;
       const dateStr = getTodayString();
-      const docRef = await addDoc(collection(db, 'lives'), { storeId: currentUser.uid, name, date: dateStr, createdAt: serverTimestamp() });
-      activeLiveId = docRef.id;
-      activeLiveData = { name, date: dateStr };
-      
-      document.getElementById('activeLiveName').textContent = name;
-      document.getElementById('mainPanel').style.display = 'none';
-      document.getElementById('livePanel').style.display = 'block';
-      
-      document.getElementById('saleCode').value = '';
-      document.getElementById('saleValue').value = '';
-      document.getElementById('client1').value = '';
-      document.getElementById('client2').value = '';
-      document.getElementById('client3').value = '';
-      document.getElementById('liveSalesList').innerHTML = '';
+      try {
+        const docRef = await addDoc(collection(db, 'lives'), { storeId: currentUser.uid, name, date: dateStr, createdAt: serverTimestamp() });
+        activeLiveId = docRef.id;
+        activeLiveData = { name, date: dateStr };
+        
+        document.getElementById('activeLiveName').textContent = name;
+        document.getElementById('mainPanel').style.display = 'none';
+        document.getElementById('livePanel').style.display = 'block';
+        
+        document.getElementById('saleCode').value = '';
+        document.getElementById('saleValue').value = '';
+        document.getElementById('saleItemType').value = '';
+        document.getElementById('client1').value = '';
+        document.getElementById('client2').value = '';
+        document.getElementById('client3').value = '';
+        document.getElementById('liveSalesList').innerHTML = '';
+        showToast("🎥 Live iniciada!");
+      } catch (e) {
+        alert('Erro ao iniciar live: ' + getFirebaseErrorMessage(e));
+      }
     }
 
-    // Busca vendas da live ativa e desenha com botão de apagar
     async function loadActiveLiveSales() {
       if (!activeLiveId) return;
-      const q = query(collection(db, 'sales'), where('liveId', '==', activeLiveId), orderBy('createdAt', 'desc'));
+      const q = query(collection(db, 'sales'), where('liveId', '==', activeLiveId));
       const snap = await getDocs(q).catch(()=>null);
       const listEl = document.getElementById('liveSalesList');
       listEl.innerHTML = '';
       if(snap) {
-        snap.forEach(d => {
-          const sale = d.data();
+        const sales = [];
+        snap.forEach(d => sales.push({ id: d.id, ...d.data() }));
+        sales.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+        
+        sales.forEach(sale => {
+          const typeHtml = sale.itemType ? `<span class="sale-type">${sale.itemType}</span>` : '';
           listEl.innerHTML += `
           <li class="sale-item-card" style="padding: 0.8rem;">
             <div style="display:flex; justify-content:space-between; align-items: center;">
               <div>
-                <strong>${sale.code}</strong> <span style="color:var(--success); font-weight:bold; margin-left:10px;">${formatMoney(sale.value)}</span>
+                <strong>${sale.code}</strong> ${typeHtml} <span style="color:var(--success); font-weight:bold; margin-left:10px;">${formatMoney(sale.value)}</span>
                 <div style="color:var(--primary); font-size:0.9rem; margin-top:4px;">👤 ${sale.clientQueue[0]}</div>
               </div>
-              <button class="btn-danger" onclick="deleteSale('${d.id}')" style="width:auto; padding:0.4rem 0.6rem; font-size:0.8rem;" title="Apagar Venda">🗑️</button>
+              <div>
+                <button class="btn-edit" data-sale-id="${sale.id}" style="width:auto; padding:0.3rem 0.5rem; font-size:0.8rem; margin-right:4px;">✏️</button>
+                <button class="btn-danger" data-sale-id="${sale.id}" style="width:auto; padding:0.4rem 0.6rem; font-size:0.8rem;">🗑️</button>
+              </div>
             </div>
           </li>`;
+        });
+
+        listEl.querySelectorAll('button[data-sale-id]').forEach(btn => {
+          if (btn.classList.contains('btn-danger')) {
+            btn.addEventListener('click', () => deleteSale(btn.dataset.saleId));
+          } else if (btn.classList.contains('btn-edit')) {
+            btn.addEventListener('click', () => openEditModal(btn.dataset.saleId));
+          }
         });
       }
     }
@@ -710,11 +1036,14 @@
     async function registerSaleInActiveLive() {
       const code = document.getElementById('saleCode').value.trim();
       const value = parseFloat(document.getElementById('saleValue').value);
+      const itemType = document.getElementById('saleItemType').value.trim();
       const c1 = document.getElementById('client1').value.trim();
       const c2 = document.getElementById('client2').value.trim();
       const c3 = document.getElementById('client3').value.trim();
 
-      if (!code || isNaN(value) || !c1) return showMessage('liveMessage', 'Preencha código, valor e comprador principal.', 'error');
+      if (!code) return showMessage('liveMessage', 'Preencha o código da peça.', 'error');
+      if (isNaN(value) || value <= 0) return showMessage('liveMessage', 'Informe um valor válido (maior que zero).', 'error');
+      if (!c1) return showMessage('liveMessage', 'Preencha o comprador principal.', 'error');
       
       const queue = [c1];
       if (c2) queue.push(c2);
@@ -722,8 +1051,15 @@
       
       try {
         await addDoc(collection(db, 'sales'), {
-          liveId: activeLiveId, storeId: currentUser.uid, code, value,
-          clientQueue: queue, currentClientIndex: 0, date: activeLiveData.date, createdAt: serverTimestamp()
+          liveId: activeLiveId,
+          storeId: currentUser.uid,
+          code,
+          value,
+          itemType,
+          clientQueue: queue,
+          currentClientIndex: 0,
+          date: activeLiveData.date,
+          createdAt: serverTimestamp()
         });
         
         knownClientNames.add(c1);
@@ -731,18 +1067,21 @@
         if(c3) knownClientNames.add(c3);
         renderDatalist(); 
 
-        showMessage('liveMessage', `Vendido! ${code} para ${c1}.`);
+        showMessage('liveMessage', `✅ Vendido! ${code} para ${c1}.`);
         
         document.getElementById('saleCode').value = '';
+        document.getElementById('saleValue').value = '';
+        document.getElementById('saleItemType').value = '';
         document.getElementById('client1').value = '';
         document.getElementById('client2').value = '';
         document.getElementById('client3').value = '';
         document.getElementById('saleCode').focus();
         
-        // Recarrega as vendas para exibir com os botões de apagar reais
         loadActiveLiveSales();
-
-      } catch (e) { showMessage('liveMessage', 'Erro ao vender.', 'error'); }
+        loadDailySummary(document.getElementById('summaryDate').value);
+      } catch (e) {
+        showMessage('liveMessage', 'Erro ao vender: ' + getFirebaseErrorMessage(e), 'error');
+      }
     }
 
     document.getElementById('endLiveReportBtn').addEventListener('click', async () => {
@@ -759,21 +1098,59 @@
       }
     });
 
+    // --- Event Listeners ---
     document.getElementById('loginBtn').addEventListener('click', login);
     document.getElementById('registerBtn').addEventListener('click', register);
     document.getElementById('logoutBtn').addEventListener('click', logout);
     document.getElementById('goToRegister').addEventListener('click', () => showScreen('registerScreen'));
     document.getElementById('goToLogin').addEventListener('click', () => showScreen('loginScreen'));
+    
     document.getElementById('tabSummary').addEventListener('click', () => switchDashboardTab('summary'));
+    document.getElementById('tabAvulsas').addEventListener('click', () => switchDashboardTab('avulsas'));
     document.getElementById('tabReports').addEventListener('click', () => switchDashboardTab('reports'));
     document.getElementById('tabClients').addEventListener('click', () => switchDashboardTab('clients'));
+    
     document.getElementById('startLiveBtn').addEventListener('click', startNewLive);
     document.getElementById('registerSaleBtn').addEventListener('click', registerSaleInActiveLive);
+    document.getElementById('registerAvulsaBtn').addEventListener('click', registerAvulsaSale);
     
     document.getElementById('summaryDate').addEventListener('change', (e) => loadDailySummary(e.target.value));
     document.getElementById('reportLiveSelect').addEventListener('change', (e) => loadReportForLive(e.target.value));
     document.getElementById('summaryDate').value = getTodayString();
 
+    document.getElementById('saveClientBtn').addEventListener('click', async () => {
+      const name = document.getElementById('clientName').value.trim();
+      const phone = document.getElementById('clientPhone').value.trim();
+      const address = document.getElementById('clientAddress').value.trim();
+      if (!name) return showMessage('clientMessage', 'Informe o nome do cliente.', 'error');
+      try {
+        await addDoc(collection(db, 'clients'), { storeId: currentUser.uid, name, phone, address, createdAt: serverTimestamp() });
+        showMessage('clientMessage', '✅ Cliente cadastrado!', 'success');
+        document.getElementById('clientName').value = '';
+        document.getElementById('clientPhone').value = '';
+        document.getElementById('clientAddress').value = '';
+        await loadAllClients();
+        await buildClientMemory();
+        renderClientsList();
+      } catch (e) {
+        showMessage('clientMessage', 'Erro: ' + getFirebaseErrorMessage(e), 'error');
+      }
+    });
+
+    document.getElementById('refreshClientsBtn').addEventListener('click', () => {
+      loadClientsList();
+      showToast("🔄 Lista atualizada!");
+    });
+    document.getElementById('clientSearch').addEventListener('input', renderClientsList);
+
+    // Fechar modais clicando fora
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) overlay.classList.remove('active');
+      });
+    });
+
+    // --- Auth State ---
     onAuthStateChanged(auth, async (user) => {
       currentUser = user;
       if (user) {
