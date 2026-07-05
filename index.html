@@ -479,10 +479,10 @@
     let activeLiveData = null;
     let allLivesList = [];
     let allClients = [];
-    let currentReportMode = 'general';
+    let currentReportMode = 'general'; // 'general' ou 'byClient'
     let currentReportSales = [];
     let knownClientNames = new Set();
-    let allSales = []; // para avulsas e outras
+    let allSales = [];
 
     const formatMoney = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
     
@@ -630,14 +630,25 @@
       document.getElementById('totalValue').textContent = formatMoney(totalVal);
       document.getElementById('reportSummary').style.display = 'flex';
       
-      currentReportMode === 'general' ? renderGeneralReport() : renderClientReport();
+      // Renderiza de acordo com o modo atual
+      if (currentReportMode === 'general') {
+        renderGeneralReport();
+      } else {
+        renderClientReport();
+      }
     }
 
+    // --- Renderização Geral ---
     function renderGeneralReport() {
       const listEl = document.getElementById('reportSalesList');
       listEl.style.display = 'grid';
       document.getElementById('clientReportList').style.display = 'none';
       
+      if (currentReportSales.length === 0) {
+        listEl.innerHTML = '<li style="text-align:center; padding:2rem; color:var(--text-light);">Nenhuma venda registrada nesta live.</li>';
+        return;
+      }
+
       listEl.innerHTML = currentReportSales.map(sale => {
         const queue = sale.clientQueue.slice(1);
         const queueHtml = queue.length > 0 ? `<div class="sale-queue">⏳ <strong>Fila:</strong> ${queue.join(', ')}</div>` : '';
@@ -666,11 +677,18 @@
       });
     }
 
+    // --- Renderização por Cliente (CORRIGIDA) ---
     function renderClientReport() {
-      document.getElementById('reportSalesList').style.display = 'none';
+      const listEl = document.getElementById('reportSalesList');
+      listEl.style.display = 'none';
       const clientContainer = document.getElementById('clientReportList');
       clientContainer.style.display = 'grid';
       clientContainer.innerHTML = '';
+
+      if (currentReportSales.length === 0) {
+        clientContainer.innerHTML = '<div style="text-align:center; padding:2rem; color:var(--text-light); grid-column:1/-1;">Nenhuma venda para exibir.</div>';
+        return;
+      }
 
       const clientMap = new Map();
       currentReportSales.forEach(sale => {
@@ -681,6 +699,7 @@
         entry.items.push({ code: sale.code, value: sale.value, itemType: sale.itemType || sale.code });
       });
 
+      // Guarda para uso no preview
       window.currentClientMap = Object.fromEntries(clientMap);
 
       for (const [name, data] of clientMap) {
@@ -699,6 +718,7 @@
         clientContainer.appendChild(card);
       }
 
+      // Adiciona listeners para os botões de copiar
       clientContainer.querySelectorAll('button[data-client-name]').forEach(btn => {
         btn.addEventListener('click', () => openPreviewModal(btn.dataset.clientName));
       });
@@ -715,6 +735,10 @@
         const sales = [];
         snap.forEach(d => sales.push({ id: d.id, ...d.data() }));
         sales.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+        if (sales.length === 0) {
+          listEl.innerHTML = '<li style="text-align:center; padding:1rem; color:var(--text-light);">Nenhuma venda avulsa registrada.</li>';
+          return;
+        }
         sales.forEach(sale => {
           const queue = sale.clientQueue.slice(1);
           const queueHtml = queue.length > 0 ? `<div class="sale-queue">⏳ <strong>Fila:</strong> ${queue.join(', ')}</div>` : '';
@@ -852,9 +876,12 @@
     // --- Pré-visualização de Mensagem ---
     function openPreviewModal(clientName) {
       const data = window.currentClientMap[clientName];
-      if (!data) return;
+      if (!data) {
+        alert('Dados do cliente não encontrados.');
+        return;
+      }
       const nomeLoja = storeData ? storeData.storeName : 'nossa loja';
-      let msg = `Olá *${clientName}*! Tudo bem? 🌸\nAqui é do *${nomeLoja}*.\n\nAqui está o resumo detalhado do seu pedido da nossa live:\n\n🛍️ *SUAS PEÇAS:*\n`;
+      let msg = `Olá *${clientName}*! Tudo bem? 🌸\nAqui é do *${nomeLoja}*.\n\nAqui está o resumo detalhado do seu pedido:\n\n🛍️ *SUAS PEÇAS:*\n`;
       data.items.forEach(item => {
         const desc = item.itemType || item.code;
         msg += `🔸 ${desc} | ${formatMoney(item.value)}\n`;
@@ -1006,6 +1033,11 @@
         snap.forEach(d => sales.push({ id: d.id, ...d.data() }));
         sales.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
         
+        if (sales.length === 0) {
+          listEl.innerHTML = '<li style="text-align:center; padding:1rem; color:var(--text-light);">Nenhuma venda registrada nesta live.</li>';
+          return;
+        }
+
         sales.forEach(sale => {
           const typeHtml = sale.itemType ? `<span class="sale-type">${sale.itemType}</span>` : '';
           listEl.innerHTML += `
@@ -1094,11 +1126,61 @@
         await loadAllLivesList();
         loadDailySummary(document.getElementById('summaryDate').value);
         switchDashboardTab('reports');
-        setTimeout(() => { document.getElementById('reportLiveSelect').value = liveIdToReport; loadReportForLive(liveIdToReport); }, 300);
+        setTimeout(() => { 
+          if (liveIdToReport) {
+            document.getElementById('reportLiveSelect').value = liveIdToReport; 
+            loadReportForLive(liveIdToReport);
+          }
+        }, 300);
       }
     });
 
-    // --- Event Listeners ---
+    // --- Listeners para apagar live ---
+    document.getElementById('deleteLiveBtn').addEventListener('click', async () => {
+      const liveId = document.getElementById('reportLiveSelect').value;
+      if (!liveId) return;
+      if (!confirm('🚨 TEM CERTEZA ABSOLUTA? \n\nIsso vai apagar a live inteira e TODAS AS VENDAS registradas nela de forma permanente.')) return;
+      
+      document.getElementById('reportLoading').style.display = 'block';
+      try {
+        const salesQ = query(collection(db, 'sales'), where('liveId', '==', liveId));
+        const salesSnap = await getDocs(salesQ);
+        const deletePromises = [];
+        salesSnap.forEach(d => { deletePromises.push(deleteDoc(doc(db, 'sales', d.id))); });
+        await Promise.all(deletePromises);
+        
+        await deleteDoc(doc(db, 'lives', liveId));
+        showToast("🗑️ Live e todas as vendas apagadas!");
+        
+        await loadAllLivesList();
+        loadReportsLiveSelector();
+        loadDailySummary(document.getElementById('summaryDate').value);
+      } catch (e) {
+        alert('Erro ao apagar live: ' + getFirebaseErrorMessage(e));
+      }
+      document.getElementById('reportLoading').style.display = 'none';
+    });
+
+    // --- Event Listeners dos botões de modo ---
+    document.getElementById('modeGeneralBtn').addEventListener('click', () => {
+      currentReportMode = 'general';
+      document.getElementById('modeGeneralBtn').className = 'btn-primary';
+      document.getElementById('modeByClientBtn').className = 'btn-secondary';
+      if (currentReportSales.length > 0 || true) { // sempre renderiza, mesmo vazio
+        renderGeneralReport();
+      } else {
+        renderGeneralReport(); // mostra mensagem de vazio
+      }
+    });
+
+    document.getElementById('modeByClientBtn').addEventListener('click', () => {
+      currentReportMode = 'byClient';
+      document.getElementById('modeByClientBtn').className = 'btn-primary';
+      document.getElementById('modeGeneralBtn').className = 'btn-secondary';
+      renderClientReport(); // sempre renderiza (mostra vazio se não houver dados)
+    });
+
+    // --- Event Listeners principais ---
     document.getElementById('loginBtn').addEventListener('click', login);
     document.getElementById('registerBtn').addEventListener('click', register);
     document.getElementById('logoutBtn').addEventListener('click', logout);
