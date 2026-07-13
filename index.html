@@ -31,16 +31,15 @@
       display: flex;
       justify-content: center;
       font-size: 15px;
-      padding-top: 20px; /* margem superior extra */
+      padding-top: 20px;
     }
 
     #app {
       width: 100%;
       max-width: 1000px;
-      padding: 1.5rem 0.8rem; /* aumentei o padding-top */
+      padding: 1.5rem 0.8rem;
     }
 
-    /* Ajuste extra para mobile */
     @media (max-width: 600px) {
       body { padding-top: 30px; }
       #app { padding-top: 1rem; }
@@ -280,7 +279,6 @@
       align-items: center;
     }
     .flex-row > * { flex: 1 1 150px; }
-    /* Para alinhar à esquerda os campos de cliente */
     .flex-row-left {
       display: flex;
       gap: 0.8rem;
@@ -370,7 +368,6 @@
       .modal-box { padding: 1rem; max-width: 100%; margin: 0.5rem; }
     }
 
-    /* Ajustes específicos para a aba de relatórios (menos espaço) */
     .reports-compact {
       gap: 0.4rem;
     }
@@ -497,8 +494,18 @@
         <div id="avulsaModalMessage" class="alert success"></div>
         <div class="form-group"><label>Tipo de Peça (opcional)</label><input type="text" id="modalAvulsaItemType" placeholder="Ex: Vestido"></div>
         <div class="form-group"><label>Valor (R$)</label><input type="number" id="modalAvulsaValue" step="0.01" min="0"></div>
-        <div class="form-group"><label>Código da Peça</label>
-          <input type="text" id="modalAvulsaCode" list="stockCodes" placeholder="Ex: BL01" autocomplete="off">
+        <div class="form-group"><label>Tamanho</label><input type="text" id="modalAvulsaSize" placeholder="Ex: M, G, 38"></div>
+        <div class="form-group">
+          <label>Código da Peça</label>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <input type="text" id="modalAvulsaCode" list="stockCodes" placeholder="Ex: BL01" autocomplete="off" style="flex:1;">
+            <button type="button" class="btn-secondary btn-sm ocr-read-btn" 
+                    data-target="modalAvulsaCode" 
+                    data-value-field="modalAvulsaValue" 
+                    data-type-field="modalAvulsaItemType" 
+                    data-size-field="modalAvulsaSize" 
+                    data-client-prefix="modalAvulsaClient">📷 Ler Etiqueta</button>
+          </div>
           <datalist id="stockCodes"></datalist>
         </div>
         <div class="form-group"><label>👤 Cliente Principal</label><input type="text" id="modalAvulsaClient1" list="clientNamesList" autocomplete="off"></div>
@@ -558,7 +565,7 @@
           <div class="tab" id="tabStock">📦 Estoque</div>
         </div>
 
-        <!-- Resumo (simplificado) com botões de ação rápida -->
+        <!-- Resumo -->
         <div id="summaryArea">
           <div class="summary-cards">
             <div class="summary-card" style="background:#f0fdf4; border-color:#bbf7d0;">
@@ -576,7 +583,7 @@
           </div>
         </div>
 
-        <!-- Relatórios (compacto) -->
+        <!-- Relatórios -->
         <div id="reportsArea" style="display:none;" class="reports-compact">
           <div class="flex-row" style="justify-content:center; gap:0.5rem; margin-bottom:0.3rem;">
             <div style="flex:0 1 200px; min-width:140px;">
@@ -586,7 +593,6 @@
             <button id="deleteLiveBtn" class="btn-danger btn-sm" style="display:none; align-self:flex-end;">🗑️ Apagar Live</button>
           </div>
 
-          <!-- Filtros para avulsas (aparecem quando selecionado) -->
           <div id="avulsasFilter" style="display:none; background:var(--card-bg); padding:0.5rem; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:0.5rem;">
             <div class="flex-row" style="justify-content:center; gap:0.4rem;">
               <div class="form-group" style="margin-bottom:0; flex:0 0 auto;">
@@ -644,6 +650,7 @@
             <div id="stockMessage" class="alert success"></div>
             <div class="form-group"><label>Tipo de Peça (opcional)</label><input type="text" id="stockItemType" placeholder="Ex: Vestido"></div>
             <div class="form-group"><label>Valor (R$)</label><input type="number" id="stockValue" step="0.01" min="0"></div>
+            <div class="form-group"><label>Tamanho</label><input type="text" id="stockSize" placeholder="Ex: M, G, 38"></div>
             <div class="form-group">
               <label>Código da Peça</label>
               <div style="display:flex; gap:0.5rem; align-items:center;">
@@ -682,8 +689,18 @@
           <h3 style="font-size:1rem; margin-bottom:0.8rem;">Registrar Venda</h3>
           <div class="form-group"><label>Tipo de Peça (opcional)</label><input type="text" id="saleItemType" placeholder="Ex: Vestido"></div>
           <div class="form-group"><label>Valor (R$)</label><input type="number" id="saleValue" step="0.01" min="0"></div>
-          <div class="form-group"><label>Código da Peça</label>
-            <input type="text" id="saleCode" list="liveStockCodes" placeholder="Ex: BL01" autocomplete="off">
+          <div class="form-group"><label>Tamanho</label><input type="text" id="saleSize" placeholder="Ex: M, G, 38"></div>
+          <div class="form-group">
+            <label>Código da Peça</label>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <input type="text" id="saleCode" list="liveStockCodes" placeholder="Ex: BL01" autocomplete="off" style="flex:1;">
+              <button type="button" class="btn-secondary btn-sm ocr-read-btn" 
+                      data-target="saleCode" 
+                      data-value-field="saleValue" 
+                      data-type-field="saleItemType" 
+                      data-size-field="saleSize" 
+                      data-client-prefix="client">📷 Ler Etiqueta</button>
+            </div>
           </div>
           <div class="form-group"><label>👤 Cliente Principal</label><input type="text" id="client1" list="clientNamesList" autocomplete="off"></div>
           <details style="margin-bottom:0.5rem;">
@@ -700,6 +717,9 @@
         <ul class="sales-list" id="liveSalesList"></ul>
       </div>
     </div>
+
+    <!-- Input oculto para capturar múltiplas imagens (OCR) -->
+    <input type="file" id="ocrFileInput" accept="image/*" capture="environment" multiple style="display:none;">
   </div>
 
   <script type="module">
@@ -763,28 +783,19 @@
       document.getElementById(id).classList.add('active');
     }
 
-    // Função para resetar formulários ao mudar de aba
     function resetFormsOnTabChange(tab) {
-      // Clientes
       if (tab !== 'clients') {
         document.getElementById('clientName').value = '';
         document.getElementById('clientPhone').value = '';
         document.getElementById('clientAddress').value = '';
         document.getElementById('clientMessage').style.display = 'none';
       }
-      // Estoque (já tem reset próprio, mas garantimos)
       if (tab !== 'stock') {
-        // Não resetamos automaticamente para não perder dados não salvos? Mas o pedido foi que ao navegar, volte ao padrão.
-        // Vamos resetar apenas se não estiver na aba de estoque
         resetStockForm();
       }
-      // Avulsa (modal) não precisa, é modal
-      // Live: se sair da live, os campos da live são resetados? Mas a live é uma tela separada.
-      // Não resetamos os campos da live pois ela é uma tela à parte.
     }
 
     function switchDashboardTab(tab) {
-      // Resetar formulários antes de mudar
       resetFormsOnTabChange(tab);
 
       document.getElementById('summaryArea').style.display = tab === 'summary' ? 'block' : 'none';
@@ -901,11 +912,11 @@
       container.innerHTML = filtered.map(item => `
         <li class="sale-item-card">
           <div class="sale-item-header">
-            <span class="sale-code">${item.code} ${item.itemType ? `<span class="sale-type">${item.itemType}</span>` : ''}</span>
+            <span class="sale-code">${item.code} ${item.itemType ? `<span class="sale-type">${item.itemType}</span>` : ''} ${item.size ? `📏 ${item.size}` : ''}</span>
             <span class="sale-price">${formatMoney(item.value)}</span>
           </div>
           <div style="display:flex; gap:0.5rem; justify-content:flex-end; flex-wrap:wrap;">
-            <button class="btn-stock-sell btn-sm" data-code="${item.code}" data-type="${item.itemType || ''}" data-value="${item.value}">🛒 Vender</button>
+            <button class="btn-stock-sell btn-sm" data-code="${item.code}" data-type="${item.itemType || ''}" data-value="${item.value}" data-size="${item.size || ''}">🛒 Vender</button>
             <button class="btn-edit btn-sm" data-id="${item.id}">✏️ Editar</button>
             <button class="btn-danger btn-sm" data-id="${item.id}">🗑️ Excluir</button>
           </div>
@@ -917,9 +928,11 @@
           const code = btn.dataset.code;
           const type = btn.dataset.type;
           const value = btn.dataset.value;
+          const size = btn.dataset.size;
           document.getElementById('modalAvulsaCode').value = code;
           document.getElementById('modalAvulsaItemType').value = type;
           document.getElementById('modalAvulsaValue').value = value;
+          document.getElementById('modalAvulsaSize').value = size;
           document.getElementById('avulsaModal').classList.add('active');
           document.getElementById('modalAvulsaClient1').focus();
           showToast('🛒 Preencha o cliente e confirme a venda.');
@@ -1007,6 +1020,7 @@
       const code = document.getElementById('stockCode').value.trim();
       const value = parseFloat(document.getElementById('stockValue').value);
       const itemType = document.getElementById('stockItemType').value.trim();
+      const size = document.getElementById('stockSize').value.trim();
       if (!code) return showMessage('stockMessage', 'Informe o código.', 'error');
       if (isNaN(value) || value <= 0) return showMessage('stockMessage', 'Valor inválido.', 'error');
       const exists = stockItems.some(item => item.code === code);
@@ -1028,7 +1042,7 @@
         return;
       }
       try {
-        await addDoc(collection(db, 'stock'), { storeId: currentUser.uid, code, value, itemType, createdAt: serverTimestamp() });
+        await addDoc(collection(db, 'stock'), { storeId: currentUser.uid, code, value, itemType, size, createdAt: serverTimestamp() });
         showMessage('stockMessage', `✅ Peça "${code}" adicionada.`, 'success');
         resetStockForm();
         await loadStockList();
@@ -1039,6 +1053,7 @@
       document.getElementById('stockItemType').value = '';
       document.getElementById('stockValue').value = '';
       document.getElementById('stockCode').value = '';
+      document.getElementById('stockSize').value = '';
       document.getElementById('stockCodeSuggestion').textContent = '';
       document.getElementById('stockItemType').focus();
     }
@@ -1062,6 +1077,8 @@
       if (newValue === null) return;
       const newType = prompt('Editar tipo (opcional):', item.itemType || '');
       if (newType === null) return;
+      const newSize = prompt('Editar tamanho:', item.size || '');
+      if (newSize === null) return;
       const val = parseFloat(newValue);
       if (isNaN(val) || val <= 0) return alert('Valor inválido.');
       if (newCode.trim() !== item.code && stockItems.some(i => i.code === newCode.trim())) {
@@ -1069,7 +1086,7 @@
         return;
       }
       try {
-        await updateDoc(doc(db, 'stock', id), { code: newCode.trim(), value: val, itemType: newType.trim() });
+        await updateDoc(doc(db, 'stock', id), { code: newCode.trim(), value: val, itemType: newType.trim(), size: newSize.trim() });
         showToast('✅ Estoque atualizado.');
         await loadStockList();
       } catch (e) { alert('Erro: ' + getFirebaseErrorMessage(e)); }
@@ -1085,7 +1102,7 @@
       datalist.innerHTML = stockItems.map(item => `<option value="${item.code}">`).join('');
     }
 
-    function setupStockAutoFill(inputId, typeFieldId, valueFieldId) {
+    function setupStockAutoFill(inputId, typeFieldId, valueFieldId, sizeFieldId) {
       const input = document.getElementById(inputId);
       if (!input) return;
       input.addEventListener('input', () => {
@@ -1094,6 +1111,7 @@
         if (found) {
           if (typeFieldId) document.getElementById(typeFieldId).value = found.itemType || '';
           if (valueFieldId) document.getElementById(valueFieldId).value = found.value || '';
+          if (sizeFieldId) document.getElementById(sizeFieldId).value = found.size || '';
         }
       });
     }
@@ -1239,15 +1257,16 @@
         const queue = sale.clientQueue.slice(1);
         const queueHtml = queue.length ? `<div class="sale-queue">⏳ Fila: ${queue.join(', ')}</div>` : '';
         const typeHtml = sale.itemType ? `<span class="sale-type">${sale.itemType}</span>` : '';
+        const sizeHtml = sale.size ? `📏 ${sale.size}` : '';
         const hasClient = isActiveSale(sale);
         return `
         <li class="sale-item-card">
           <div class="sale-item-header">
-            <span class="sale-code">${sale.code} ${typeHtml}</span>
+            <span class="sale-code">${sale.code} ${typeHtml} ${sizeHtml}</span>
             <div>
               <span class="sale-price">${formatMoney(sale.value)}</span>
               <button class="btn-edit btn-sm" data-sale-id="${sale.id}">✏️</button>
-              ${hasClient ? `<button class="btn-return btn-sm" data-sale-id="${sale.id}" data-code="${sale.code}" data-type="${sale.itemType || ''}" data-value="${sale.value}">📦 Devolver</button>` : ''}
+              ${hasClient ? `<button class="btn-return btn-sm" data-sale-id="${sale.id}" data-code="${sale.code}" data-type="${sale.itemType || ''}" data-value="${sale.value}" data-size="${sale.size || ''}">📦 Devolver</button>` : ''}
               <button class="btn-danger btn-sm" data-sale-id="${sale.id}">🗑️</button>
             </div>
           </div>
@@ -1260,7 +1279,7 @@
         if (btn.classList.contains('btn-danger')) btn.addEventListener('click', () => deleteSale(btn.dataset.saleId));
         else if (btn.classList.contains('btn-edit')) btn.addEventListener('click', () => openEditModal(btn.dataset.saleId));
         else if (btn.classList.contains('btn-return')) {
-          btn.addEventListener('click', () => returnToStock(btn.dataset.saleId, btn.dataset.code, btn.dataset.type, btn.dataset.value));
+          btn.addEventListener('click', () => returnToStock(btn.dataset.saleId, btn.dataset.code, btn.dataset.type, btn.dataset.value, btn.dataset.size));
         }
       });
     }
@@ -1284,18 +1303,18 @@
         if (!clientMap.has(buyer)) clientMap.set(buyer, { name: buyer, total: 0, items: [] });
         const entry = clientMap.get(buyer);
         entry.total += sale.value;
-        entry.items.push({ id: sale.id, code: sale.code, value: sale.value, itemType: sale.itemType || sale.code, clientQueue: sale.clientQueue });
+        entry.items.push({ id: sale.id, code: sale.code, value: sale.value, itemType: sale.itemType || sale.code, size: sale.size || '', clientQueue: sale.clientQueue });
       });
       window.currentClientMap = Object.fromEntries(clientMap);
       for (const [name, data] of clientMap) {
         let itemsHtml = data.items.map(item => `
           <li>
-            <span>${item.itemType}</span>
+            <span>${item.itemType} ${item.size ? `📏 ${item.size}` : ''}</span>
             <span>
               ${formatMoney(item.value)}
               <span class="item-actions">
                 <button class="btn-edit btn-sm" data-sale-id="${item.id}">✏️</button>
-                <button class="btn-return btn-sm" data-sale-id="${item.id}" data-code="${item.code}" data-type="${item.itemType || ''}" data-value="${item.value}">📦 Devolver</button>
+                <button class="btn-return btn-sm" data-sale-id="${item.id}" data-code="${item.code}" data-type="${item.itemType || ''}" data-value="${item.value}" data-size="${item.size || ''}">📦 Devolver</button>
                 <button class="btn-success btn-sm" data-sale-id="${item.id}" data-client="${name}">🔄 Passar</button>
                 <button class="btn-danger btn-sm" data-sale-id="${item.id}">🗑️</button>
               </span>
@@ -1316,7 +1335,7 @@
         if (btn.classList.contains('btn-danger')) btn.addEventListener('click', () => deleteSale(btn.dataset.saleId));
         else if (btn.classList.contains('btn-edit')) btn.addEventListener('click', () => openEditModal(btn.dataset.saleId));
         else if (btn.classList.contains('btn-return')) {
-          btn.addEventListener('click', () => returnToStock(btn.dataset.saleId, btn.dataset.code, btn.dataset.type, btn.dataset.value));
+          btn.addEventListener('click', () => returnToStock(btn.dataset.saleId, btn.dataset.code, btn.dataset.type, btn.dataset.value, btn.dataset.size));
         }
         else if (btn.classList.contains('btn-success')) btn.addEventListener('click', () => handlePassClient(btn.dataset.saleId, btn.dataset.client));
       });
@@ -1326,7 +1345,7 @@
     }
 
     // --- Devolver ao estoque ---
-    async function returnToStock(saleId, code, type, value) {
+    async function returnToStock(saleId, code, type, value, size = '') {
       if (!confirm(`Devolver a peça "${code}" ao estoque?`)) return;
       try {
         await updateDoc(doc(db, 'sales', saleId), { clientQueue: [''] });
@@ -1337,6 +1356,7 @@
             code: code,
             value: parseFloat(value),
             itemType: type,
+            size: size,
             createdAt: serverTimestamp()
           });
           showToast('📦 Peça devolvida ao estoque.');
@@ -1350,7 +1370,7 @@
       }
     }
 
-    // --- Passar cliente (com opções quando não há próximo) ---
+    // --- Passar cliente ---
     async function handlePassClient(saleId, currentClient) {
       const sale = currentReportSales.find(s => s.id === saleId);
       if (!sale) return alert('Venda não encontrada.');
@@ -1370,7 +1390,7 @@
       if (queue.length <= 1) {
         const confirmMsg = `Não há próximo cliente na fila para "${currentClient}". Deseja devolver ao estoque?`;
         if (confirm(confirmMsg)) {
-          await returnToStock(saleId, sale.code, sale.itemType || '', sale.value);
+          await returnToStock(saleId, sale.code, sale.itemType || '', sale.value, sale.size || '');
         } else {
           const newClient = prompt('Digite o nome do novo cliente para esta peça:');
           if (newClient && newClient.trim()) {
@@ -1416,6 +1436,7 @@
       const itemType = document.getElementById('modalAvulsaItemType').value.trim();
       const value = parseFloat(document.getElementById('modalAvulsaValue').value);
       const code = document.getElementById('modalAvulsaCode').value.trim();
+      const size = document.getElementById('modalAvulsaSize').value.trim();
       const c1 = document.getElementById('modalAvulsaClient1').value.trim();
       const c2 = document.getElementById('modalAvulsaClient2').value.trim();
       const c3 = document.getElementById('modalAvulsaClient3').value.trim();
@@ -1436,7 +1457,7 @@
       if (c4) queue.push(c4);
       try {
         await addDoc(collection(db, 'sales'), {
-          liveId: null, storeId: currentUser.uid, code, value, itemType,
+          liveId: null, storeId: currentUser.uid, code, value, itemType, size,
           clientQueue: queue, currentClientIndex: 0, date: getTodayString(), createdAt: serverTimestamp()
         });
         knownClientNames.add(c1); if(c2) knownClientNames.add(c2); if(c3) knownClientNames.add(c3); if(c4) knownClientNames.add(c4);
@@ -1447,6 +1468,7 @@
         document.getElementById('modalAvulsaItemType').value = '';
         document.getElementById('modalAvulsaValue').value = '';
         document.getElementById('modalAvulsaCode').value = '';
+        document.getElementById('modalAvulsaSize').value = '';
         document.getElementById('modalAvulsaClient1').value = '';
         document.getElementById('modalAvulsaClient2').value = '';
         document.getElementById('modalAvulsaClient3').value = '';
@@ -1467,6 +1489,7 @@
       const itemType = document.getElementById('saleItemType').value.trim();
       const value = parseFloat(document.getElementById('saleValue').value);
       const code = document.getElementById('saleCode').value.trim();
+      const size = document.getElementById('saleSize').value.trim();
       const c1 = document.getElementById('client1').value.trim();
       const c2 = document.getElementById('client2').value.trim();
       const c3 = document.getElementById('client3').value.trim();
@@ -1487,7 +1510,7 @@
       if (c4) queue.push(c4);
       try {
         await addDoc(collection(db, 'sales'), {
-          liveId: activeLiveId, storeId: currentUser.uid, code, value, itemType,
+          liveId: activeLiveId, storeId: currentUser.uid, code, value, itemType, size,
           clientQueue: queue, currentClientIndex: 0, date: activeLiveData.date, createdAt: serverTimestamp()
         });
         knownClientNames.add(c1); if(c2) knownClientNames.add(c2); if(c3) knownClientNames.add(c3); if(c4) knownClientNames.add(c4);
@@ -1505,6 +1528,7 @@
       document.getElementById('saleItemType').value = '';
       document.getElementById('saleValue').value = '';
       document.getElementById('saleCode').value = '';
+      document.getElementById('saleSize').value = '';
       document.getElementById('client1').value = '';
       document.getElementById('client2').value = '';
       document.getElementById('client3').value = '';
@@ -1585,7 +1609,7 @@
       document.getElementById('templatePixType').value = '';
       const nomeLoja = storeData ? storeData.storeName : 'nossa loja';
       let summary = '';
-      data.items.forEach(item => { summary += `🔸 ${item.itemType} | ${formatMoney(item.value)}\n`; });
+      data.items.forEach(item => { summary += `🔸 ${item.itemType} ${item.size ? `📏 ${item.size}` : ''} | ${formatMoney(item.value)}\n`; });
       const total = formatMoney(data.total);
       const baseMsg = `Olá *${clientName}*! Tudo bem? 🌸
 Aqui está o resumo detalhado do seu pedido:
@@ -1884,7 +1908,7 @@ Dados para pagamento:
         document.getElementById('liveSalesList').innerHTML = '';
         await loadStockList();
         updateStockDatalist('liveStockCodes');
-        setupStockAutoFill('saleCode', 'saleItemType', 'saleValue');
+        setupStockAutoFill('saleCode', 'saleItemType', 'saleValue', 'saleSize');
         showToast("🎥 Live iniciada!");
       } catch (e) { alert('Erro: ' + getFirebaseErrorMessage(e)); }
     }
@@ -1902,11 +1926,12 @@ Dados para pagamento:
         if (sales.length === 0) { listEl.innerHTML = '<li style="text-align:center; padding:1rem; color:var(--text-light);">Nenhuma venda.</li>'; return; }
         sales.forEach(sale => {
           const typeHtml = sale.itemType ? `<span class="sale-type">${sale.itemType}</span>` : '';
+          const sizeHtml = sale.size ? `📏 ${sale.size}` : '';
           listEl.innerHTML += `
           <li class="sale-item-card" style="padding:0.6rem;">
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
               <div>
-                <strong>${sale.code}</strong> ${typeHtml} <span style="color:var(--success); font-weight:bold;">${formatMoney(sale.value)}</span>
+                <strong>${sale.code}</strong> ${typeHtml} ${sizeHtml} <span style="color:var(--success); font-weight:bold;">${formatMoney(sale.value)}</span>
                 <div style="font-size:0.85rem; color:var(--primary);">👤 ${sale.clientQueue[0]}</div>
               </div>
               <div>
@@ -1985,6 +2010,7 @@ Dados para pagamento:
       document.getElementById('modalAvulsaItemType').value = '';
       document.getElementById('modalAvulsaValue').value = '';
       document.getElementById('modalAvulsaCode').value = '';
+      document.getElementById('modalAvulsaSize').value = '';
       document.getElementById('modalAvulsaClient1').value = '';
       document.getElementById('modalAvulsaClient2').value = '';
       document.getElementById('modalAvulsaClient3').value = '';
@@ -2056,9 +2082,190 @@ Dados para pagamento:
     });
 
     document.addEventListener('DOMContentLoaded', () => {
-      setupStockAutoFill('modalAvulsaCode', 'modalAvulsaItemType', 'modalAvulsaValue');
-      setupStockAutoFill('saleCode', 'saleItemType', 'saleValue');
+      setupStockAutoFill('modalAvulsaCode', 'modalAvulsaItemType', 'modalAvulsaValue', 'modalAvulsaSize');
+      setupStockAutoFill('saleCode', 'saleItemType', 'saleValue', 'saleSize');
     });
+
+    // ========== NOVA FUNCIONALIDADE: LEITURA DE ETIQUETA COM OCR (MÚLTIPLAS IMAGENS E CLIENTES) ==========
+    const GOOGLE_VISION_API_KEY = 'AIzaSyCHDa94CQVFWLwa5wy9DWgn0vicFqRco-Y';
+
+    // Event listener para os botões "📷 Ler Etiqueta"
+    document.querySelectorAll('.ocr-read-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        window._ocrTargets = {
+          targetId: this.dataset.target,
+          valueField: this.dataset.valueField,
+          typeField: this.dataset.typeField,
+          sizeField: this.dataset.sizeField,
+          clientPrefix: this.dataset.clientPrefix  // ex: "client" ou "modalAvulsaClient"
+        };
+        document.getElementById('ocrFileInput').click();
+      });
+    });
+
+    // Processamento de múltiplas imagens
+    document.getElementById('ocrFileInput').addEventListener('change', async function(e) {
+      const files = this.files;
+      if (!files || files.length === 0) return;
+
+      showToast('📸 Lendo etiqueta(s)... Aguarde.');
+      let fullText = '';
+
+      try {
+        // Envia cada imagem para a API Vision e concatena os textos
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          const reader = new FileReader();
+          const base64 = await new Promise((resolve) => {
+            reader.onload = (ev) => resolve(ev.target.result.split(',')[1]);
+            reader.readAsDataURL(file);
+          });
+          const text = await callGoogleVisionOCR(base64);
+          fullText += text + '\n';
+        }
+
+        // Agora processa todo o texto combinado
+        const parsed = parseEtiqueta(fullText);
+        const { targetId, valueField, typeField, sizeField, clientPrefix } = window._ocrTargets || {};
+
+        // Preenche campos básicos
+        if (targetId && parsed.code) document.getElementById(targetId).value = parsed.code;
+        if (valueField && parsed.value) document.getElementById(valueField).value = parsed.value;
+        if (typeField && parsed.type) document.getElementById(typeField).value = parsed.type;
+        if (sizeField && parsed.size) document.getElementById(sizeField).value = parsed.size;
+
+        // Preenche os campos de clientes (até 4) na ordem extraída
+        if (clientPrefix && parsed.clients && parsed.clients.length > 0) {
+          for (let i = 0; i < Math.min(parsed.clients.length, 4); i++) {
+            const fieldId = clientPrefix + (i + 1);
+            const field = document.getElementById(fieldId);
+            if (field) field.value = parsed.clients[i];
+          }
+          // Os campos restantes permanecem em branco
+        }
+
+        showToast('✅ Etiqueta(s) lida(s) com sucesso!');
+      } catch (err) {
+        showToast('❌ Erro ao ler imagem: ' + err.message);
+        console.error(err);
+      } finally {
+        document.getElementById('ocrFileInput').value = '';
+        window._ocrTargets = null;
+      }
+    });
+
+    async function callGoogleVisionOCR(base64Image) {
+      const url = `https://vision.googleapis.com/v1/images:annotate?key=${GOOGLE_VISION_API_KEY}`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          requests: [{
+            image: { content: base64Image },
+            features: [{ type: 'TEXT_DETECTION' }]
+          }]
+        })
+      });
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.error?.message || 'Erro na API Vision');
+      }
+      const data = await response.json();
+      const annotations = data.responses?.[0]?.textAnnotations;
+      if (!annotations || annotations.length === 0) throw new Error('Nenhum texto encontrado.');
+      return annotations[0].description;
+    }
+
+    function parseEtiqueta(text) {
+      const result = { code: '', value: '', type: '', size: '', clients: [] };
+
+      // 1. Valor (preço)
+      const valueMatch = text.match(/R?\$?\s*(\d+[,.]\d{2})/);
+      if (valueMatch) result.value = valueMatch[1].replace(',', '.');
+
+      // 2. Tipo (vestido, blusa, etc.)
+      const tipos = ['vestido', 'blusa', 'calça', 'short', 'saia', 'bermuda', 'camisa', 'casaco', 'jaqueta', 'terno', 'suéter', 'cardigã', 'body', 'top', 'macacão', 'conjunto'];
+      const lower = text.toLowerCase();
+      for (const t of tipos) {
+        if (lower.includes(t)) {
+          result.type = t.charAt(0).toUpperCase() + t.slice(1);
+          break;
+        }
+      }
+
+      // 3. Tamanho
+      const sizeMatch = text.match(/\b(P|M|G|GG|XG|EG|38|40|42|44|46|48|50|52|54|56)\b/);
+      if (sizeMatch) result.size = sizeMatch[1];
+
+      // 4. Código
+      const codeMatch = text.match(/\b([A-Z]{2,}\d{2,})\b/);
+      if (codeMatch) result.code = codeMatch[1];
+      else {
+        const fallback = text.match(/\b([A-Za-z]+\d+)\b/);
+        if (fallback) result.code = fallback[1];
+      }
+
+      // 5. Clientes (em ordem de prioridade)
+      // Tenta encontrar padrões como "Clientes: Maria, João" ou "Fila: Ana, Pedro"
+      let clientList = [];
+      const clientPatterns = [
+        /(?:Clientes?|Interessados?|Fila|Interessad[oa]s?|Compradores?):\s*([^.\n]+)/i,
+        /(?:1[º°]?|2[º°]?|3[º°]?|4[º°]?)\s*(?:Cliente|Opção):\s*([A-Z][a-záéíóúãõç]+(?:\s+[A-Z][a-záéíóúãõç]+)*)/g
+      ];
+
+      // Procura por listas explícitas
+      for (const pattern of clientPatterns) {
+        let match;
+        if (pattern.global) {
+          while ((match = pattern.exec(text)) !== null) {
+            if (match[1]) clientList.push(match[1].trim());
+          }
+        } else {
+          match = text.match(pattern);
+          if (match && match[1]) {
+            // Divide por vírgula, "e", ";" e extrai nomes
+            const parts = match[1].split(/[,;eE]\s*/).map(s => s.trim()).filter(s => s.length > 0);
+            clientList.push(...parts);
+          }
+        }
+      }
+
+      // Se não encontrou listas, tenta capturar nomes próprios (palavras com inicial maiúscula)
+      if (clientList.length === 0) {
+        const allWords = text.match(/\b([A-Z][a-záéíóúãõç]+(?:\s+[A-Z][a-záéíóúãõç]+)*)\b/g);
+        if (allWords) {
+          // Filtra palavras comuns que não são nomes
+          const common = ['Vestido', 'Blusa', 'Calça', 'Short', 'Saia', 'Bermuda', 'Camisa', 'Casaco', 'Jaqueta', 'Terno', 'Suéter', 'Cardigã', 'Body', 'Top', 'Macacão', 'Conjunto', 'P', 'M', 'G', 'GG', 'XG', 'EG', 'Cliente', 'Comprador', 'Fila', 'Interessados', 'Tamanho', 'Valor', 'Código', 'R$', 'Pix', 'Link', 'Pagamento'];
+          // Também ignora palavras que já são tipo, tamanho, etc.
+          const ignoreSet = new Set(common.map(w => w.toLowerCase()));
+          for (const word of allWords) {
+            const lowerWord = word.toLowerCase();
+            if (!ignoreSet.has(lowerWord) && !/^\d+$/.test(word)) {
+              // Evita capturar números ou palavras muito curtas (ex: "A")
+              if (word.length >= 2) {
+                clientList.push(word);
+              }
+            }
+          }
+        }
+      }
+
+      // Remove duplicatas mantendo a ordem
+      const uniqueClients = [];
+      const seen = new Set();
+      for (const c of clientList) {
+        const trimmed = c.trim();
+        if (trimmed && !seen.has(trimmed.toLowerCase())) {
+          seen.add(trimmed.toLowerCase());
+          uniqueClients.push(trimmed);
+        }
+      }
+      result.clients = uniqueClients;
+
+      return result;
+    }
+
+    // ========== FIM DA NOVA FUNCIONALIDADE ==========
 
     // --- Auth State ---
     onAuthStateChanged(auth, async (user) => {
