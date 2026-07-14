@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
   <title>Brechó Inteligente | Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tesseract.js via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <style>
     /* ===== Variáveis ===== */
     :root {
@@ -2086,8 +2088,10 @@ Dados para pagamento:
       setupStockAutoFill('saleCode', 'saleItemType', 'saleValue', 'saleSize');
     });
 
-    // ========== NOVA FUNCIONALIDADE: LEITURA DE ETIQUETA COM OCR (MÚLTIPLAS IMAGENS E CLIENTES) ==========
-    const GOOGLE_VISION_API_KEY = 'AIzaSyCHDa94CQVFWLwa5wy9DWgn0vicFqRco-Y';
+    // ============================================================
+    // NOVA FUNCIONALIDADE: LEITURA DE ETIQUETA COM TESSERACT.JS
+    // (substituindo completamente a chamada à API do Google Cloud Vision)
+    // ============================================================
 
     // Event listener para os botões "📷 Ler Etiqueta"
     document.querySelectorAll('.ocr-read-btn').forEach(btn => {
@@ -2097,34 +2101,43 @@ Dados para pagamento:
           valueField: this.dataset.valueField,
           typeField: this.dataset.typeField,
           sizeField: this.dataset.sizeField,
-          clientPrefix: this.dataset.clientPrefix  // ex: "client" ou "modalAvulsaClient"
+          clientPrefix: this.dataset.clientPrefix
         };
         document.getElementById('ocrFileInput').click();
       });
     });
 
-    // Processamento de múltiplas imagens
+    // Processamento de múltiplas imagens com Tesseract.js
     document.getElementById('ocrFileInput').addEventListener('change', async function(e) {
       const files = this.files;
       if (!files || files.length === 0) return;
 
-      showToast('📸 Lendo etiqueta(s)... Aguarde.');
+      showToast('📸 Lendo etiqueta(s) com Tesseract... Aguarde.');
+
       let fullText = '';
 
       try {
-        // Envia cada imagem para a API Vision e concatena os textos
+        // Carrega o worker do Tesseract (uma única vez)
+        const worker = await Tesseract.createWorker('por');
+        
         for (let i = 0; i < files.length; i++) {
           const file = files[i];
-          const reader = new FileReader();
-          const base64 = await new Promise((resolve) => {
-            reader.onload = (ev) => resolve(ev.target.result.split(',')[1]);
+          // Converte para imagem (Data URL) para o Tesseract
+          const imageDataUrl = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (ev) => resolve(ev.target.result);
             reader.readAsDataURL(file);
           });
-          const text = await callGoogleVisionOCR(base64);
+          
+          // Reconhece o texto
+          const { data: { text } } = await worker.recognize(imageDataUrl);
           fullText += text + '\n';
         }
 
-        // Agora processa todo o texto combinado
+        // Finaliza o worker
+        await worker.terminate();
+
+        // Processa o texto extraído
         const parsed = parseEtiqueta(fullText);
         const { targetId, valueField, typeField, sizeField, clientPrefix } = window._ocrTargets || {};
 
@@ -2154,28 +2167,7 @@ Dados para pagamento:
       }
     });
 
-    async function callGoogleVisionOCR(base64Image) {
-      const url = `https://vision.googleapis.com/v1/images:annotate?key=${GOOGLE_VISION_API_KEY}`;
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          requests: [{
-            image: { content: base64Image },
-            features: [{ type: 'TEXT_DETECTION' }]
-          }]
-        })
-      });
-      if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.error?.message || 'Erro na API Vision');
-      }
-      const data = await response.json();
-      const annotations = data.responses?.[0]?.textAnnotations;
-      if (!annotations || annotations.length === 0) throw new Error('Nenhum texto encontrado.');
-      return annotations[0].description;
-    }
-
+    // Função de parsing (a mesma, não precisa de alterações)
     function parseEtiqueta(text) {
       const result = { code: '', value: '', type: '', size: '', clients: [] };
 
@@ -2183,7 +2175,7 @@ Dados para pagamento:
       const valueMatch = text.match(/R?\$?\s*(\d+[,.]\d{2})/);
       if (valueMatch) result.value = valueMatch[1].replace(',', '.');
 
-      // 2. Tipo (vestido, blusa, etc.)
+      // 2. Tipo
       const tipos = ['vestido', 'blusa', 'calça', 'short', 'saia', 'bermuda', 'camisa', 'casaco', 'jaqueta', 'terno', 'suéter', 'cardigã', 'body', 'top', 'macacão', 'conjunto'];
       const lower = text.toLowerCase();
       for (const t of tipos) {
@@ -2206,14 +2198,12 @@ Dados para pagamento:
       }
 
       // 5. Clientes (em ordem de prioridade)
-      // Tenta encontrar padrões como "Clientes: Maria, João" ou "Fila: Ana, Pedro"
       let clientList = [];
       const clientPatterns = [
         /(?:Clientes?|Interessados?|Fila|Interessad[oa]s?|Compradores?):\s*([^.\n]+)/i,
         /(?:1[º°]?|2[º°]?|3[º°]?|4[º°]?)\s*(?:Cliente|Opção):\s*([A-Z][a-záéíóúãõç]+(?:\s+[A-Z][a-záéíóúãõç]+)*)/g
       ];
 
-      // Procura por listas explícitas
       for (const pattern of clientPatterns) {
         let match;
         if (pattern.global) {
@@ -2223,25 +2213,20 @@ Dados para pagamento:
         } else {
           match = text.match(pattern);
           if (match && match[1]) {
-            // Divide por vírgula, "e", ";" e extrai nomes
             const parts = match[1].split(/[,;eE]\s*/).map(s => s.trim()).filter(s => s.length > 0);
             clientList.push(...parts);
           }
         }
       }
 
-      // Se não encontrou listas, tenta capturar nomes próprios (palavras com inicial maiúscula)
       if (clientList.length === 0) {
         const allWords = text.match(/\b([A-Z][a-záéíóúãõç]+(?:\s+[A-Z][a-záéíóúãõç]+)*)\b/g);
         if (allWords) {
-          // Filtra palavras comuns que não são nomes
           const common = ['Vestido', 'Blusa', 'Calça', 'Short', 'Saia', 'Bermuda', 'Camisa', 'Casaco', 'Jaqueta', 'Terno', 'Suéter', 'Cardigã', 'Body', 'Top', 'Macacão', 'Conjunto', 'P', 'M', 'G', 'GG', 'XG', 'EG', 'Cliente', 'Comprador', 'Fila', 'Interessados', 'Tamanho', 'Valor', 'Código', 'R$', 'Pix', 'Link', 'Pagamento'];
-          // Também ignora palavras que já são tipo, tamanho, etc.
           const ignoreSet = new Set(common.map(w => w.toLowerCase()));
           for (const word of allWords) {
             const lowerWord = word.toLowerCase();
             if (!ignoreSet.has(lowerWord) && !/^\d+$/.test(word)) {
-              // Evita capturar números ou palavras muito curtas (ex: "A")
               if (word.length >= 2) {
                 clientList.push(word);
               }
@@ -2250,7 +2235,6 @@ Dados para pagamento:
         }
       }
 
-      // Remove duplicatas mantendo a ordem
       const uniqueClients = [];
       const seen = new Set();
       for (const c of clientList) {
@@ -2265,7 +2249,9 @@ Dados para pagamento:
       return result;
     }
 
-    // ========== FIM DA NOVA FUNCIONALIDADE ==========
+    // ============================================================
+    // FIM DA IMPLEMENTAÇÃO COM TESSERACT.JS
+    // ============================================================
 
     // --- Auth State ---
     onAuthStateChanged(auth, async (user) => {
