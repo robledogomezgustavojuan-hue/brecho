@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
   <title>Brechó Inteligente | Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <!-- Tesseract.js via CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <style>
     /* ===== Variáveis ===== */
     :root {
@@ -499,15 +497,7 @@
         <div class="form-group"><label>Tamanho</label><input type="text" id="modalAvulsaSize" placeholder="Ex: M, G, 38"></div>
         <div class="form-group">
           <label>Código da Peça</label>
-          <div style="display: flex; gap: 0.5rem; align-items: center;">
-            <input type="text" id="modalAvulsaCode" list="stockCodes" placeholder="Ex: BL01" autocomplete="off" style="flex:1;">
-            <button type="button" class="btn-secondary btn-sm ocr-read-btn" 
-                    data-target="modalAvulsaCode" 
-                    data-value-field="modalAvulsaValue" 
-                    data-type-field="modalAvulsaItemType" 
-                    data-size-field="modalAvulsaSize" 
-                    data-client-prefix="modalAvulsaClient">📷 Ler Etiqueta</button>
-          </div>
+          <input type="text" id="modalAvulsaCode" list="stockCodes" placeholder="Ex: BL01" autocomplete="off">
           <datalist id="stockCodes"></datalist>
         </div>
         <div class="form-group"><label>👤 Cliente Principal</label><input type="text" id="modalAvulsaClient1" list="clientNamesList" autocomplete="off"></div>
@@ -694,15 +684,7 @@
           <div class="form-group"><label>Tamanho</label><input type="text" id="saleSize" placeholder="Ex: M, G, 38"></div>
           <div class="form-group">
             <label>Código da Peça</label>
-            <div style="display: flex; gap: 0.5rem; align-items: center;">
-              <input type="text" id="saleCode" list="liveStockCodes" placeholder="Ex: BL01" autocomplete="off" style="flex:1;">
-              <button type="button" class="btn-secondary btn-sm ocr-read-btn" 
-                      data-target="saleCode" 
-                      data-value-field="saleValue" 
-                      data-type-field="saleItemType" 
-                      data-size-field="saleSize" 
-                      data-client-prefix="client">📷 Ler Etiqueta</button>
-            </div>
+            <input type="text" id="saleCode" list="liveStockCodes" placeholder="Ex: BL01" autocomplete="off">
           </div>
           <div class="form-group"><label>👤 Cliente Principal</label><input type="text" id="client1" list="clientNamesList" autocomplete="off"></div>
           <details style="margin-bottom:0.5rem;">
@@ -719,9 +701,6 @@
         <ul class="sales-list" id="liveSalesList"></ul>
       </div>
     </div>
-
-    <!-- Input oculto para capturar múltiplas imagens (OCR) -->
-    <input type="file" id="ocrFileInput" accept="image/*" capture="environment" multiple style="display:none;">
   </div>
 
   <script type="module">
@@ -2087,171 +2066,6 @@ Dados para pagamento:
       setupStockAutoFill('modalAvulsaCode', 'modalAvulsaItemType', 'modalAvulsaValue', 'modalAvulsaSize');
       setupStockAutoFill('saleCode', 'saleItemType', 'saleValue', 'saleSize');
     });
-
-    // ============================================================
-    // NOVA FUNCIONALIDADE: LEITURA DE ETIQUETA COM TESSERACT.JS
-    // (substituindo completamente a chamada à API do Google Cloud Vision)
-    // ============================================================
-
-    // Event listener para os botões "📷 Ler Etiqueta"
-    document.querySelectorAll('.ocr-read-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        window._ocrTargets = {
-          targetId: this.dataset.target,
-          valueField: this.dataset.valueField,
-          typeField: this.dataset.typeField,
-          sizeField: this.dataset.sizeField,
-          clientPrefix: this.dataset.clientPrefix
-        };
-        document.getElementById('ocrFileInput').click();
-      });
-    });
-
-    // Processamento de múltiplas imagens com Tesseract.js
-    document.getElementById('ocrFileInput').addEventListener('change', async function(e) {
-      const files = this.files;
-      if (!files || files.length === 0) return;
-
-      showToast('📸 Lendo etiqueta(s) com Tesseract... Aguarde.');
-
-      let fullText = '';
-
-      try {
-        // Carrega o worker do Tesseract (uma única vez)
-        const worker = await Tesseract.createWorker('por');
-        
-        for (let i = 0; i < files.length; i++) {
-          const file = files[i];
-          // Converte para imagem (Data URL) para o Tesseract
-          const imageDataUrl = await new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onload = (ev) => resolve(ev.target.result);
-            reader.readAsDataURL(file);
-          });
-          
-          // Reconhece o texto
-          const { data: { text } } = await worker.recognize(imageDataUrl);
-          fullText += text + '\n';
-        }
-
-        // Finaliza o worker
-        await worker.terminate();
-
-        // Processa o texto extraído
-        const parsed = parseEtiqueta(fullText);
-        const { targetId, valueField, typeField, sizeField, clientPrefix } = window._ocrTargets || {};
-
-        // Preenche campos básicos
-        if (targetId && parsed.code) document.getElementById(targetId).value = parsed.code;
-        if (valueField && parsed.value) document.getElementById(valueField).value = parsed.value;
-        if (typeField && parsed.type) document.getElementById(typeField).value = parsed.type;
-        if (sizeField && parsed.size) document.getElementById(sizeField).value = parsed.size;
-
-        // Preenche os campos de clientes (até 4) na ordem extraída
-        if (clientPrefix && parsed.clients && parsed.clients.length > 0) {
-          for (let i = 0; i < Math.min(parsed.clients.length, 4); i++) {
-            const fieldId = clientPrefix + (i + 1);
-            const field = document.getElementById(fieldId);
-            if (field) field.value = parsed.clients[i];
-          }
-          // Os campos restantes permanecem em branco
-        }
-
-        showToast('✅ Etiqueta(s) lida(s) com sucesso!');
-      } catch (err) {
-        showToast('❌ Erro ao ler imagem: ' + err.message);
-        console.error(err);
-      } finally {
-        document.getElementById('ocrFileInput').value = '';
-        window._ocrTargets = null;
-      }
-    });
-
-    // Função de parsing (a mesma, não precisa de alterações)
-    function parseEtiqueta(text) {
-      const result = { code: '', value: '', type: '', size: '', clients: [] };
-
-      // 1. Valor (preço)
-      const valueMatch = text.match(/R?\$?\s*(\d+[,.]\d{2})/);
-      if (valueMatch) result.value = valueMatch[1].replace(',', '.');
-
-      // 2. Tipo
-      const tipos = ['vestido', 'blusa', 'calça', 'short', 'saia', 'bermuda', 'camisa', 'casaco', 'jaqueta', 'terno', 'suéter', 'cardigã', 'body', 'top', 'macacão', 'conjunto'];
-      const lower = text.toLowerCase();
-      for (const t of tipos) {
-        if (lower.includes(t)) {
-          result.type = t.charAt(0).toUpperCase() + t.slice(1);
-          break;
-        }
-      }
-
-      // 3. Tamanho
-      const sizeMatch = text.match(/\b(P|M|G|GG|XG|EG|38|40|42|44|46|48|50|52|54|56)\b/);
-      if (sizeMatch) result.size = sizeMatch[1];
-
-      // 4. Código
-      const codeMatch = text.match(/\b([A-Z]{2,}\d{2,})\b/);
-      if (codeMatch) result.code = codeMatch[1];
-      else {
-        const fallback = text.match(/\b([A-Za-z]+\d+)\b/);
-        if (fallback) result.code = fallback[1];
-      }
-
-      // 5. Clientes (em ordem de prioridade)
-      let clientList = [];
-      const clientPatterns = [
-        /(?:Clientes?|Interessados?|Fila|Interessad[oa]s?|Compradores?):\s*([^.\n]+)/i,
-        /(?:1[º°]?|2[º°]?|3[º°]?|4[º°]?)\s*(?:Cliente|Opção):\s*([A-Z][a-záéíóúãõç]+(?:\s+[A-Z][a-záéíóúãõç]+)*)/g
-      ];
-
-      for (const pattern of clientPatterns) {
-        let match;
-        if (pattern.global) {
-          while ((match = pattern.exec(text)) !== null) {
-            if (match[1]) clientList.push(match[1].trim());
-          }
-        } else {
-          match = text.match(pattern);
-          if (match && match[1]) {
-            const parts = match[1].split(/[,;eE]\s*/).map(s => s.trim()).filter(s => s.length > 0);
-            clientList.push(...parts);
-          }
-        }
-      }
-
-      if (clientList.length === 0) {
-        const allWords = text.match(/\b([A-Z][a-záéíóúãõç]+(?:\s+[A-Z][a-záéíóúãõç]+)*)\b/g);
-        if (allWords) {
-          const common = ['Vestido', 'Blusa', 'Calça', 'Short', 'Saia', 'Bermuda', 'Camisa', 'Casaco', 'Jaqueta', 'Terno', 'Suéter', 'Cardigã', 'Body', 'Top', 'Macacão', 'Conjunto', 'P', 'M', 'G', 'GG', 'XG', 'EG', 'Cliente', 'Comprador', 'Fila', 'Interessados', 'Tamanho', 'Valor', 'Código', 'R$', 'Pix', 'Link', 'Pagamento'];
-          const ignoreSet = new Set(common.map(w => w.toLowerCase()));
-          for (const word of allWords) {
-            const lowerWord = word.toLowerCase();
-            if (!ignoreSet.has(lowerWord) && !/^\d+$/.test(word)) {
-              if (word.length >= 2) {
-                clientList.push(word);
-              }
-            }
-          }
-        }
-      }
-
-      const uniqueClients = [];
-      const seen = new Set();
-      for (const c of clientList) {
-        const trimmed = c.trim();
-        if (trimmed && !seen.has(trimmed.toLowerCase())) {
-          seen.add(trimmed.toLowerCase());
-          uniqueClients.push(trimmed);
-        }
-      }
-      result.clients = uniqueClients;
-
-      return result;
-    }
-
-    // ============================================================
-    // FIM DA IMPLEMENTAÇÃO COM TESSERACT.JS
-    // ============================================================
 
     // --- Auth State ---
     onAuthStateChanged(auth, async (user) => {
